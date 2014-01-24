@@ -1,0 +1,49 @@
+imax 1 number of channels
+jmax * number of background
+kmax * number of nuisance parameters
+Observation 16
+bin vhss vhss vhss vhss vhss vhss vhss vhss vhss vhss vhss vhss
+process ZH WH qqH ggH qqWW ggWW VV Top Zjets Wjets Wgamma VVV
+process -3 -2 -1 0 1 2 3 4 5 6 7 8
+rate   0.011  0.609   0.004   0.080   0.344   0.008   6.734   0.859   0.000   7.980   0.259   0.198
+lumi                  	   lnN 1.022 1.022 1.022 1.022   -     -   1.022   -     -     -   1.022 1.022
+CMS_eff_m             	   lnN 1.030 1.030 1.030 1.030 1.030 1.030 1.030   -     -     -   1.030 1.030
+CMS_eff_e             	   lnN 1.040 1.040 1.040 1.040 1.040 1.040 1.040   -     -     -   1.040 1.040
+CMS_scale_m           	   lnN 1.015 1.015 1.015 1.015 1.015 1.015 1.015   -     -     -   1.015 1.015
+CMS_scale_e           	   lnN 1.020 1.020 1.020 1.020 1.020 1.020 1.020   -     -     -   1.020 1.020
+CMS_vhss_met_resolution    lnN 1.020 1.020 1.020 1.020 1.020 1.020 1.020   -     -     -   1.020 1.020
+CMS_vhss_met_resolution    lnN 1.010 1.010 1.010 1.010 1.010 1.010 1.010   -     -     -   1.010 1.010
+CMS_scale_j           	   lnN 1.050 1.050 1.050 1.050 1.050 1.050 1.050   -     -     -   1.050 1.050
+FakeRate              	   lnN   -     -     -     -     -     -     -     -     -   1.360   -     -  
+UEPS 		           lnN   -     -     -   1.055   -     -     -     -     -     -     -     -  
+theoryUncXS_HighMH         lnN 1.012 1.012 1.012 1.012   -     -     -     -	 -     -     -     -  
+pdf_gg                	   lnN   -     -     -   1.082   -   1.040   -     -     -     -     -     -  
+pdf_qqbar             	   lnN 1.050 1.050 1.050   -   1.040   -   1.040   -     -     -   1.040   -  
+QCDscale_ggH          	   lnN   -     -     -   1.000   -     -     -     -     -     -     -     -  
+QCDscale_ggH1in       	   lnN   -     -     -   1.270   -     -     -     -     -     -     -     -  
+QCDscale_ggH2in       	   lnN   -     -     -   0.960   -     -     -     -     -     -     -     -  
+QCDscale_qqH          	   lnN   -     -   1.010   -	 -     -     -     -	 -     -     -     -  
+QCDscale_VH           	   lnN 1.020 1.020   -     -	 -     -     -     -	 -     -     -     -  
+QCDscale_WW2in  	   lnN   -     -     -     -   0.914   -     -     -	 -     -     -     -  
+QCDscale_V           	   lnN   -     -     -     -     -     -     -     -     -     -   1.300   -  
+QCDscale_VV           	   lnN   -     -     -     -     -     -   1.040   -     -     -     -     -  
+QCDscale_VVV               lnN   -     -     -     -     -     -     -     -     -     -     -   1.500
+QCDscale_ggVV         	   lnN   -     -     -     -     -   1.300   -     -     -     -     -     -  
+QCDscale_WW_EXTRAP         lnN   -     -     -     -   1.060   -     -     -     -     -     -     -  
+QCDscale_ggH_ACCEPT   	   lnN   -     -     -   1.020   -     -     -     -     -     -     -     -  
+QCDscale_qqH_ACCEPT   	   lnN   -     -   1.020   -     -     -     -     -     -     -     -     -  
+QCDscale_VH_ACCEPT    	   lnN 1.020 1.020   -     -     -     -     -     -     -     -     -     -  
+CMS_vhss_top               lnN   -     -     -     -	 -     -     -   1.334   -     -     -     -  
+CMS_vhssll_Z               lnN   -     -     -     -	 -     -     -     -   1.400   -     -     -  
+CMS_vhssll_stat_ZH     	   lnN 1.625   -     -     -	 -     -     -     -	 -     -     -     -  
+CMS_vhssll_stat_WH     	   lnN   -   1.092   -     -	 -     -     -     -	 -     -     -     -  
+CMS_vhssll_stat_qqH    	   lnN   -     -   1.513   -	 -     -     -     -	 -     -     -     -  
+CMS_vhssll_stat_ggH    	   lnN   -     -     -   1.319   -     -     -     -	 -     -     -     -  
+CMS_vhssll_stat_WW     	   lnN   -     -     -     -   1.045   -     -     -	 -     -     -     -  
+CMS_vhssll_stat_ggWW   	   lnN   -     -     -     -	 -   1.008   -     -	 -     -     -     -  
+CMS_vhssll_stat_VV     	   lnN   -     -     -     -	 -     -   1.025   -	 -     -     -     -  
+CMS_vhssll_stat_ttbar  	   lnN   -     -     -     -	 -     -     -   1.334   -     -     -     -  
+CMS_vhssll_stat_Z      	   lnN   -     -     -     -	 -     -     -     -   1.000   -     -     -  
+CMS_vhssll_stat_Wjets  	   lnN   -     -     -     -	 -     -     -     -	 -   1.128   -     -  
+CMS_vhssll_stat_Wgamma 	   lnN   -     -     -     -	 -     -     -     -	 -     -   1.764   -  
+CMS_vhssll_stat_VVV 	   lnN   -     -     -     -	 -     -     -     -	 -     -     -   1.001

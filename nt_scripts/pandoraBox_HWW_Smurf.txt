@@ -1,0 +1,399 @@
+====> 7/8TeV WH3l yields
+   0.16 \pm  0.02 &    0.42 \pm  0.01 &   12 &   12.20 \pm  1.31 &    1.95 \pm  0.10 &    0.33 \pm  0.06 &    9.92 \pm  1.31 &    0.00 \pm  0.00 &    0.00 \pm  0.00\\
+   0.09 \pm  0.01 &    0.31 \pm  0.01 &    9 &    8.48 \pm  1.11 &    1.29 \pm  0.08 &    0.10 \pm  0.03 &    7.10 \pm  1.11 &    0.00 \pm  0.00 &    0.00 \pm  0.00\\
+   0.09 \pm  0.01 &    0.31 \pm  0.01 &    9 &    8.48 \pm  1.11 &    1.29 \pm  0.08 &    0.10 \pm  0.03 &    7.10 \pm  1.11 &    0.00 \pm  0.00 &    0.00 \pm  0.00\\
+   0.07 \pm  0.01 &    0.24 \pm  0.01 &    2 &    1.90 \pm  0.44 &    0.82 \pm  0.06 &    0.05 \pm  0.02 &    1.04 \pm  0.43 &    0.00 \pm  0.00 &    0.00 \pm  0.00\\
+   0.04 \pm  0.01 &    0.22 \pm  0.01 &    2 &    0.79 \pm  0.17 &    0.53 \pm  0.05 &    0.03 \pm  0.02 &    0.23 \pm  0.16 &    0.00 \pm  0.00 &    0.00 \pm  0.00\\
+
+   0.52 \pm  0.03 &    1.32 \pm  0.01 &  869 &  862.94 \pm 11.53 &  475.15 \pm  1.52 &   82.60 \pm  0.97 &  233.90 \pm  6.83 &   71.28 \pm  9.11 &    0.00 \pm  0.00\\
+   0.23 \pm  0.02 &    0.81 \pm  0.01 &  234 &  238.54 \pm  2.50 &  207.31 \pm  1.01 &    8.45 \pm  0.31 &   22.79 \pm  2.27 &    0.00 \pm  0.00 &    0.00 \pm  0.00\\
+   0.14 \pm  0.02 &    0.61 \pm  0.01 &   25 &   25.73 \pm  1.49 &   13.62 \pm  0.26 &    0.76 \pm  0.09 &   11.35 \pm  1.46 &    0.00 \pm  0.00 &    0.00 \pm  0.00\\
+   0.10 \pm  0.01 &    0.48 \pm  0.01 &    8 &    9.76 \pm  0.66 &    7.34 \pm  0.19 &    0.46 \pm  0.07 &    1.96 \pm  0.63 &    0.00 \pm  0.00 &    0.00 \pm  0.00\\
+   0.07 \pm  0.01 &    0.45 \pm  0.01 &    5 &    6.51 \pm  0.53 &    4.96 \pm  0.16 &    0.37 \pm  0.06 &    1.18 \pm  0.51 &    0.00 \pm  0.00 &    0.00 \pm  0.00\\
+
+   0.72 \pm  0.08 &    1.64 \pm  0.21 &   71 &   83.73 \pm  2.99 &    7.88 \pm  0.30 &    1.29 \pm  0.03 &   66.83 \pm  2.93 &    0.37 \pm  0.37 &    7.36 \pm  0.37\\
+   0.41 \pm  0.06 &    1.21 \pm  0.18 &   43 &   60.24 \pm  2.54 &    5.16 \pm  0.24 &    0.48 \pm  0.02 &   48.43 \pm  2.50 &    0.00 \pm  0.00 &    6.18 \pm  0.34\\
+   0.41 \pm  0.06 &    1.21 \pm  0.18 &   43 &   60.24 \pm  2.54 &    5.16 \pm  0.24 &    0.48 \pm  0.02 &   48.43 \pm  2.50 &    0.00 \pm  0.00 &    6.18 \pm  0.34\\
+   0.29 \pm  0.05 &    1.02 \pm  0.17 &    7 &   10.41 \pm  0.97 &    2.84 \pm  0.18 &    0.21 \pm  0.01 &    6.60 \pm  0.95 &    0.00 \pm  0.00 &    0.77 \pm  0.09\\
+   0.23 \pm  0.04 &    1.00 \pm  0.16 &    6 &    6.88 \pm  0.84 &    1.71 \pm  0.14 &    0.13 \pm  0.01 &    4.58 \pm  0.83 &    0.00 \pm  0.00 &    0.45 \pm  0.07\\
+
+   1.95 \pm  0.12 &    6.08 \pm  0.41 & 4340 & 4223.87 \pm 20.78 & 2042.67 \pm  4.82 &  397.08 \pm  0.55 & 1368.96 \pm 13.20 &  345.51 \pm 15.26 &   69.65 \pm  1.02\\
+   0.91 \pm  0.09 &    3.47 \pm  0.30 & 1137 & 1140.87 \pm  6.04 &  899.99 \pm  3.20 &   42.31 \pm  0.18 &  149.95 \pm  4.86 &    3.54 \pm  1.41 &   45.07 \pm  0.84\\
+   0.56 \pm  0.07 &    2.69 \pm  0.27 &  153 &  155.26 \pm  3.44 &   59.13 \pm  0.82 &    3.86 \pm  0.05 &   79.95 \pm  3.25 &    0.62 \pm  0.61 &   11.70 \pm  0.47\\
+   0.35 \pm  0.05 &    2.14 \pm  0.23 &   45 &   47.67 \pm  1.33 &   34.86 \pm  0.63 &    1.88 \pm  0.04 &    9.63 \pm  1.17 &    0.00 \pm  0.00 &    1.29 \pm  0.11\\
+   0.30 \pm  0.05 &    2.10 \pm  0.24 &   33 &   33.22 \pm  1.14 &   23.99 \pm  0.52 &    1.38 \pm  0.03 &    7.19 \pm  1.01 &    0.00 \pm  0.00 &    0.65 \pm  0.07\\
+====> spin 0/2-reweighting
+* spin0-0j-8tev
+    myWeight=myWeight*0.82;
+ 
+    if     (fDecay==3||bgdEvent.dstype_ == SmurfTree::data ) theWeight=theWeight*(0.934+0.827)/2.0;
+    else if(bgdEvent.dstype_ == SmurfTree::qqww            ) theWeight=theWeight*1.045;
+    else if(bgdEvent.dstype_ == SmurfTree::ggww            ) theWeight=theWeight*1.375;
+    else if(fDecay == 5||fDecay == 13                      ) theWeight=theWeight*0.830;
+    else if(fDecay==27||fDecay==28||fDecay==21             ) theWeight=theWeight*1.007;
+    else if(bgdEvent.dstype_ == SmurfTree::wz              ) theWeight=theWeight*1.007;
+    else if(bgdEvent.dstype_ == SmurfTree::zz              ) theWeight=theWeight*1.007;
+    else if(bgdEvent.dstype_ == SmurfTree::dyttDataDriven  ) theWeight=theWeight*1.044;
+    else if(bgdEvent.dstype_ == SmurfTree::dymm            ) theWeight=theWeight*1.044;
+    else if(bgdEvent.dstype_ == SmurfTree::dyee            ) theWeight=theWeight*1.044;
+    else if(bgdEvent.dstype_ == SmurfTree::dytt            ) theWeight=theWeight*1.044;
+    else if(bgdEvent.dstype_ == SmurfTree::wgamma          ) theWeight=theWeight*0.935;
+    else if(bgdEvent.dstype_ == SmurfTree::wgstar          ) theWeight=theWeight*0.834;
+    else {printf("bgdEvent.dstype_: %d\n",bgdEvent.dstype_); assert(0);}
+
+* spin0-1j-8tev
+    myWeight=myWeight*0.82;
+ 
+    if     (fDecay==3||bgdEvent.dstype_ == SmurfTree::data ) theWeight=theWeight*(0.869+0.798)/2.0;
+    else if(bgdEvent.dstype_ == SmurfTree::qqww            ) theWeight=theWeight*1.099;
+    else if(bgdEvent.dstype_ == SmurfTree::ggww            ) theWeight=theWeight*1.273;
+    else if(fDecay == 5||fDecay == 13                      ) theWeight=theWeight*0.931;
+    else if(fDecay==27||fDecay==28||fDecay==21             ) theWeight=theWeight*0.996;
+    else if(bgdEvent.dstype_ == SmurfTree::wz              ) theWeight=theWeight*0.996;
+    else if(bgdEvent.dstype_ == SmurfTree::zz              ) theWeight=theWeight*0.996;
+    else if(bgdEvent.dstype_ == SmurfTree::dyttDataDriven  ) theWeight=theWeight*1.045;
+    else if(bgdEvent.dstype_ == SmurfTree::dymm            ) theWeight=theWeight*1.045;
+    else if(bgdEvent.dstype_ == SmurfTree::dyee            ) theWeight=theWeight*1.045;
+    else if(bgdEvent.dstype_ == SmurfTree::dytt            ) theWeight=theWeight*1.045;
+    else if(bgdEvent.dstype_ == SmurfTree::wgamma          ) theWeight=theWeight*0.961;
+    else if(bgdEvent.dstype_ == SmurfTree::wgstar          ) theWeight=theWeight*0.464;
+    else {printf("bgdEvent.dstype_: %d\n",bgdEvent.dstype_); assert(0);}
+
+* spin0-0j-7tev
+    myWeight=myWeight*0.82;
+ 
+    if     (fDecay==3||bgdEvent.dstype_ == SmurfTree::data ) theWeight=theWeight*(0.894+0.811)/2.0;
+    else if(bgdEvent.dstype_ == SmurfTree::qqww            ) theWeight=theWeight*1.130;
+    else if(bgdEvent.dstype_ == SmurfTree::ggww            ) theWeight=theWeight*1.287;
+    else if(fDecay == 5||fDecay == 13                      ) theWeight=theWeight*1.085;
+    else if(fDecay==27||fDecay==28||fDecay==21             ) theWeight=theWeight*1.014;
+    else if(bgdEvent.dstype_ == SmurfTree::wz              ) theWeight=theWeight*1.014;
+    else if(bgdEvent.dstype_ == SmurfTree::zz              ) theWeight=theWeight*1.014;
+    else if(bgdEvent.dstype_ == SmurfTree::dymm            ) theWeight=theWeight*0.946;
+    else if(bgdEvent.dstype_ == SmurfTree::dyee            ) theWeight=theWeight*0.946;
+    else if(bgdEvent.dstype_ == SmurfTree::dytt            ) theWeight=theWeight*0.946;
+    else if(bgdEvent.dstype_ == SmurfTree::wgamma          ) theWeight=theWeight*0.943;
+    else if(bgdEvent.dstype_ == SmurfTree::wgstar          ) theWeight=theWeight*0.927;
+    else {printf("bgdEvent.dstype_: %d\n",bgdEvent.dstype_); assert(0);}
+
+* spin0-1j-7tev
+    myWeight=myWeight*0.82;
+ 
+    if     (fDecay==3||bgdEvent.dstype_ == SmurfTree::data ) theWeight=theWeight*(0.781+0.722)/2.0;
+    else if(bgdEvent.dstype_ == SmurfTree::qqww            ) theWeight=theWeight*1.163;
+    else if(bgdEvent.dstype_ == SmurfTree::ggww            ) theWeight=theWeight*1.262;
+    else if(fDecay == 5||fDecay == 13                      ) theWeight=theWeight*0.899;
+    else if(fDecay==27||fDecay==28||fDecay==21             ) theWeight=theWeight*1.008;
+    else if(bgdEvent.dstype_ == SmurfTree::wz              ) theWeight=theWeight*1.008;
+    else if(bgdEvent.dstype_ == SmurfTree::zz              ) theWeight=theWeight*1.008;
+    else if(bgdEvent.dstype_ == SmurfTree::dymm            ) theWeight=theWeight*0.401;
+    else if(bgdEvent.dstype_ == SmurfTree::dyee            ) theWeight=theWeight*0.401;
+    else if(bgdEvent.dstype_ == SmurfTree::dytt            ) theWeight=theWeight*0.401;
+    else if(bgdEvent.dstype_ == SmurfTree::wgamma          ) theWeight=theWeight*0.958;
+    else if(bgdEvent.dstype_ == SmurfTree::wgstar          ) theWeight=theWeight*1.108;
+    else {printf("bgdEvent.dstype_: %d\n",bgdEvent.dstype_); assert(0);}
+
+* spin2-0j-8tev
+    myWeight=myWeight*0.88*1.60;
+ 
+    if     (fDecay==3||bgdEvent.dstype_ == SmurfTree::data ) theWeight=theWeight*(0.739+0.684)/2.0;
+    else if(bgdEvent.dstype_ == SmurfTree::qqww            ) theWeight=theWeight*1.105;
+    else if(bgdEvent.dstype_ == SmurfTree::ggww            ) theWeight=theWeight*1.426;
+    else if(fDecay == 5||fDecay == 13                      ) theWeight=theWeight*0.825;
+    else if(fDecay==27||fDecay==28||fDecay==21             ) theWeight=theWeight*1.004;
+    else if(bgdEvent.dstype_ == SmurfTree::wz              ) theWeight=theWeight*1.004;
+    else if(bgdEvent.dstype_ == SmurfTree::zz              ) theWeight=theWeight*1.004;
+    else if(bgdEvent.dstype_ == SmurfTree::dyttDataDriven  ) theWeight=theWeight*1.018;
+    else if(bgdEvent.dstype_ == SmurfTree::dymm            ) theWeight=theWeight*1.018;
+    else if(bgdEvent.dstype_ == SmurfTree::dyee            ) theWeight=theWeight*1.018;
+    else if(bgdEvent.dstype_ == SmurfTree::dytt            ) theWeight=theWeight*1.018;
+    else if(bgdEvent.dstype_ == SmurfTree::wgamma          ) theWeight=theWeight*0.962;
+    else if(bgdEvent.dstype_ == SmurfTree::wgstar          ) theWeight=theWeight*0.884;
+    else {printf("bgdEvent.dstype_: %d\n",bgdEvent.dstype_); assert(0);}
+
+* spin2-1j-8tev
+    myWeight=myWeight*0.88*1.54;
+ 
+    if     (fDecay==3||bgdEvent.dstype_ == SmurfTree::data ) theWeight=theWeight*(0.765+0.743)/2.0;
+    else if(bgdEvent.dstype_ == SmurfTree::qqww            ) theWeight=theWeight*1.098;
+    else if(bgdEvent.dstype_ == SmurfTree::ggww            ) theWeight=theWeight*1.315;
+    else if(fDecay == 5||fDecay == 13                      ) theWeight=theWeight*0.935;
+    else if(fDecay==27||fDecay==28||fDecay==21             ) theWeight=theWeight*0.992;
+    else if(bgdEvent.dstype_ == SmurfTree::wz              ) theWeight=theWeight*0.992;
+    else if(bgdEvent.dstype_ == SmurfTree::zz              ) theWeight=theWeight*0.992;
+    else if(bgdEvent.dstype_ == SmurfTree::dyttDataDriven  ) theWeight=theWeight*0.987;
+    else if(bgdEvent.dstype_ == SmurfTree::dymm            ) theWeight=theWeight*0.987;
+    else if(bgdEvent.dstype_ == SmurfTree::dyee            ) theWeight=theWeight*0.987;
+    else if(bgdEvent.dstype_ == SmurfTree::dytt            ) theWeight=theWeight*0.987;
+    else if(bgdEvent.dstype_ == SmurfTree::wgamma          ) theWeight=theWeight*0.483;
+    else if(bgdEvent.dstype_ == SmurfTree::wgstar          ) theWeight=theWeight*1.015;
+    else {printf("bgdEvent.dstype_: %d\n",bgdEvent.dstype_); assert(0);}
+
+* spin2-0j-7tev
+    myWeight=myWeight*0.88*1.55;
+ 
+    if     (fDecay==3||bgdEvent.dstype_ == SmurfTree::data ) theWeight=theWeight*(0.840+0.767)/2.0;
+    else if(bgdEvent.dstype_ == SmurfTree::qqww            ) theWeight=theWeight*1.150;
+    else if(bgdEvent.dstype_ == SmurfTree::ggww            ) theWeight=theWeight*1.330;
+    else if(fDecay == 5||fDecay == 13                      ) theWeight=theWeight*1.087;
+    else if(fDecay==27||fDecay==28||fDecay==21             ) theWeight=theWeight*1.014;
+    else if(bgdEvent.dstype_ == SmurfTree::wz              ) theWeight=theWeight*1.014;
+    else if(bgdEvent.dstype_ == SmurfTree::zz              ) theWeight=theWeight*1.014;
+    else if(bgdEvent.dstype_ == SmurfTree::dymm            ) theWeight=theWeight*0.916;
+    else if(bgdEvent.dstype_ == SmurfTree::dyee            ) theWeight=theWeight*0.916;
+    else if(bgdEvent.dstype_ == SmurfTree::dytt            ) theWeight=theWeight*0.916;
+    else if(bgdEvent.dstype_ == SmurfTree::wgamma          ) theWeight=theWeight*0.971;
+    else if(bgdEvent.dstype_ == SmurfTree::wgstar          ) theWeight=theWeight*0.958;
+    else {printf("bgdEvent.dstype_: %d\n",bgdEvent.dstype_); assert(0);}
+
+* spin2-1j-7tev
+    myWeight=myWeight*0.88*1.84;
+ 
+    if     (fDecay==3||bgdEvent.dstype_ == SmurfTree::data ) theWeight=theWeight*(0.701+0.677)/2.0;
+    else if(bgdEvent.dstype_ == SmurfTree::qqww            ) theWeight=theWeight*1.161;
+    else if(bgdEvent.dstype_ == SmurfTree::ggww            ) theWeight=theWeight*1.303;
+    else if(fDecay == 5||fDecay == 13                      ) theWeight=theWeight*0.900;
+    else if(fDecay==27||fDecay==28||fDecay==21             ) theWeight=theWeight*1.007;
+    else if(bgdEvent.dstype_ == SmurfTree::wz              ) theWeight=theWeight*1.007;
+    else if(bgdEvent.dstype_ == SmurfTree::zz              ) theWeight=theWeight*1.007;
+    else if(bgdEvent.dstype_ == SmurfTree::dymm            ) theWeight=theWeight*0.375;
+    else if(bgdEvent.dstype_ == SmurfTree::dyee            ) theWeight=theWeight*0.375;
+    else if(bgdEvent.dstype_ == SmurfTree::dytt            ) theWeight=theWeight*0.375;
+    else if(bgdEvent.dstype_ == SmurfTree::wgamma          ) theWeight=theWeight*0.987;
+    else if(bgdEvent.dstype_ == SmurfTree::wgstar          ) theWeight=theWeight*1.142;
+    else {printf("bgdEvent.dstype_: %d\n",bgdEvent.dstype_); assert(0);}
+
+====> triggerL1Upgrade.C
+    int versionTrigger = 5;
+    double trg_EG    = 46;    			  double trg_EG_eff    = 1.00; 
+    double trg_EGISO = 38;  			  double trg_EGISO_eff = 0.90;
+    double trg_Mu    = 23;    			  double trg_Mu_eff    = 0.95; 
+    double trg_MuISO = 99;    			  double trg_MuISO_eff = 0.00; 
+    double trg_DEG0  = 24; double trg_DEG1  = 15; double trg_DEG_eff   = 0.90;
+    double trg_DMu0  = 18; double trg_DMu1  = 10; double trg_DMu_eff   = 0.90;
+    double trg_EGMu0 = 21; double trg_EGMu1 = 11; double trg_EGMu_eff  = 0.85; 
+    double trg_MuEG0 = 18; double trg_MuEG1 = 14; double trg_MuEG_eff  = 0.95; 
+    if     (versionTrigger == 1){ // L1
+    }
+    else if(versionTrigger == 2){ // L1
+      trg_EG	= 45;		       trg_EG_eff    = 1.00;
+      trg_EGISO = 25;		       trg_EGISO_eff = 0.90;
+      trg_Mu	= 18;		       trg_Mu_eff    = 0.92;
+      trg_MuISO	= 17;		       trg_MuISO_eff = 0.84;
+      trg_DEG0  = 22;  trg_DEG1  = 16; trg_DEG_eff   = 0.90; 
+      trg_DMu0  = 13;  trg_DMu1  = 10; trg_DMu_eff   = 0.80; 
+      trg_EGMu0 = 19;  trg_EGMu1 = 10; trg_EGMu_eff  = 0.85; 
+      trg_MuEG0 = 16;  trg_MuEG1 = 14; trg_MuEG_eff  = 0.83; 
+    }
+    else if(versionTrigger == 3){ // L1
+      trg_EG	= 67;		       trg_EG_eff    = 1.00;
+      trg_EGISO = 52;		       trg_EGISO_eff = 0.90;
+      trg_Mu	= 42;		       trg_Mu_eff    = 0.95;
+      trg_MuISO	= 99;		       trg_MuISO_eff = 0.00; 
+      trg_DEG0  = 26;  trg_DEG1  = 16; trg_DEG_eff   = 0.90;
+      trg_DMu0  = 20;  trg_DMu1  = 12; trg_DMu_eff   = 0.90; 
+      trg_EGMu0 = 24;  trg_EGMu1 = 12; trg_EGMu_eff  = 0.85; 
+      trg_MuEG0 = 20;  trg_MuEG1 = 15; trg_MuEG_eff  = 0.95; 
+    }
+    else if(versionTrigger == 4){ // L1
+      trg_EG	= 57;		       trg_EG_eff    = 1.00;
+      trg_EGISO = 31;		       trg_EGISO_eff = 0.90;
+      trg_Mu	= 22;		       trg_Mu_eff    = 0.90; 
+      trg_MuISO	= 19;		       trg_MuISO_eff = 0.82; 
+      trg_DEG0  = 23;  trg_DEG1  = 16; trg_DEG_eff   = 0.90;
+      trg_DMu0  = 15;  trg_DMu1  = 10; trg_DMu_eff   = 0.80; 
+      trg_EGMu0 = 20;  trg_EGMu1 = 10; trg_EGMu_eff  = 0.85; 
+      trg_MuEG0 = 18;  trg_MuEG1 = 15; trg_MuEG_eff  = 0.83; 
+    }
+    else if(versionTrigger == 5){ // original
+      trg_EG	= 27;		       trg_EG_eff    = 1.00;
+      trg_EGISO = 99;		       trg_EGISO_eff = 0.00;
+      trg_Mu	= 24;		       trg_Mu_eff    = 0.90; 
+      trg_MuISO	= 99;		       trg_MuISO_eff = 0.00; 
+      trg_DEG0  = 17;  trg_DEG1  =  8; trg_DEG_eff   = 1.00;
+      trg_DMu0  = 17;  trg_DMu1  =  8; trg_DMu_eff   = 0.90; 
+      trg_EGMu0 = 17;  trg_EGMu1 =  8; trg_EGMu_eff  = 0.95; 
+      trg_MuEG0 = 17;  trg_MuEG1 =  8; trg_MuEG_eff  = 0.95; 
+    }
+    else if(versionTrigger == 6){ // HLT2015
+      trg_EG	= 36;		       trg_EG_eff    = 1.00;
+      trg_EGISO = 99;		       trg_EGISO_eff = 0.00;
+      trg_Mu	= 34;		       trg_Mu_eff    = 0.90; 
+      trg_MuISO	= 99;		       trg_MuISO_eff = 0.00; 
+      trg_DEG0  = 17;  trg_DEG1  =  8; trg_DEG_eff   = 1.00;
+      trg_DMu0  = 23;  trg_DMu1  = 10; trg_DMu_eff   = 0.90; 
+      trg_EGMu0 = 20;  trg_EGMu1 = 10; trg_EGMu_eff  = 0.95; 
+      trg_MuEG0 = 20;  trg_MuEG1 = 10; trg_MuEG_eff  = 0.95; 
+    }
+    bool passTrigger[6] = {false, false, false, false, false, false};
+    if     (type == SmurfTree::mm){
+       if(lep1->pt() > trg_MuISO   && gRandom->Uniform() < trg_MuISO_eff) passTrigger[0] = true;
+       if(lep1->pt() > trg_Mu      && gRandom->Uniform() < trg_Mu_eff   ) passTrigger[1] = true;
+       if(lep2->pt() > trg_MuISO   && gRandom->Uniform() < trg_MuISO_eff) passTrigger[2] = true;
+       if(lep2->pt() > trg_Mu      && gRandom->Uniform() < trg_Mu_eff	) passTrigger[3] = true;
+       if(lep1->pt() > trg_DMu0 && 
+          lep2->pt() > trg_DMu1    && gRandom->Uniform() < trg_DMu_eff  ) passTrigger[4] = true;
+       passTrigger[5] = false;
+    }
+    else if(type == SmurfTree::me){
+       if(lep1->pt() > trg_MuISO   && gRandom->Uniform() < trg_MuISO_eff) passTrigger[0] = true;
+       if(lep1->pt() > trg_Mu      && gRandom->Uniform() < trg_Mu_eff	) passTrigger[1] = true;
+       if(lep2->pt() > trg_EGISO   && gRandom->Uniform() < trg_EGISO_eff) passTrigger[2] = true;
+       if(lep2->pt() > trg_EG      && gRandom->Uniform() < trg_EG_eff	) passTrigger[3] = true;
+       if(lep1->pt() > trg_MuEG0 && 
+          lep2->pt() > trg_MuEG1   && gRandom->Uniform() < trg_MuEG_eff ) passTrigger[4] = true;
+       if(lep1->pt() > trg_EGMu1 && 
+          lep2->pt() > trg_EGMu0   && gRandom->Uniform() < trg_EGMu_eff ) passTrigger[5] = true;
+    }
+    else if(type == SmurfTree::em){
+       if(lep1->pt() > trg_EGISO   && gRandom->Uniform() < trg_EGISO_eff) passTrigger[0] = true;
+       if(lep1->pt() > trg_EG      && gRandom->Uniform() < trg_EG_eff	) passTrigger[1] = true;
+       if(lep2->pt() > trg_MuISO   && gRandom->Uniform() < trg_MuISO_eff) passTrigger[2] = true;
+       if(lep2->pt() > trg_Mu      && gRandom->Uniform() < trg_Mu_eff	) passTrigger[3] = true;
+       if(lep1->pt() > trg_EGMu0 && 
+          lep2->pt() > trg_EGMu1   && gRandom->Uniform() < trg_EGMu_eff ) passTrigger[4] = true;
+       if(lep1->pt() > trg_MuEG1 && 
+          lep2->pt() > trg_MuEG0   && gRandom->Uniform() < trg_MuEG_eff ) passTrigger[5] = true;
+    }
+    else if(type == SmurfTree::ee){
+       if(lep1->pt() > trg_EGISO   && gRandom->Uniform() < trg_EGISO_eff) passTrigger[0] = true;
+       if(lep1->pt() > trg_EG      && gRandom->Uniform() < trg_EG_eff   ) passTrigger[1] = true;
+       if(lep2->pt() > trg_EGISO   && gRandom->Uniform() < trg_EGISO_eff) passTrigger[2] = true;
+       if(lep2->pt() > trg_EG      && gRandom->Uniform() < trg_EG_eff   ) passTrigger[3] = true;
+       if(lep1->pt() > trg_DEG0 &&
+          lep2->pt() > trg_DEG1    && gRandom->Uniform() < trg_DEG_eff  ) passTrigger[4] = true;
+       passTrigger[5] = false;
+    }
+    if(!(passTrigger[0]||passTrigger[1]||passTrigger[2]||
+         passTrigger[3]||passTrigger[4]||passTrigger[5])) add = 0.0;
+
+====> scale13.C
+                 gg->H->X:   2.319
+                   qqH->X:   2.092
+                    WH->X:   1.885
+                    ZH->X:   1.997
+                ttbarH->X:   3.651
+ 
+    if     (dstype == SmurfTree::wjets  	 ) myWeight=myWeight*1.676;
+    else if(dstype == SmurfTree::ttbar  	 ) myWeight=myWeight*3.307;
+    else if(dstype == SmurfTree::dyee   	 ) myWeight=myWeight*1.710;
+    else if(dstype == SmurfTree::dymm   	 ) myWeight=myWeight*1.710;
+    else if(dstype == SmurfTree::dytt   	 ) myWeight=myWeight*1.710;
+    else if(dstype == SmurfTree::tw     	 ) myWeight=myWeight*3.490;
+    else if(dstype == SmurfTree::qqww   	 ) myWeight=myWeight*2.342;
+    else if(dstype == SmurfTree::qqww2j   	 ) myWeight=myWeight*2.342;
+    else if(dstype == SmurfTree::wz     	 ) myWeight=myWeight*1.991;
+    else if(dstype == SmurfTree::zz     	 ) myWeight=myWeight*1.869;
+    else if(dstype == SmurfTree::ggww   	 ) myWeight=myWeight*2.342;
+    else if(dstype == SmurfTree::ggzz   	 ) myWeight=myWeight*2.342;
+    else if(dstype == SmurfTree::www             ) myWeight=myWeight*2.500;
+    else if(dstype == SmurfTree::wgamma 	 ) myWeight=myWeight*1.705;
+    else if(dstype == SmurfTree::wgstar 	 ) myWeight=myWeight*1.991;
+    else if(dstype == SmurfTree::data   	 ) myWeight=myWeight*1.676;
+    else if(dstype == SmurfTree::dyttDataDriven  ) myWeight=myWeight*1.710;
+    else if(dstype == SmurfTree::qcd             ) myWeight=myWeight*1.710;
+    else {printf("dstype: %d\n",dstype); assert(0);}
+
+====> scale14.C
+    myWeight=myWeight*2.6;
+ 
+    if     (dstype == SmurfTree::wjets  	 ) myWeight=myWeight*1.8;
+    else if(dstype == SmurfTree::ttbar  	 ) myWeight=myWeight*3.9;
+    else if(dstype == SmurfTree::dyee   	 ) myWeight=myWeight*1.8;
+    else if(dstype == SmurfTree::dymm   	 ) myWeight=myWeight*1.8;
+    else if(dstype == SmurfTree::dytt   	 ) myWeight=myWeight*1.8;
+    else if(dstype == SmurfTree::tw     	 ) myWeight=myWeight*3.7;
+    else if(dstype == SmurfTree::qqww   	 ) myWeight=myWeight*2.2;
+    else if(dstype == SmurfTree::qqww2j   	 ) myWeight=myWeight*2.2;
+    else if(dstype == SmurfTree::wz     	 ) myWeight=myWeight*2.2;
+    else if(dstype == SmurfTree::zz     	 ) myWeight=myWeight*2.2;
+    else if(dstype == SmurfTree::ggww   	 ) myWeight=myWeight*2.2;
+    else if(dstype == SmurfTree::ggzz   	 ) myWeight=myWeight*2.2;
+    else if(dstype == SmurfTree::www             ) myWeight=myWeight*2.2;
+    else if(dstype == SmurfTree::wgamma 	 ) myWeight=myWeight*1.8;
+    else if(dstype == SmurfTree::wgstar 	 ) myWeight=myWeight*1.8;
+    else if(dstype == SmurfTree::data   	 ) myWeight=myWeight*1.8;
+    else if(dstype == SmurfTree::dyttDataDriven  ) myWeight=myWeight*1.8;
+    else if(dstype == SmurfTree::qcd             ) myWeight=myWeight*1.8;
+    else {printf("dstype: %d\n",dstype); assert(0);}
+
+====> Study statistical uncertainties
+      double upperBound[2] = {0.03,0.1};
+      for(int i=1; i<=histo_ZH->GetNbinsX(); i++){
+        if(histo_ZH->GetBinContent(i) > 0 && 
+	   histo_ZH->GetBinContent(i)/histo_ZH->GetSumOfWeights() > upperBound[0] &&
+	   histo_ZH->GetBinError(i)/histo_ZH->GetBinContent(i) > upperBound[1]) 
+	     printf("histo_ZH(%i): %7.3f %5.3f %5.3f\n",i,histo_ZH->GetBinContent(i),histo_ZH->GetBinContent(i)/histo_ZH->GetSumOfWeights(),histo_ZH->GetBinError(i)/histo_ZH->GetBinContent(i));
+      }
+      for(int i=1; i<=histo_WH->GetNbinsX(); i++){
+        if(histo_WH->GetBinContent(i) > 0 && 
+	   histo_WH->GetBinContent(i)/histo_WH->GetSumOfWeights() > upperBound[0] &&
+	   histo_WH->GetBinError(i)/histo_WH->GetBinContent(i) > upperBound[1]) 
+	     printf("histo_WH(%i): %7.3f %5.3f %5.3f\n",i,histo_WH->GetBinContent(i),histo_WH->GetBinContent(i)/histo_WH->GetSumOfWeights(),histo_WH->GetBinError(i)/histo_WH->GetBinContent(i));
+      }
+      for(int i=1; i<=histo_qqH->GetNbinsX(); i++){
+        if(histo_qqH->GetBinContent(i) > 0 && 
+	   histo_qqH->GetBinContent(i)/histo_qqH->GetSumOfWeights() > upperBound[0] &&
+	   histo_qqH->GetBinError(i)/histo_qqH->GetBinContent(i) > upperBound[1]) 
+	     printf("histo_qqH(%i): %7.3f %5.3f %5.3f\n",i,histo_qqH->GetBinContent(i),histo_qqH->GetBinContent(i)/histo_qqH->GetSumOfWeights(),histo_qqH->GetBinError(i)/histo_qqH->GetBinContent(i));
+      }
+      for(int i=1; i<=histo_ggH->GetNbinsX(); i++){
+        if(histo_ggH->GetBinContent(i) > 0 && 
+	   histo_ggH->GetBinContent(i)/histo_ggH->GetSumOfWeights() > upperBound[0] &&
+	   histo_ggH->GetBinError(i)/histo_ggH->GetBinContent(i) > upperBound[1]) 
+	     printf("histo_ggH(%i): %7.3f %5.3f %5.3f\n",i,histo_ggH->GetBinContent(i),histo_ggH->GetBinContent(i)/histo_ggH->GetSumOfWeights(),histo_ggH->GetBinError(i)/histo_ggH->GetBinContent(i));
+      }
+      for(int i=1; i<=histo_qqWW->GetNbinsX(); i++){
+        if(histo_qqWW->GetBinContent(i) > 0 && 
+	   histo_qqWW->GetBinContent(i)/histo_qqWW->GetSumOfWeights() > upperBound[0] &&
+	   histo_qqWW->GetBinError(i)/histo_qqWW->GetBinContent(i) > upperBound[1]) 
+	     printf("histo_qqWW(%i): %7.3f %5.3f %5.3f\n",i,histo_qqWW->GetBinContent(i),histo_qqWW->GetBinContent(i)/histo_qqWW->GetSumOfWeights(),histo_qqWW->GetBinError(i)/histo_qqWW->GetBinContent(i));
+      }
+      for(int i=1; i<=histo_ggWW->GetNbinsX(); i++){
+        if(histo_ggWW->GetBinContent(i) > 0 && 
+	   histo_ggWW->GetBinContent(i)/histo_ggWW->GetSumOfWeights() > upperBound[0] &&
+	   histo_ggWW->GetBinError(i)/histo_ggWW->GetBinContent(i) > upperBound[1]) 
+	     printf("histo_ggWW(%i): %7.3f %5.3f %5.3f\n",i,histo_ggWW->GetBinContent(i),histo_ggWW->GetBinContent(i)/histo_ggWW->GetSumOfWeights(),histo_ggWW->GetBinError(i)/histo_ggWW->GetBinContent(i));
+      }
+      for(int i=1; i<=histo_VV->GetNbinsX(); i++){
+        if(histo_VV->GetBinContent(i) > 0 && 
+	   histo_VV->GetBinContent(i)/histo_VV->GetSumOfWeights() > upperBound[0] &&
+	   histo_VV->GetBinError(i)/histo_VV->GetBinContent(i) > upperBound[1]) 
+	     printf("histo_VV(%i): %7.3f %5.3f %5.3f\n",i,histo_VV->GetBinContent(i),histo_VV->GetBinContent(i)/histo_VV->GetSumOfWeights(),histo_VV->GetBinError(i)/histo_VV->GetBinContent(i));
+      }
+      for(int i=1; i<=histo_Top->GetNbinsX(); i++){
+        if(histo_Top->GetBinContent(i) > 0 && 
+	   histo_Top->GetBinContent(i)/histo_Top->GetSumOfWeights() > upperBound[0] &&
+	   histo_Top->GetBinError(i)/histo_Top->GetBinContent(i) > upperBound[1]) 
+	     printf("histo_Top(%i): %7.3f %5.3f %5.3f\n",i,histo_Top->GetBinContent(i),histo_Top->GetBinContent(i)/histo_Top->GetSumOfWeights(),histo_Top->GetBinError(i)/histo_Top->GetBinContent(i));
+      }
+      for(int i=1; i<=histo_Wjets->GetNbinsX(); i++){
+        if(histo_Wjets->GetBinContent(i) > 0 && 
+	   histo_Wjets->GetBinContent(i)/histo_Wjets->GetSumOfWeights() > upperBound[0] &&
+	   histo_Wjets->GetBinError(i)/histo_Wjets->GetBinContent(i) > upperBound[1]) 
+	     printf("histo_Wjets(%i): %7.3f %5.3f %5.3f\n",i,histo_Wjets->GetBinContent(i),histo_Wjets->GetBinContent(i)/histo_Wjets->GetSumOfWeights(),histo_Wjets->GetBinError(i)/histo_Wjets->GetBinContent(i));
+      }
+      for(int i=1; i<=histo_Wgamma->GetNbinsX(); i++){
+        if(histo_Wgamma->GetBinContent(i) > 0 && 
+	   histo_Wgamma->GetBinContent(i)/histo_Wgamma->GetSumOfWeights() > upperBound[0] &&
+	   histo_Wgamma->GetBinError(i)/histo_Wgamma->GetBinContent(i) > upperBound[1]) 
+	     printf("histo_Wgamma(%i): %7.3f %5.3f %5.3f\n",i,histo_Wgamma->GetBinContent(i),histo_Wgamma->GetBinContent(i)/histo_Wgamma->GetSumOfWeights(),histo_Wgamma->GetBinError(i)/histo_Wgamma->GetBinContent(i));
+      }
+      for(int i=1; i<=histo_Wg3l->GetNbinsX(); i++){
+        if(histo_Wg3l->GetBinContent(i) > 0 && 
+	   histo_Wg3l->GetBinContent(i)/histo_Wg3l->GetSumOfWeights() > upperBound[0] &&
+	   histo_Wg3l->GetBinError(i)/histo_Wg3l->GetBinContent(i) > upperBound[1]) 
+	     printf("histo_Wg3l(%i): %7.3f %5.3f %5.3f\n",i,histo_Wg3l->GetBinContent(i),histo_Wg3l->GetBinContent(i)/histo_Wg3l->GetSumOfWeights(),histo_Wg3l->GetBinError(i)/histo_Wg3l->GetBinContent(i));
+      }   
+********SPIN*************
+export theDir=117;
+rm -rf /data/smurf/ceballos/inputLimits/ana_Moriond13_2D/${theDir}
+mkdir -p /data/smurf/ceballos/inputLimits/ana_Moriond13_2D/${theDir}
+mv /home/ceballos/releases/CMSSW_5_3_14/src/Smurf/Analysis/HWWlvlv/output/histo_limits_ntuples2012_MultiClass_125train_0jets_0j_chan6_mh125_spin_8TeV.txt /data/smurf/ceballos/inputLimits/ana_Moriond13_2D/${theDir}/hwwof_0j_8TeV.txt
+mv /home/ceballos/releases/CMSSW_5_3_14/src/Smurf/Analysis/HWWlvlv/output/histo_limits_ntuples2012_MultiClass_125train_1jets_1j_chan6_mh125_spin_8TeV.txt /data/smurf/ceballos/inputLimits/ana_Moriond13_2D/${theDir}/hwwof_1j_8TeV.txt
+mv /home/ceballos/releases/CMSSW_5_3_14/src/Smurf/Analysis/HWWlvlv/output/histo_limits_ntuples_126train_0jets_0j_chan6_mh126_spin_7TeV.txt                /data/smurf/ceballos/inputLimits/ana_Moriond13_2D/${theDir}/hwwof_0j_7TeV.txt
+mv /home/ceballos/releases/CMSSW_5_3_14/src/Smurf/Analysis/HWWlvlv/output/histo_limits_ntuples_126train_1jets_1j_chan6_mh126_spin_7TeV.txt                /data/smurf/ceballos/inputLimits/ana_Moriond13_2D/${theDir}/hwwof_1j_7TeV.txt
+mv /home/ceballos/releases/CMSSW_5_3_14/src/Smurf/Analysis/HWWlvlv/hwwof_0j.input_8TeV.root /data/smurf/ceballos/inputLimits/ana_Moriond13_2D/${theDir}/hwwof_0j.input_8TeV.root
+mv /home/ceballos/releases/CMSSW_5_3_14/src/Smurf/Analysis/HWWlvlv/hwwof_1j.input_8TeV.root /data/smurf/ceballos/inputLimits/ana_Moriond13_2D/${theDir}/hwwof_1j.input_8TeV.root
+mv /home/ceballos/releases/CMSSW_5_3_14/src/Smurf/Analysis/HWWlvlv/hwwof_0j.input_7TeV.root /data/smurf/ceballos/inputLimits/ana_Moriond13_2D/${theDir}/hwwof_0j.input_7TeV.root
+mv /home/ceballos/releases/CMSSW_5_3_14/src/Smurf/Analysis/HWWlvlv/hwwof_1j.input_7TeV.root /data/smurf/ceballos/inputLimits/ana_Moriond13_2D/${theDir}/hwwof_1j.input_7TeV.root

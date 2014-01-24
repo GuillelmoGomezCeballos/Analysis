@@ -1,0 +1,30 @@
+imax 1 number of channels
+jmax 3 number of background
+kmax * number of nuisance parameters
+Observation 13
+shapes *   *   fermiophobic/150/vh3l150.input.root  histo_$PROCESS histo_$PROCESS_$SYSTEMATIC
+shapes data_obs * fermiophobic/150/vh3l150.input.root  histo_Data 
+bin 1 1 1 1
+process VHww WZ ZZ Wjets
+process 0 1 2 3
+rate  2.885  10.034   0.436   4.874
+lumi			      lnN   1.022   -	1.022	-  
+CMS_MVALepEffBounding	    shape   1.000 1.000 1.000	-  
+CMS_MVALepResBounding	    shape   1.000 1.000 1.000	-  
+CMS_MVAMETResBounding	    shape   1.000 1.000 1.000	-  
+CMS_MVAJESBounding	    shape   1.000 1.000 1.000	-  
+CMS_pu			      lnN   1.010   -	1.010	-  
+CMS_fake  		      lnN     -     -	  -   1.300
+CMS_MVAWBounding  	    shape     -     -	  -   1.000
+CMS_MVAMCWBounding	    shape     -     -	  -   1.000
+CMS_MVAWZNLOBounding	    shape     -   1.000   -	-  
+CMS_MVAZZNLOBounding	    shape     -     -	1.000	-  
+UE_PS			      lnN   1.030   -	  -	-  
+pdf_qqbar 		      lnN   1.040 1.015 1.040	-  
+QCDscale_VH		      lnN   1.120   -	  -	-  
+CMS_WZ_www		      lnN     -   1.100   -	-  
+CMS_MVAVHttStatBounding_vh3l  shape     -     -	  -	-  
+CMS_MVAVHwwStatBounding_vh3l  shape   1.000   -	  -	-  
+CMS_MVAWZStatBounding_vh3l    shape     -   1.000   -	-  
+CMS_MVAZZStatBounding_vh3l    shape     -     -	1.000	-  
+CMS_MVAWjetsStatBounding_vh3l shape     -     -	  -   1.000
