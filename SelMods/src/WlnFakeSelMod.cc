@@ -1,6 +1,6 @@
 // $Id: WlnFakeSelMod.cc,v 1.5 2012/04/18 14:59:41 ceballos Exp $
 
-#include "Ana/SelMods/interface/WlnFakeSelMod.h"
+#include "Analysis/SelMods/interface/WlnFakeSelMod.h"
 #include <TH1D.h>
 #include <TH2D.h>
 #include <TParameter.h>

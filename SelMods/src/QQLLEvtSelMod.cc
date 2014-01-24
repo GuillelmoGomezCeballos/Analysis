@@ -1,6 +1,6 @@
 // $Id: QQLLEvtSelMod.cc,v 1.10 2012/01/26 13:17:57 ceballos Exp $
 
-#include "Ana/SelMods/interface/QQLLEvtSelMod.h"
+#include "Analysis/SelMods/interface/QQLLEvtSelMod.h"
 #include <TH1D.h>
 #include <TH2D.h>
 #include <TParameter.h>

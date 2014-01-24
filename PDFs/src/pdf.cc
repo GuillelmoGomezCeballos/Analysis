@@ -7,9 +7,9 @@
 #include "LHAPDF/LHAPDF.h"
 #include "/home/ceballos/releases/CMSSW_5_3_14/src/Smurf/Core/SmurfTree.h"
 #include "/home/ceballos/releases/CMSSW_5_3_14/src/Smurf/Analysis/HWWlvlv/factors.h"
-#include "/home/ceballos/releases/CMSSW_5_3_14/src/Ana/nt_scripts/trilepton.h"
-#include "Ana/PDFs/interface/MitPDFNtupleEvent.h"
-#include "Ana/PDFs/interface/pdf.h"
+#include "/home/ceballos/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/trilepton.h"
+#include "Analysis/PDFs/interface/MitPDFNtupleEvent.h"
+#include "Analysis/PDFs/interface/pdf.h"
 
 using namespace mithep;
 ClassImp(pdf)

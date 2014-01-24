@@ -1,6 +1,6 @@
 // $Id: WWEvtSelMod.cc,v 1.50 2013/01/09 10:20:13 ceballos Exp $
 
-#include "Ana/SelMods/interface/WWEvtSelMod.h"
+#include "Analysis/SelMods/interface/WWEvtSelMod.h"
 #include <TVector3.h>
 #include <TH1D.h>
 #include <TH2D.h>

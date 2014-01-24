@@ -1,6 +1,6 @@
 // $Id: ttEvtSelMod.cc,v 1.10 2012/09/05 09:35:40 ceballos Exp $
 
-#include "Ana/SelMods/interface/ttEvtSelMod.h"
+#include "Analysis/SelMods/interface/ttEvtSelMod.h"
 #include <TH1D.h>
 #include <TH2D.h>
 #include <TParameter.h>

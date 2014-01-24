@@ -1,5 +1,5 @@
 #define MitNtupleEvent_cxx
-#include "Ana/PDFs/interface/MitNtupleEvent.h"
+#include "Analysis/PDFs/interface/MitNtupleEvent.h"
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>

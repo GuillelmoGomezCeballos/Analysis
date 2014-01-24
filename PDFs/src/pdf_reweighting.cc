@@ -6,7 +6,7 @@
 #include "TFile.h"
 #include "LHAPDF/LHAPDF.h"
 #include "/home/ceballos/releases/CMSSW_5_3_14/src/Smurf/Core/SmurfTree.h"
-#include "Ana/PDFs/interface/pdf_reweighting.h"
+#include "Analysis/PDFs/interface/pdf_reweighting.h"
 
 using namespace mithep;
 ClassImp(pdf_reweighting)

@@ -1,6 +1,6 @@
 // $Id: WtnEvtSelMod.cc,v 1.5 2011/03/07 12:48:04 ceballos Exp $
 
-#include "Ana/SelMods/interface/WtnEvtSelMod.h"
+#include "Analysis/SelMods/interface/WtnEvtSelMod.h"
 #include <TH1D.h>
 #include <TH2D.h>
 #include <TParameter.h>

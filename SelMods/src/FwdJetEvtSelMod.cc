@@ -1,6 +1,6 @@
  // $Id: FwdJetEvtSelMod.cc,v 1.7 2012/01/26 13:17:56 ceballos Exp $
 
-#include "Ana/SelMods/interface/FwdJetEvtSelMod.h"
+#include "Analysis/SelMods/interface/FwdJetEvtSelMod.h"
 #include <TH1D.h>
 #include <TH2D.h>
 #include <TParameter.h>

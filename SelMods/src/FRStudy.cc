@@ -1,6 +1,6 @@
 // $Id: FRStudy.cc,v 1.4 2012/01/26 13:17:56 ceballos Exp $
 
-#include "Ana/SelMods/interface/FRStudy.h"
+#include "Analysis/SelMods/interface/FRStudy.h"
 #include <TVector3.h>
 #include <TH1D.h>
 #include <TH2D.h>

@@ -1,6 +1,6 @@
 // $Id: LeptonEvtSelMod.cc,v 1.27 2012/04/18 14:59:41 ceballos Exp $
 
-#include "Ana/SelMods/interface/LeptonEvtSelMod.h"
+#include "Analysis/SelMods/interface/LeptonEvtSelMod.h"
 #include <TH1D.h>
 #include <TH2D.h>
 #include <TParameter.h>

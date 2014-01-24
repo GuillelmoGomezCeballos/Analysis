@@ -1,6 +1,6 @@
 // $Id: WHEvtSelMod.cc,v 1.8 2012/01/26 13:17:57 ceballos Exp $
 
-#include "Ana/SelMods/interface/WHEvtSelMod.h"
+#include "Analysis/SelMods/interface/WHEvtSelMod.h"
 #include <TH1D.h>
 #include <TH2D.h>
 #include <TParameter.h>

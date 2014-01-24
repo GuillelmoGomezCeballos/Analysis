@@ -1,6 +1,6 @@
 // $Id: AAWWEvtSelMod.cc,v 1.4 2013/01/09 10:20:13 ceballos Exp $
 
-#include "Ana/SelMods/interface/AAWWEvtSelMod.h"
+#include "Analysis/SelMods/interface/AAWWEvtSelMod.h"
 
 using namespace mithep;
 ClassImp(mithep::AAWWEvtSelMod)

@@ -1,6 +1,6 @@
 // $Id: ZZEvtSelMod.cc,v 1.11 2012/07/05 07:22:12 ceballos Exp $
 
-#include "Ana/SelMods/interface/ZZEvtSelMod.h"
+#include "Analysis/SelMods/interface/ZZEvtSelMod.h"
 #include <TH1D.h>
 #include <TH2D.h>
 #include <TParameter.h>

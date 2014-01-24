@@ -1,6 +1,6 @@
 // $Id: SkimEvtSelMod.cc,v 1.6 2012/04/24 11:26:27 ceballos Exp $
 
-#include "Ana/SelMods/interface/SkimEvtSelMod.h"
+#include "Analysis/SelMods/interface/SkimEvtSelMod.h"
 #include <TH1D.h>
 #include <TH2D.h>
 #include <TParameter.h>

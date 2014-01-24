@@ -1,6 +1,6 @@
 // $Id: ScaleFactorMod.cc,v 1.3 2011/04/18 22:28:42 ceballos Exp $
 
-#include "Ana/SelMods/interface/ScaleFactorMod.h"
+#include "Analysis/SelMods/interface/ScaleFactorMod.h"
 #include <TH1D.h>
 #include <TH2D.h>
 #include <TParameter.h>

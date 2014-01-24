@@ -1,6 +1,6 @@
 // $Id: HLTEvtSelMod.cc,v 1.3 2010/11/12 10:31:40 ceballos Exp $
 
-#include "Ana/SelMods/interface/HLTEvtSelMod.h"
+#include "Analysis/SelMods/interface/HLTEvtSelMod.h"
 #include <TH1D.h>
 #include <TH2D.h>
 #include <TParameter.h>

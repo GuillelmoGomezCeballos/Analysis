@@ -1,9 +1,9 @@
 #ifndef MODS_LINKDEF_H
 #define MODS_LINKDEF_H
-#include "Ana/PDFs/interface/pdf.h"
-#include "Ana/PDFs/interface/pdf_reweighting.h"
-#include "Ana/PDFs/interface/MitNtupleEvent.h"
-#include "Ana/PDFs/interface/MitPDFNtupleEvent.h"
+#include "Analysis/PDFs/interface/pdf.h"
+#include "Analysis/PDFs/interface/pdf_reweighting.h"
+#include "Analysis/PDFs/interface/MitNtupleEvent.h"
+#include "Analysis/PDFs/interface/MitPDFNtupleEvent.h"
 #endif
 
 

@@ -1,6 +1,6 @@
 // $Id: GammaXEvtSelMod.cc,v 1.6 2012/01/26 13:17:56 ceballos Exp $
 
-#include "Ana/SelMods/interface/GammaXEvtSelMod.h"
+#include "Analysis/SelMods/interface/GammaXEvtSelMod.h"
 #include <TH1D.h>
 #include <TH2D.h>
 #include <TParameter.h>
