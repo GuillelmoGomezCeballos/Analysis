@@ -22,7 +22,7 @@
 #include "MitPhysics/Mods/interface/JetCorrectionMod.h"
 #include "MitPhysics/Mods/interface/MergeLeptonsMod.h"
 #include "MitPhysics/Mods/interface/PartonFlavorHistoryMod.h"
-#include "Ana/SelMods/interface/ZZEvtSelMod.h"
+#include "Analysis/SelMods/interface/ZZEvtSelMod.h"
 #include "MitAna/DataTree/interface/JetCol.h"
 #include "MitAna/DataTree/interface/PFJetCol.h"
 #include "MitAna/DataTree/interface/MetCol.h"
