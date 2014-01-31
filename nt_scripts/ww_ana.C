@@ -1,10 +1,10 @@
 #include "/home/ceballos/releases/CMSSW_5_3_14/src/Smurf/Core/SmurfTree.h"
 #include "/home/ceballos/releases/CMSSW_5_3_14/src/Smurf/Analysis/HWWlvlv/factors.h"
 #include "/home/ceballos/releases/CMSSW_5_3_14/src/Smurf/Core/LeptonScaleLookup.h"
-#include "/home/ceballos/releases/CMSSW_5_3_14/src/Ana/nt_scripts/trilepton.h"
+#include "/home/ceballos/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/trilepton.h"
 #include "/home/ceballos/releases/CMSSW_5_3_14/src/Smurf/Analysis/HWWlvlv/OtherBkgScaleFactors_8TeV.h"
-#include "/home/ceballos/releases/CMSSW_5_3_14/src/Ana/nt_scripts/makeSystematicEffects.h"
-#include "/home/ceballos/releases/CMSSW_5_3_14/src/Ana/nt_scripts/LeptonEfficiencyZH.h"
+#include "/home/ceballos/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/makeSystematicEffects.h"
+#include "/home/ceballos/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/LeptonEfficiencyZH.h"
 #include <TROOT.h>
 #include <TFile.h>
 #include <TTree.h>
@@ -24,6 +24,7 @@ Double_t DYBkgScaleFactor(Int_t jetBin);
 Double_t DYBkgScaleFactorKappa(Int_t jetBin);
 Double_t TopBkgScaleFactor(Int_t jetBin);
 Double_t TopBkgScaleFactorKappa(Int_t jetBin);
+double weightJetPt(Int_t nsel, Int_t jetpt);
 
 const int verboseLevel =   1;
 bool UseDyttDataDriven = true; // if true, then remove em events in dyll MC
@@ -795,9 +796,14 @@ void ww_ana
 
 	theWeight              = bgdEvent.scale1fb_*lumi*add;
       }
-      if(useWeightEWKCorr == true && bgdEvent.dstype_ == SmurfTree::qqww  ) theWeight = theWeight * weightEWKCorr(bgdEvent.higgsPt_,3);
-      if(useWeightEWKCorr == true && bgdEvent.dstype_ == SmurfTree::ggww  ) theWeight = theWeight * weightEWKCorr(bgdEvent.higgsPt_,3);
-      if(useWeightEWKCorr == true && bgdEvent.dstype_ == SmurfTree::qqww2j) theWeight = theWeight * weightEWKCorr(bgdEvent.higgsPt_,3);
+      if(useWeightEWKCorr == true && bgdEvent.dstype_ == SmurfTree::qqww  )  theWeight = theWeight * weightEWKCorr(bgdEvent.higgsPt_,3);
+      if(useWeightEWKCorr == true && bgdEvent.dstype_ == SmurfTree::ggww  )  theWeight = theWeight * weightEWKCorr(bgdEvent.higgsPt_,3);
+      if(useWeightEWKCorr == true && bgdEvent.dstype_ == SmurfTree::qqww2j)  theWeight = theWeight * weightEWKCorr(bgdEvent.higgsPt_,3);
+      if(useWeightEWKCorr == true && bgdEvent.dstype_ == SmurfTree::qqwwPWG) theWeight = theWeight * weightEWKCorr(bgdEvent.higgsPt_,3);
+
+      //if(bgdEvent.dstype_ == SmurfTree::qqww  )  theWeight = theWeight * weightJetPt(1,bgdEvent.jet3McId_);
+      //if(bgdEvent.dstype_ == SmurfTree::qqww2j)  theWeight = theWeight * weightJetPt(1,bgdEvent.jet3McId_);
+      //if(bgdEvent.dstype_ == SmurfTree::qqwwPWG) theWeight = theWeight * weightJetPt(1,bgdEvent.jet3McId_);
 
       if(passCuts[1][WWSEL]){ // begin making plots
 	double myVar = theMET;
@@ -2450,4 +2456,31 @@ Double_t TopBkgScaleFactorKappa(Int_t jetBin) {
   assert(jetBin >=0 && jetBin <= 2);
   Double_t TopBkgScaleFactorKappa[3] = { 1.12165, 1.03079, 1.02698   };
   return TopBkgScaleFactorKappa[jetBin];
+}
+
+double weightJetPt(Int_t nsel, Int_t jetpt){
+  const int nPoints = 40;
+
+  double weightsLowPtMCNLO[nPoints] = {0.65087, 0.70000, 0.76000, 0.84076, 0.91597, 0.99955, 1.07837, 1.08566, 1.10771, 1.12779, 1.14879, 1.10786, 1.11974, 1.08315, 1.09204, 1.07666, 1.07266, 1.06118, 1.04589, 1.02708, 1.02882, 1.02535, 1.01788, 1.01469, 1.03972, 1.03880, 1.03756, 1.04755, 1.03103, 1.01557, 1.00861, 1.00821, 1.00634, 1.03981, 1.03034, 1.02481, 0.98525, 1.00569, 0.97956, 0.97421};
+  double funcHighPtMCNLO[4]         = {+1.19697,-0.00506115,+2.41382e-05,-3.80717e-08};
+
+  double weightsLowPtMG[nPoints]   = {1.16602, 1.15500, 0.145000, 1.13685, 1.14275, 1.14062, 1.13216, 1.11681, 1.10233, 1.11667, 1.12721, 1.08748, 1.10651, 1.08424, 1.09132, 1.07137, 1.08236, 1.06970, 1.06747, 1.06177, 1.07718, 1.06670, 1.08122, 1.08012, 1.05013, 1.09825, 1.06345, 1.08442, 1.06397, 1.04977, 1.04595, 1.06918, 1.06977, 1.06965, 1.05999, 1.03867, 1.03521, 1.04005, 1.02379, 1.04293};
+  double funcHighPtMG[4]           = {+1.36448,-0.00936194,+3.7355e-05,-5.01837e-08};
+  
+  double weightsLowPt[nPoints];
+  double funcHighPt[4];
+  
+  if(nsel == 0){ // MC@NLO
+    for(int i=0; i<nPoints; i++) weightsLowPt[i] = weightsLowPtMCNLO[i];
+    for(int i=0; i<4; i++) funcHighPt[i] = funcHighPtMCNLO[i];
+  } else { // MG
+    for(int i=0; i<nPoints; i++) weightsLowPt[i] = weightsLowPtMG[i];
+    for(int i=0; i<4; i++) funcHighPt[i] = funcHighPtMG[i];
+  }
+  
+  if(jetpt >= 40) return (funcHighPt[0] + funcHighPt[1]*jetpt + funcHighPt[2]*jetpt*jetpt + funcHighPt[3]*jetpt*jetpt*jetpt);
+  
+  int jetptbin = jetpt;
+  if(jetptbin >= nPoints) assert(0);
+  return weightsLowPt[jetptbin];
 }
