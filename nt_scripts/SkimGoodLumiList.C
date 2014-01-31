@@ -1,10 +1,10 @@
 //
-//root -l -b -q Ana/nt_scripts/SkimGoodLumiList.C+\(\"/data/smurf/data/LP2011/mitf_noweights/data_2fake.root\",\"/data/smurf/ceballos/test/data_2fake.root\",-1,\"/home/ceballos/releases/CMSSW_4_2_2/src/json/Cert_EPS2011.txt\"\) 
-//root -l -b -q Ana/nt_scripts/SkimGoodLumiList.C+\(\"/data/smurf/data/LP2011/mitf_noweights/data_2l.root\",\"/data/smurf/ceballos/test/data_2l.root\",-1,\"/home/ceballos/releases/CMSSW_4_2_2/src/json/Cert_EPS2011.txt\"\) 
-//root -l -b -q Ana/nt_scripts/SkimGoodLumiList.C+\(\"/data/smurf/data/LP2011/mitf_noweights/data_lfake.root\",\"/data/smurf/ceballos/test/data_lfake.root\",-1,\"/home/ceballos/releases/CMSSW_4_2_2/src/json/Cert_EPS2011.txt\"\) 
-//root -l -b -q Ana/nt_scripts/SkimGoodLumiList.C+\(\"/data/smurf/data/LP2011/mitf_noweights/background42x.root\",\"/data/smurf/ceballos/test/background42x.root\",-1,\"/home/ceballos/releases/CMSSW_4_2_2/src/json/Cert_EPS2011.txt\"\) 
-//root -l -b -q Ana/nt_scripts/SkimGoodLumiList.C+\(\"/data/smurf/data/LP2011/mitf_noweights/hww150.root\",\"/data/smurf/ceballos/test/test.root\",-1,\"/home/ceballos/releases/CMSSW_4_2_2/src/json/Cert_EPS2011.txt\"\) 
-//root -l -b -q Ana/nt_scripts/SkimGoodLumiList.C+\(\"/data/smurf/data/Run2011_Spring11_SmurfV7_42X/tas/data.root\",\"data.root\",-1,\"/data/smurf/data/Winter11_4700ipb/auxiliar/hww.Full2011.json\"\) 
+//root -l -b -q Analysis/nt_scripts/SkimGoodLumiList.C+\(\"/data/smurf/data/LP2011/mitf_noweights/data_2fake.root\",\"/data/smurf/ceballos/test/data_2fake.root\",-1,\"/home/ceballos/releases/CMSSW_4_2_2/src/json/Cert_EPS2011.txt\"\) 
+//root -l -b -q Analysis/nt_scripts/SkimGoodLumiList.C+\(\"/data/smurf/data/LP2011/mitf_noweights/data_2l.root\",\"/data/smurf/ceballos/test/data_2l.root\",-1,\"/home/ceballos/releases/CMSSW_4_2_2/src/json/Cert_EPS2011.txt\"\) 
+//root -l -b -q Analysis/nt_scripts/SkimGoodLumiList.C+\(\"/data/smurf/data/LP2011/mitf_noweights/data_lfake.root\",\"/data/smurf/ceballos/test/data_lfake.root\",-1,\"/home/ceballos/releases/CMSSW_4_2_2/src/json/Cert_EPS2011.txt\"\) 
+//root -l -b -q Analysis/nt_scripts/SkimGoodLumiList.C+\(\"/data/smurf/data/LP2011/mitf_noweights/background42x.root\",\"/data/smurf/ceballos/test/background42x.root\",-1,\"/home/ceballos/releases/CMSSW_4_2_2/src/json/Cert_EPS2011.txt\"\) 
+//root -l -b -q Analysis/nt_scripts/SkimGoodLumiList.C+\(\"/data/smurf/data/LP2011/mitf_noweights/hww150.root\",\"/data/smurf/ceballos/test/test.root\",-1,\"/home/ceballos/releases/CMSSW_4_2_2/src/json/Cert_EPS2011.txt\"\) 
+//root -l -b -q Analysis/nt_scripts/SkimGoodLumiList.C+\(\"/data/smurf/data/Run2011_Spring11_SmurfV7_42X/tas/data.root\",\"data.root\",-1,\"/data/smurf/data/Winter11_4700ipb/auxiliar/hww.Full2011.json\"\) 
 
 #include <iostream>
 #include <stdlib.h>
