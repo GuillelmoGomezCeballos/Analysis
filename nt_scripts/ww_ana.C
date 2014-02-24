@@ -48,9 +48,9 @@ void ww_ana
  int lSel = 4,
  unsigned int nJetsType = 0,
  TString bgdInputFile    = "ntuples_53x/backgroundA_skim6.root",
- TString signalInputFile = "ntuples_53x/wjets.root",
- TString dataInputFile   = "ntuples_53x/wjets.root",
- TString systInputFile   = "ntuples_53x/wjets.root",
+ TString signalInputFile = "ntuples_53x/hww125.root",
+ TString dataInputFile   = "ntuples_53x/data_skim6.root",
+ TString systInputFile   = "ntuples_53x/hww_syst_skim6.root",
  int period = 3
  )
 {

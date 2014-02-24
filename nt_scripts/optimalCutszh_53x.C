@@ -45,10 +45,10 @@ void optimalCutszh_53x
 (
  int     mH  	 = 1125,
  int thePlot = 7,
- TString bgdInputFile    = "ntuples_53x/backgroundA_skim10.root",
- TString signalInputFile = "ntuples_53x/zh125inv.root",
- TString dataInputFile   = "ntuples_53x/data_skim10.root",
- TString systInputFile   = "ntuples_53x/hww_syst_skim10.root",
+ TString bgdInputFile    = "ntuples_zh_53x/backgroundA_skim10.root",
+ TString signalInputFile = "ntuples_zh_53x/zh125inv.root",
+ TString dataInputFile   = "ntuples_zh_53x/data_skim10.root",
+ TString systInputFile   = "ntuples_zh_53x/hww_syst_skim10.root",
  int period = 3,
  int lSel = 2, 
  int nJetsType = 0

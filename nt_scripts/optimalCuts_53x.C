@@ -455,9 +455,9 @@ void optimalCuts_53x
           charge == 0 &&
           Njet3 == nJetsType &&
           bgdEvent.lep1_.Pt() > 20. &&
-          bgdEvent.lep2_.Pt() > ptLepMin &&
-          passMET == true &&
-	  passNewCuts == true &&
+          bgdEvent.lep2_.Pt() > 20 &&
+          //passMET == true &&
+	  //passNewCuts == true &&
          (fabs(bgdEvent.dilep_.M()-91.1876) > 15. || bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me) && 
          (bgdEvent.cuts_ & patternTopVeto) == patternTopVeto &&
          //(bgdEvent.cuts_ & patternTopTagNotInJets) == patternTopTagNotInJets &&
@@ -1124,9 +1124,9 @@ void optimalCuts_53x
           charge == 0 &&
           Njet3 == nJetsType &&
           sigEvent.lep1_.Pt() > 20. &&
-          sigEvent.lep2_.Pt() > ptLepMin &&
-          passMET == true &&
-	  passNewCuts == true &&
+          sigEvent.lep2_.Pt() > 20 &&
+          //passMET == true &&
+	  //passNewCuts == true &&
          (fabs(sigEvent.dilep_.M()-91.1876) > 15. || sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me) && 
          (sigEvent.cuts_ & patternTopVeto) == patternTopVeto &&
          //(sigEvent.cuts_ & patternTopTagNotInJets) == patternTopTagNotInJets &&
@@ -1622,9 +1622,9 @@ void optimalCuts_53x
           charge == 0 &&
           Njet3 == nJetsType &&
           dataEvent.lep1_.Pt() > 20. &&
-          dataEvent.lep2_.Pt() > ptLepMin &&
-          passMET == true &&
-	  passNewCuts == true &&
+          dataEvent.lep2_.Pt() > 20 &&
+          //passMET == true &&
+	  //passNewCuts == true &&
          (fabs(dataEvent.dilep_.M()-91.1876) > 15. || dataEvent.type_ == SmurfTree::em || dataEvent.type_ == SmurfTree::me) && 
          (dataEvent.cuts_ & patternTopVeto) == patternTopVeto &&
          //(dataEvent.cuts_ & patternTopTagNotInJets) == patternTopTagNotInJets &&
