@@ -1,10 +1,10 @@
 #include "/home/ceballos/releases/CMSSW_5_3_14/src/Smurf/Core/SmurfTree.h"
 #include "/home/ceballos/releases/CMSSW_5_3_14/src/Smurf/Analysis/HWWlvlv/factors.h"
 #include "/home/ceballos/releases/CMSSW_5_3_14/src/Smurf/Core/LeptonScaleLookup.h"
-#include "/home/ceballos/releases/CMSSW_5_3_14/src/Ana/nt_scripts/trilepton.h"
+#include "/home/ceballos/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/trilepton.h"
 #include "/home/ceballos/releases/CMSSW_5_3_14/src/Smurf/Analysis/HWWlvlv/OtherBkgScaleFactors_8TeV.h"
-#include "/home/ceballos/releases/CMSSW_5_3_14/src/Ana/nt_scripts/makeSystematicEffects.h"
-#include "/home/ceballos/releases/CMSSW_5_3_14/src/Ana/nt_scripts/LeptonEfficiencyZH.h"
+#include "/home/ceballos/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/makeSystematicEffects.h"
+#include "/home/ceballos/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/LeptonEfficiencyZH.h"
 #include <TROOT.h>
 #include <TFile.h>
 #include <TTree.h>
@@ -45,10 +45,10 @@ void optimalCutszh_53x
 (
  int     mH  	 = 1125,
  int thePlot = 7,
- TString bgdInputFile    = "ntuples_53x/backgroundA_skim10.root",
- TString signalInputFile = "ntuples_53x/zh125inv.root",
- TString dataInputFile   = "ntuples_53x/data_skim10.root",
- TString systInputFile   = "ntuples_53x/hww_syst_skim10.root",
+ TString bgdInputFile    = "ntuples_zh_53x/backgroundA_skim10.root",
+ TString signalInputFile = "ntuples_zh_53x/zh125inv.root",
+ TString dataInputFile   = "ntuples_zh_53x/data_skim10.root",
+ TString systInputFile   = "ntuples_zh_53x/hww_syst_skim10.root",
  int period = 3,
  int lSel = 2, 
  int nJetsType = 0

@@ -43,8 +43,6 @@ void preselection_plots
   dataEvent.LoadTree(dataInputFile,-1);
   dataEvent.InitTree(0);
 
-  unsigned int patternTopVeto         = SmurfTree::TopVeto;
-
   int nBin    = 200;
   double xmin = 0.0;
   double xmax = 1.0;
@@ -245,7 +243,7 @@ void preselection_plots
          bgdEvent.lep1_.Pt() > 20. &&
          bgdEvent.lep2_.Pt() > 10. &&
        (!(fDecay == 1 || fDecay == 9) || fabs(bgdEvent.dilep_.M()-91.1876) < 25.) && 
-        (bgdEvent.cuts_ & patternTopVeto) == patternTopVeto &&
+        (bgdEvent.cuts_ & SmurfTree::TopVeto) == SmurfTree::TopVeto &&
 	 dPhiDiLepJetCut == true &&
          bgdEvent.dilep_.Pt() > 45.0 &&
          TMath::Min(bgdEvent.pmet_,bgdEvent.pTrackMet_) > 20.0 &&
@@ -443,7 +441,7 @@ void preselection_plots
           	    if(bgdEvent.nSoftMuons_ == 0.) {
               //printf("SSS %d %d %d %f %f %f %f %f\n",bgdEvent.event_,bgdEvent.type_,Njet3,bgdEvent.met_,bgdEvent.pmet_,bgdEvent.dymva_,usedMet,bgdEvent.dilep_.M());
           	      sumEvol[0] = 8.0; sumEvol[1] = 8.0; sumEvol[2] = 8.0;
-                      if((bgdEvent.cuts_ & patternTopVeto) == patternTopVeto) {
+                      if((bgdEvent.cuts_ & SmurfTree::TopVeto) == SmurfTree::TopVeto) {
                         sumEvol[0] = 9.0; sumEvol[1] = 9.0; sumEvol[2] = 9.0;
                         if(passNewCuts == true) {
               //printf("SSS %d %d %f %f %f %f %f %f %f %f\n",bgdEvent.event_,bgdEvent.type_,bgdEvent.jet1_.pt(),bgdEvent.jet1_.eta(),bgdEvent.jet2_.pt(),bgdEvent.jet2_.eta(),bgdEvent.jet3_.pt(),bgdEvent.jet3_.eta(),bgdEvent.jet4_.pt(),bgdEvent.jet4_.eta());
@@ -713,9 +711,10 @@ void preselection_plots
       hDpttag[1]->Divide(hDpttag[0]);
       hDpttag[3]->Divide(hDpttag[2]);
       hDpttag[5]->Divide(hDpttag[4]);
-      atributes(hDpttag[1] ,"p_{T} [GeV]",1,yTitle);
-      atributes(hDpttag[3] ,"p_{T} [GeV]",2,yTitle);
-      atributes(hDpttag[5] ,"p_{T} [GeV]",4,yTitle);
+      sprintf("p_{T} [GeV]",xTitle);
+      atributes(hDpttag[1] ,xTitle,1,yTitle);
+      atributes(hDpttag[3] ,xTitle,2,yTitle);
+      atributes(hDpttag[5] ,xTitle,4,yTitle);
       hDpttag[1] ->Draw();
       hDpttag[3] ->Draw("same");
       hDpttag[5] ->Draw("same");
@@ -734,9 +733,10 @@ void preselection_plots
       hDetatag[1]->Divide(hDetatag[0]);
       hDetatag[3]->Divide(hDetatag[2]);
       hDetatag[5]->Divide(hDetatag[4]);
-      atributes(hDetatag[1] ,"#eta",1,yTitle);
-      atributes(hDetatag[3] ,"#eta",2,yTitle);
-      atributes(hDetatag[5] ,"#eta",4,yTitle);
+      sprintf("#eta",xTitle);
+      atributes(hDetatag[1] ,xTitle,1,yTitle);
+      atributes(hDetatag[3] ,xTitle,2,yTitle);
+      atributes(hDetatag[5] ,xTitle,4,yTitle);
       hDetatag[1] ->Draw();
       hDetatag[3] ->Draw("same");
       hDetatag[5] ->Draw("same");

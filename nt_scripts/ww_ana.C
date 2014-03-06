@@ -1,10 +1,10 @@
 #include "/home/ceballos/releases/CMSSW_5_3_14/src/Smurf/Core/SmurfTree.h"
 #include "/home/ceballos/releases/CMSSW_5_3_14/src/Smurf/Analysis/HWWlvlv/factors.h"
 #include "/home/ceballos/releases/CMSSW_5_3_14/src/Smurf/Core/LeptonScaleLookup.h"
-#include "/home/ceballos/releases/CMSSW_5_3_14/src/Ana/nt_scripts/trilepton.h"
+#include "/home/ceballos/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/trilepton.h"
 #include "/home/ceballos/releases/CMSSW_5_3_14/src/Smurf/Analysis/HWWlvlv/OtherBkgScaleFactors_8TeV.h"
-#include "/home/ceballos/releases/CMSSW_5_3_14/src/Ana/nt_scripts/makeSystematicEffects.h"
-#include "/home/ceballos/releases/CMSSW_5_3_14/src/Ana/nt_scripts/LeptonEfficiencyZH.h"
+#include "/home/ceballos/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/makeSystematicEffects.h"
+#include "/home/ceballos/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/LeptonEfficiencyZH.h"
 #include <TROOT.h>
 #include <TFile.h>
 #include <TTree.h>
@@ -24,6 +24,7 @@ Double_t DYBkgScaleFactor(Int_t jetBin);
 Double_t DYBkgScaleFactorKappa(Int_t jetBin);
 Double_t TopBkgScaleFactor(Int_t jetBin);
 Double_t TopBkgScaleFactorKappa(Int_t jetBin);
+double weightJetPt(Int_t nsel, Int_t jetpt0, Int_t jetpt1);
 
 const int verboseLevel =   1;
 bool UseDyttDataDriven = true; // if true, then remove em events in dyll MC
@@ -795,9 +796,14 @@ void ww_ana
 
 	theWeight              = bgdEvent.scale1fb_*lumi*add;
       }
-      if(useWeightEWKCorr == true && bgdEvent.dstype_ == SmurfTree::qqww  ) theWeight = theWeight * weightEWKCorr(bgdEvent.higgsPt_,3);
-      if(useWeightEWKCorr == true && bgdEvent.dstype_ == SmurfTree::ggww  ) theWeight = theWeight * weightEWKCorr(bgdEvent.higgsPt_,3);
-      if(useWeightEWKCorr == true && bgdEvent.dstype_ == SmurfTree::qqww2j) theWeight = theWeight * weightEWKCorr(bgdEvent.higgsPt_,3);
+      if(useWeightEWKCorr == true && bgdEvent.dstype_ == SmurfTree::qqww  )  theWeight = theWeight * weightEWKCorr(bgdEvent.higgsPt_,3);
+      if(useWeightEWKCorr == true && bgdEvent.dstype_ == SmurfTree::ggww  )  theWeight = theWeight * weightEWKCorr(bgdEvent.higgsPt_,3);
+      if(useWeightEWKCorr == true && bgdEvent.dstype_ == SmurfTree::qqww2j)  theWeight = theWeight * weightEWKCorr(bgdEvent.higgsPt_,3);
+      if(useWeightEWKCorr == true && bgdEvent.dstype_ == SmurfTree::qqwwPWG) theWeight = theWeight * weightEWKCorr(bgdEvent.higgsPt_,3);
+
+      //if(bgdEvent.dstype_ == SmurfTree::qqww  )  theWeight = theWeight * weightJetPt(0,bgdEvent.jet3McId_,bgdEvent.jet4McId_);
+      //if(bgdEvent.dstype_ == SmurfTree::qqww2j)  theWeight = theWeight * weightJetPt(0,bgdEvent.jet3McId_,bgdEvent.jet4McId_);
+      //if(bgdEvent.dstype_ == SmurfTree::qqwwPWG) theWeight = theWeight * weightJetPt(0,bgdEvent.jet3McId_,bgdEvent.jet4McId_);
 
       if(passCuts[1][WWSEL]){ // begin making plots
 	double myVar = theMET;
@@ -2450,4 +2456,49 @@ Double_t TopBkgScaleFactorKappa(Int_t jetBin) {
   assert(jetBin >=0 && jetBin <= 2);
   Double_t TopBkgScaleFactorKappa[3] = { 1.12165, 1.03079, 1.02698   };
   return TopBkgScaleFactorKappa[jetBin];
+}
+
+double weightJetPt(Int_t nsel, Int_t jetpt0, Int_t jetpt1){
+  const int nPoints = 40;
+
+  double weightsLowPtMCNLO0[nPoints] = {0.65087, 0.70000, 0.76000, 0.84076, 0.91597, 0.99955, 1.07837, 1.08566, 1.10771, 1.12779, 1.14879, 1.10786, 1.11974, 1.08315, 1.09204, 1.07666, 1.07266, 1.06118, 1.04589, 1.02708, 1.02882, 1.02535, 1.01788, 1.01469, 1.03972, 1.03880, 1.03756, 1.04755, 1.03103, 1.01557, 1.00861, 1.00821, 1.00634, 1.03981, 1.03034, 1.02481, 0.98525, 1.00569, 0.97956, 0.97421};
+  double funcHighPtMCNLO0[4]         = {+1.143727,-0.00359348,+1.29374e-05,-1.42165e-08};
+                                      
+  double weightsLowPtMCNLO1[nPoints] = {0.68588, 0.74000, 0.80000, 0.87553, 0.96178, 1.05265, 1.11364, 1.14806, 1.18738, 1.16817, 1.14539, 1.11272, 1.12017, 1.08063, 1.05242, 1.04867, 1.01538, 1.03444, 0.98613, 0.99706, 1.03438, 0.98340, 0.98930, 0.98947, 0.97965, 0.98921, 0.97735, 0.97862, 0.96612, 0.97913, 0.96389, 0.94993, 0.94549, 0.97022, 0.94213, 0.94853, 0.93399, 0.94286, 0.91894, 0.94716};
+  double funcHighPtMCNLO1[4]         = {+1.162400,-0.00781737,+5.18438e-05,-1.01260e-07};
+                                      
+  double weightsLowPtMG0[nPoints]   = {1.16602, 1.15500, 0.145000, 1.13685, 1.14275, 1.14062, 1.13216, 1.11681, 1.10233, 1.11667, 1.12721, 1.08748, 1.10651, 1.08424, 1.09132, 1.07137, 1.08236, 1.06970, 1.06747, 1.06177, 1.07718, 1.06670, 1.08122, 1.08012, 1.05013, 1.09825, 1.06345, 1.08442, 1.06397, 1.04977, 1.04595, 1.06918, 1.06977, 1.06965, 1.05999, 1.03867, 1.03521, 1.04005, 1.02379, 1.04293};
+  double funcHighPtMG0[4]           = {+1.37488,-0.00959298,+3.87912e-05,-5.27704e-08};
+  
+  double weightsLowPtMG1[nPoints]   = {1.11503, 1.11700, 1.120000, 1.12289, 1.11773, 1.11894, 1.11425, 1.09906, 1.10818, 1.09070, 1.08716, 1.06869, 1.08183, 1.04786, 1.02879, 1.02570, 1.01640, 0.99879, 0.98461, 0.96576, 0.97864, 0.96116, 0.94301, 0.95326, 0.93664, 0.91158, 0.90140, 0.89942, 0.89236, 0.86326, 0.87440, 0.86260, 0.83675, 0.85810, 0.85107, 0.83513, 0.82202, 0.81394, 0.81715, 0.77647};
+  double funcHighPtMG1[4]           = {+1.06397,-0.00883160,+3.58076e-05,-5.13992e-08};
+  
+  double weightsLowPt0[nPoints];
+  double funcHighPt0[4];
+
+  double weightsLowPt1[nPoints];
+  double funcHighPt1[4];
+  
+  if(nsel == 0){ // MC@NLO
+    for(int i=0; i<nPoints; i++) weightsLowPt0[i] = weightsLowPtMCNLO0[i];
+    for(int i=0; i<4; i++) funcHighPt0[i] = funcHighPtMCNLO0[i];
+    for(int i=0; i<nPoints; i++) weightsLowPt1[i] = weightsLowPtMCNLO1[i];
+    for(int i=0; i<4; i++) funcHighPt1[i] = funcHighPtMCNLO1[i];
+  } else { // MG
+    for(int i=0; i<nPoints; i++) weightsLowPt0[i] = weightsLowPtMG0[i];
+    for(int i=0; i<4; i++) funcHighPt0[i] = funcHighPtMG0[i];
+    for(int i=0; i<nPoints; i++) weightsLowPt1[i] = weightsLowPtMG1[i];
+    for(int i=0; i<4; i++) funcHighPt1[i] = funcHighPtMG1[i];
+  }
+
+  double weight0 = 1.0;
+  double weight1 = 1.0;
+  
+  if(jetpt0 >= 40) weight0 = (funcHighPt0[0] + funcHighPt0[1]*jetpt0 + funcHighPt0[2]*jetpt0*jetpt0 + funcHighPt0[3]*jetpt0*jetpt0*jetpt0);
+  else             weight0 = weightsLowPt0[jetpt0];
+  
+  if(jetpt1 >= 40) weight1 = (funcHighPt1[0] + funcHighPt1[1]*jetpt1 + funcHighPt1[2]*jetpt1*jetpt1 + funcHighPt1[3]*jetpt1*jetpt1*jetpt1);
+  else             weight1 = weightsLowPt1[jetpt1];
+
+  return (weight0*weight1);
 }
