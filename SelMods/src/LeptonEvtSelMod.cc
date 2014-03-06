@@ -36,6 +36,8 @@ LeptonEvtSelMod::LeptonEvtSelMod(const char *name, const char *title) :
   fPileupEnergyDensity(0),
   fBeamSpotName(Names::gkBeamSpotBrn),
   fBeamSpot(0),
+  fMuonTools(0),
+  fMuonIDMVA(0),
   fNEventsProcessed(0)
 {
   // Constructor.
@@ -176,6 +178,7 @@ void LeptonEvtSelMod::Process()
 
     if(mu->BestTrk() == 0) continue;
     if(mu->Pt() <= 10) continue;
+    if(mu->AbsEta() >= 2.5) continue;
 
     bool isGenTau = kFALSE;
     for (UInt_t j=0; j<GenTaus->GetEntries(); j++) {
@@ -188,18 +191,21 @@ void LeptonEvtSelMod::Process()
     if(isGenTau == kTRUE) continue;
 
     bool isGenLepton = kFALSE;
-    int indexGen = -1;
+    int nMu = -1;
     for (UInt_t j=0; j<GenLeptons->GetEntries(); j++) {
       MCParticle *gen = GenLeptons->At(j);
       if(!gen->Is(MCParticle::kMu)) continue;
       if(gen->Charge() != mu->Charge()) continue;
       if(MathUtils::DeltaR(gen->Phi(), gen->Eta(), mu->Phi(), mu->Eta()) < 0.1){
         isGenLepton = kTRUE;
-        indexGen = j;
+	nMu = j;
 	break;
       }
     }
-
+    if(isGenLepton == kTRUE) {
+      hDLepSel[200]->Fill(TMath::Min(GenLeptons->At(nMu)->Pt(),199.999),NNLOWeight->GetVal());
+      hDLepSel[210]->Fill(GenLeptons->At(nMu)->AbsEta(),NNLOWeight->GetVal());
+    }
     bool passDataCut = kTRUE;
     if(fIsData == kTRUE){
       Bool_t isZ = kFALSE;
@@ -227,216 +233,121 @@ void LeptonEvtSelMod::Process()
       }
     }
     if(passDataCut == kFALSE) continue;
-
     int type = 0;
     if(mu->IsGlobalMuon())     type = 1;
     if(mu->IsTrackerMuon())    type = type + 2;
     if(mu->IsStandaloneMuon()) type = type + 4;
-    if(isGenLepton == kTRUE) hDLepSel[90]->Fill((double) type,NNLOWeight->GetVal());
-    else		     hDLepSel[91]->Fill((double) type,NNLOWeight->GetVal());
+    hDLepSel[0+(int)(isGenLepton==kTRUE)]->Fill((double) type,NNLOWeight->GetVal());
     if(mu->IsGlobalMuon()     && !mu->HasGlobalTrk())     cout << "IsGlobalMuon and not HasGlobalTrk!" << endl;
     if(mu->IsTrackerMuon()    && !mu->HasTrackerTrk())    cout << "IsTrackerMuon and not HasTrackerTrk!" << endl;
     if(mu->IsStandaloneMuon() && !mu->HasStandaloneTrk()) cout << "IsStandaloneMuon and not HasStandaloneTrk!" << endl;
-    if(!mu->IsGlobalMuon() || !mu->IsTrackerMuon()) continue;
 
-    if(isGenLepton == kTRUE) hDLepSel[92]->Fill((double)mu->Quality().Quality(MuonQuality::GlobalMuonPromptTight),NNLOWeight->GetVal());
-    else		     hDLepSel[93]->Fill((double)mu->Quality().Quality(MuonQuality::GlobalMuonPromptTight),NNLOWeight->GetVal());
-
-    if(!mu->Quality().Quality(MuonQuality::GlobalMuonPromptTight)) continue;
-
-    if(isGenLepton == kTRUE) hDLepSel[94]->Fill(TMath::Min((double)mu->BestTrk()->NHits(),29.499),NNLOWeight->GetVal());
-    else		     hDLepSel[95]->Fill(TMath::Min((double)mu->BestTrk()->NHits(),29.499),NNLOWeight->GetVal());
-    if(isGenLepton == kTRUE) hDLepSel[96]->Fill(TMath::Min(mu->BestTrk()->Chi2()/mu->BestTrk()->Ndof(),19.999),NNLOWeight->GetVal());
-    else		     hDLepSel[97]->Fill(TMath::Min(mu->BestTrk()->Chi2()/mu->BestTrk()->Ndof(),19.999),NNLOWeight->GetVal());
-    if(isGenLepton == kTRUE) hDLepSel[98]->Fill(TMath::Min((double)mu->NSegments(),19.499),NNLOWeight->GetVal());
-    else		     hDLepSel[99]->Fill(TMath::Min((double)mu->NSegments(),19.499),NNLOWeight->GetVal());
-
-    Double_t RChi2 = 0.0;
-    if     (mu->HasGlobalTrk()) {
-      RChi2 = mu->GlobalTrk()->Chi2()/mu->GlobalTrk()->Ndof();
+    if(mu->IsGlobalMuon()){
+      hDLepSel[2+(int)(isGenLepton==kTRUE)]->Fill(TMath::Min(mu->GlobalTrk()->Chi2()/mu->GlobalTrk()->Ndof(),19.999),NNLOWeight->GetVal());
+      hDLepSel[4+(int)(isGenLepton==kTRUE)]->Fill(TMath::Min((double)mu->NValidHits(),9.499),NNLOWeight->GetVal());
+      hDLepSel[6+(int)(isGenLepton==kTRUE)]->Fill(TMath::Min((double)mu->NSegments(),9.499),NNLOWeight->GetVal());    
     }
-    else if(mu->BestTrk() != 0){
-      RChi2 = mu->BestTrk()->Chi2()/mu->BestTrk()->Ndof();
+    if(mu->IsTrackerMuon()){
+      hDLepSel[8+(int)(isGenLepton==kTRUE)]->Fill((double)mu->Quality().Quality(MuonQuality::TMLastStationTight),NNLOWeight->GetVal());
     }
+    bool loosepass = (mu->HasGlobalTrk() && mu->GlobalTrk()->Chi2()/mu->GlobalTrk()->Ndof() < 10 &&
+	             (mu->NSegments() > 1 || mu->NMatches() > 1) && mu->NValidHits() > 0) ||
+	            (mu->IsTrackerMuon() &&
+	             mu->Quality().Quality(MuonQuality::TMLastStationTight));
+    if(loosepass == kFALSE) continue;
+    if(isGenLepton == kTRUE) {
+      hDLepSel[201]->Fill(TMath::Min(GenLeptons->At(nMu)->Pt(),199.999),NNLOWeight->GetVal());
+      hDLepSel[211]->Fill(GenLeptons->At(nMu)->AbsEta(),NNLOWeight->GetVal());
+    }
+    
+    hDLepSel[10+(int)(isGenLepton==kTRUE)]->Fill(TMath::Min((double)mu->NTrkLayersHit(),19.499),NNLOWeight->GetVal());
+    hDLepSel[12+(int)(isGenLepton==kTRUE)]->Fill(TMath::Min((double)mu->IsPFMuon(),1.499),NNLOWeight->GetVal());
+    hDLepSel[14+(int)(isGenLepton==kTRUE)]->Fill(TMath::Min((double)mu->BestTrk()->NPixelHits(),9.499),NNLOWeight->GetVal());
+    hDLepSel[16+(int)(isGenLepton==kTRUE)]->Fill(TMath::Min(mu->BestTrk()->PtErr()/mu->BestTrk()->Pt(),0.999),NNLOWeight->GetVal());
+    hDLepSel[18+(int)(isGenLepton==kTRUE)]->Fill(TMath::Min((double)mu->TrkKink(),19.999),NNLOWeight->GetVal());
+
     bool idpass = mu->BestTrk() != 0 &&
-	          mu->BestTrk()->NHits() > 10 &&
-		  RChi2 < 10.0 &&
-		 (mu->NSegments() > 1 || mu->NMatches() > 1) &&
+	          mu->NTrkLayersHit() > 5 &&
+		  mu->IsPFMuon() == kTRUE &&
 		  mu->BestTrk()->NPixelHits() > 0 &&
-		  mu->Quality().Quality(MuonQuality::GlobalMuonPromptTight) &&
-		  mu->BestTrk()->PtErr()/mu->BestTrk()->Pt() < 0.1;
+		  mu->BestTrk()->PtErr()/mu->BestTrk()->Pt() < 1.0 &&
+		  mu->TrkKink() < 20.0;
     if(!idpass) continue;
-   
-    if(mu->Pt() <= 10) continue;
+    if(isGenLepton == kTRUE) {
+      hDLepSel[202]->Fill(TMath::Min(GenLeptons->At(nMu)->Pt(),199.999),NNLOWeight->GetVal());
+      hDLepSel[212]->Fill(GenLeptons->At(nMu)->AbsEta(),NNLOWeight->GetVal());
+    }
 
     Double_t d0_real = TMath::Abs(mu->BestTrk()->D0Corrected(*fVertices->At(0)));
     Double_t dz_real = TMath::Abs(mu->BestTrk()->DzCorrected(*fVertices->At(0)));
-    if(dz_real >= 0.100) continue;
+    hDLepSel[20+(int)(isGenLepton==kTRUE)]->Fill(TMath::Min(d0_real,0.0999),NNLOWeight->GetVal());
+    hDLepSel[22+(int)(isGenLepton==kTRUE)]->Fill(TMath::Min(dz_real,0.9999),NNLOWeight->GetVal());
 
-    if((mu->IsoR03EmEt() + mu->IsoR03HadEt()  + mu->IsoR03SumPt())/ mu->Pt() < 0.15){
-      if(isGenLepton == kTRUE) {hDD0LepSel[ 0]->Fill(TMath::Min(d0_real,0.0999),NNLOWeight->GetVal());}
-      else		       {hDD0LepSel[10]->Fill(TMath::Min(d0_real,0.0999),NNLOWeight->GetVal());}
-      if(isGenLepton == kTRUE) {hDD0LepSel[ 1]->Fill(TMath::Min(TMath::Abs(mu->D0PV()),0.0999),NNLOWeight->GetVal());}
-      else		       {hDD0LepSel[11]->Fill(TMath::Min(TMath::Abs(mu->D0PV()),0.0999),NNLOWeight->GetVal());}
-      if(isGenLepton == kTRUE) {hDD0LepSel[ 2]->Fill(TMath::Min(TMath::Abs(mu->D0PVBS()),0.0999),NNLOWeight->GetVal());}
-      else		       {hDD0LepSel[12]->Fill(TMath::Min(TMath::Abs(mu->D0PVBS()),0.0999),NNLOWeight->GetVal());}
-      if(isGenLepton == kTRUE) {hDD0LepSel[ 3]->Fill(TMath::Min(TMath::Abs(mu->D0PVSignificance()),9.9999),NNLOWeight->GetVal());}
-      else		       {hDD0LepSel[13]->Fill(TMath::Min(TMath::Abs(mu->D0PVSignificance()),9.9999),NNLOWeight->GetVal());}
-      if(isGenLepton == kTRUE) {hDD0LepSel[ 4]->Fill(TMath::Min(TMath::Abs(mu->Ip3dPVSignificance()),9.9999),NNLOWeight->GetVal());}
-      else		       {hDD0LepSel[14]->Fill(TMath::Min(TMath::Abs(mu->Ip3dPVSignificance()),9.9999),NNLOWeight->GetVal());}
-      if(isGenLepton == kTRUE) {hDD0LepSel[ 5]->Fill(TMath::Min(TMath::Abs(mu->D0PVBSSignificance()),9.9999),NNLOWeight->GetVal());}
-      else		       {hDD0LepSel[15]->Fill(TMath::Min(TMath::Abs(mu->D0PVBSSignificance()),9.9999),NNLOWeight->GetVal());}
-      if(isGenLepton == kTRUE) {hDD0LepSel[ 6]->Fill(TMath::Min(TMath::Abs(mu->Ip3dPVBSSignificance()),9.9999),NNLOWeight->GetVal());}
-      else		       {hDD0LepSel[16]->Fill(TMath::Min(TMath::Abs(mu->Ip3dPVBSSignificance()),9.9999),NNLOWeight->GetVal());}
-      if(isGenLepton == kTRUE) {hDD0LepSel[ 7]->Fill(TMath::Max(TMath::Min(mu->TrkKink(),39.999),0.000),NNLOWeight->GetVal());}
-      else		       {hDD0LepSel[17]->Fill(TMath::Max(TMath::Min(mu->TrkKink(),39.999),0.000),NNLOWeight->GetVal());}
-      if(isGenLepton == kTRUE) {hDD0LepSel[ 8]->Fill(TMath::Max(TMath::Min(mu->GlbKink()/1000.0,39.999),0.000),NNLOWeight->GetVal());}
-      else		       {hDD0LepSel[18]->Fill(TMath::Max(TMath::Min(mu->GlbKink()/1000.0,39.999),0.000),NNLOWeight->GetVal());}
-      double d0_real_1rst = 0.0; if(fAllVertices->At(0)) d0_real_1rst = mu->BestTrk()->DzCorrected(*fAllVertices->At(0));
-      if(isGenLepton == kTRUE) {hDD0LepSel[ 9]->Fill(TMath::Min(TMath::Abs(d0_real_1rst),0.0999),NNLOWeight->GetVal());}
-      else		       {hDD0LepSel[19]->Fill(TMath::Min(TMath::Abs(d0_real_1rst),0.0999),NNLOWeight->GetVal());}
+    if(dz_real >= 0.100) continue;
+    if(d0_real >= 0.100) continue;
+    if(isGenLepton == kTRUE) {
+      hDLepSel[203]->Fill(TMath::Min(GenLeptons->At(nMu)->Pt(),199.999),NNLOWeight->GetVal());
+      hDLepSel[213]->Fill(GenLeptons->At(nMu)->AbsEta(),NNLOWeight->GetVal());
     }
+
+    hDLepSel[24+(int)(isGenLepton==kTRUE)]->Fill(TMath::Min(TMath::Abs(mu->D0PV()),0.0999),NNLOWeight->GetVal());
+    hDLepSel[26+(int)(isGenLepton==kTRUE)]->Fill(TMath::Min(TMath::Abs(mu->D0PVBS()),0.0999),NNLOWeight->GetVal());
+    hDLepSel[28+(int)(isGenLepton==kTRUE)]->Fill(TMath::Min(TMath::Abs(mu->D0PVSignificance()),9.9999),NNLOWeight->GetVal());
+    hDLepSel[30+(int)(isGenLepton==kTRUE)]->Fill(TMath::Min(TMath::Abs(mu->Ip3dPVSignificance()),9.9999),NNLOWeight->GetVal());
+    hDLepSel[32+(int)(isGenLepton==kTRUE)]->Fill(TMath::Min(TMath::Abs(mu->D0PVBSSignificance()),9.9999),NNLOWeight->GetVal());
+    hDLepSel[34+(int)(isGenLepton==kTRUE)]->Fill(TMath::Min(TMath::Abs(mu->Ip3dPVBSSignificance()),9.9999),NNLOWeight->GetVal());
 
     if(d0_real >= 0.020) continue;
-
-    if(mu->IsoR03SumPt()/ mu->Pt() < 0.10 && mu->Pt() > 20.0 && mu->Pt() < 40.0){
-      double sumPt = 0.0; int nTracks = 0;
-      Double_t zLepton = 0.0;
-      if(mu->BestTrk()) zLepton = mu->BestTrk()->DzCorrected(*fVertices->At(0));
-      for(unsigned int i = 0; i < fTracks->GetEntries(); i++) {
-        const mithep::Track* pTrack = fTracks->At(i);
-    	if(MathUtils::DeltaR(pTrack->Mom(), mu->Mom()) < 0.05 ||
-    	   MathUtils::DeltaR(pTrack->Mom(), mu->Mom()) > 0.3) continue;
-        Double_t deltaZ = TMath::Abs(pTrack->DzCorrected(*fVertices->At(0)) - zLepton);
-	if(deltaZ > 0.1) continue;
-        if(isGenLepton == kTRUE) hDLepSel[72]->Fill(TMath::Min(pTrack->Pt(),9.999),NNLOWeight->GetVal());
-	else                     hDLepSel[82]->Fill(TMath::Min(pTrack->Pt(),9.999),NNLOWeight->GetVal());
-        sumPt = sumPt + pTrack->Pt(); nTracks++;
-      }
-      if(isGenLepton == kTRUE){
-        hDLepSel[70]->Fill(TMath::Min(sumPt,9.999),NNLOWeight->GetVal());
-        hDLepSel[71]->Fill(TMath::Min((double)nTracks,9.499),NNLOWeight->GetVal());
-      } else {
-        hDLepSel[80]->Fill(TMath::Min(sumPt,9.999),NNLOWeight->GetVal());
-        hDLepSel[81]->Fill(TMath::Min((double)nTracks,9.499),NNLOWeight->GetVal());
-      }
+    if(isGenLepton == kTRUE) {
+      hDLepSel[204]->Fill(TMath::Min(GenLeptons->At(nMu)->Pt(),199.999),NNLOWeight->GetVal());
+      hDLepSel[214]->Fill(GenLeptons->At(nMu)->AbsEta(),NNLOWeight->GetVal());
     }
 
-    isoAux = mu->IsoR03SumPt();
-    if(isGenLepton == kTRUE) hDLepSel[0]->Fill(TMath::Max(TMath::Min(isoAux/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-    else                     hDLepSel[1]->Fill(TMath::Max(TMath::Min(isoAux/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-    isoAux = mu->IsoR03SumPt() + mu->IsoR03EmEt();
-    if(isGenLepton == kTRUE) hDLepSel[2]->Fill(TMath::Max(TMath::Min(isoAux/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-    else		     hDLepSel[3]->Fill(TMath::Max(TMath::Min(isoAux/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-    double isostd = mu->IsoR03SumPt() + mu->IsoR03EmEt() + mu->IsoR03HadEt();
-    if(isGenLepton == kTRUE) hDLepSel[4]->Fill(TMath::Max(TMath::Min(isostd/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-    else		     hDLepSel[5]->Fill(TMath::Max(TMath::Min(isostd/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-    double isorho = mu->IsoR03SumPt() + TMath::Max(mu->IsoR03EmEt() + mu->IsoR03HadEt() - rho->Rho() * TMath::Pi() * 0.3 * 0.3, 0.0);
-    if(isGenLepton == kTRUE) hDLepSel[6]->Fill(TMath::Max(TMath::Min(isorho/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-    else		     hDLepSel[7]->Fill(TMath::Max(TMath::Min(isorho/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-    double isopf1 = IsolationTools::PFMuonIsolation(mu, fPFCandidates, fVertices->At(0), 0.1, 1.0, 0.3, 0.0);
-    if(isGenLepton == kTRUE) hDLepSel[8]->Fill(TMath::Max(TMath::Min(isopf1/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-    else		     hDLepSel[9]->Fill(TMath::Max(TMath::Min(isopf1/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-    double isopf2 = IsolationTools::PFMuonIsolation(mu, fPFCandidates, fVertices->At(0), 0.1, 1.0, 0.4, 0.0);
-    if(isGenLepton == kTRUE) hDLepSel[10]->Fill(TMath::Max(TMath::Min(isopf2/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-    else		     hDLepSel[11]->Fill(TMath::Max(TMath::Min(isopf2/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
+    ElectronOArr *tempElectrons = new  ElectronOArr;
+    MuonOArr	 *tempMuons	= new  MuonOArr;
+    double MVAValue = fMuonIDMVA->MVAValue(mu, fVertices->At(0), fMuonTools, fPFCandidates,
+    				           fPileupEnergyDensity, MuonTools::kMuEAFall11MC, tempElectrons, tempMuons,kFALSE);
+    delete tempElectrons;
+    delete tempMuons;
 
-    int theHisto = -1;
-    if     (isGenLepton == kTRUE  && mu->AbsEta() <  1.479) theHisto =  0;
-    else if(isGenLepton == kTRUE  && mu->AbsEta() >= 1.479) theHisto =  5;
-    else if(isGenLepton == kFALSE && mu->AbsEta() <  1.479) theHisto = 10;
-    else if(isGenLepton == kFALSE && mu->AbsEta() >= 1.479) theHisto = 15;
+    hDLepSel[36+(int)(isGenLepton==kTRUE)]->Fill(TMath::Max(TMath::Min(mu->IsoR03SumPt()/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
+    hDLepSel[38+(int)(isGenLepton==kTRUE)]->Fill(TMath::Max(TMath::Min((mu->IsoR03SumPt() + mu->IsoR03EmEt())/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
+    hDLepSel[40+(int)(isGenLepton==kTRUE)]->Fill(TMath::Max(TMath::Min((mu->IsoR03SumPt() + mu->IsoR03EmEt() + mu->IsoR03HadEt())/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
+    hDLepSel[42+(int)(isGenLepton==kTRUE)]->Fill(TMath::Max(TMath::Min((mu->IsoR03SumPt() + TMath::Max(mu->IsoR03EmEt() + mu->IsoR03HadEt() - rho->Rho() * TMath::Pi() * 0.3 * 0.3, 0.0))/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
+    hDLepSel[44+(int)(isGenLepton==kTRUE)]->Fill(TMath::Max(TMath::Min((IsolationTools::PFMuonIsolation(mu, fPFCandidates, fVertices->At(0), 0.1, 1.0, 0.3, 0.0))/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
+    hDLepSel[46+(int)(isGenLepton==kTRUE)]->Fill(TMath::Max(TMath::Min(MVAValue,0.999),0.000),NNLOWeight->GetVal());
 
-    if     (mu->Pt() < 20)
-    hDIsoMLepSel0[theHisto+nVertices+0]->Fill(TMath::Max(TMath::Min(isostd/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-    else if(mu->Pt() < 35)
-    hDIsoMLepSel1[theHisto+nVertices+0]->Fill(TMath::Max(TMath::Min(isostd/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-
-    if     (mu->Pt() < 20)
-    hDIsoMLepSel0[theHisto+nVertices+20]->Fill(TMath::Max(TMath::Min(isorho/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-    else if(mu->Pt() < 35)
-    hDIsoMLepSel1[theHisto+nVertices+20]->Fill(TMath::Max(TMath::Min(isorho/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-
-    if     (mu->Pt() < 20)
-    hDIsoMLepSel0[theHisto+nVertices+40]->Fill(TMath::Max(TMath::Min(isopf1/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-    else if(mu->Pt() < 35)
-    hDIsoMLepSel1[theHisto+nVertices+40]->Fill(TMath::Max(TMath::Min(isopf1/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-
-    if     (mu->Pt() < 20)
-    hDIsoMLepSel0[theHisto+nVertices+60]->Fill(TMath::Max(TMath::Min(isopf2/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-    else if(mu->Pt() < 35)
-    hDIsoMLepSel1[theHisto+nVertices+60]->Fill(TMath::Max(TMath::Min(isopf2/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-
-    isoAux = isostd;
-    if(mu->Pt() < 20){
-      if(isGenLepton == kTRUE) hDLepSel[12]->Fill(TMath::Max(TMath::Min(isoAux/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-      else		       hDLepSel[13]->Fill(TMath::Max(TMath::Min(isoAux/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-      if(isGenLepton == kTRUE) hDLepSel[14]->Fill(TMath::Max(TMath::Min(isoAux/(20.00000-0.0),0.999),0.000),NNLOWeight->GetVal());
-      else		       hDLepSel[15]->Fill(TMath::Max(TMath::Min(isoAux/(20.00000-0.0),0.999),0.000),NNLOWeight->GetVal());
-    } else if(mu->Pt() < 25){
-      if(isGenLepton == kTRUE) hDLepSel[16]->Fill(TMath::Max(TMath::Min(isoAux/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-      else		       hDLepSel[17]->Fill(TMath::Max(TMath::Min(isoAux/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-    } else if(mu->Pt() < 30){
-      if(isGenLepton == kTRUE) hDLepSel[18]->Fill(TMath::Max(TMath::Min(isoAux/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-      else		       hDLepSel[19]->Fill(TMath::Max(TMath::Min(isoAux/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-    } else if(mu->Pt() < 40){
-      if(isGenLepton == kTRUE) hDLepSel[20]->Fill(TMath::Max(TMath::Min(isoAux/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-      else		       hDLepSel[21]->Fill(TMath::Max(TMath::Min(isoAux/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-    } else if(mu->Pt() < 60){
-      if(isGenLepton == kTRUE) hDLepSel[22]->Fill(TMath::Max(TMath::Min(isoAux/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-      else		       hDLepSel[23]->Fill(TMath::Max(TMath::Min(isoAux/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-    } else {
-      if(isGenLepton == kTRUE) hDLepSel[24]->Fill(TMath::Max(TMath::Min(isoAux/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-      else		       hDLepSel[25]->Fill(TMath::Max(TMath::Min(isoAux/(mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-    }
-    if(isGenLepton == kTRUE) hDLepSel[26]->Fill(TMath::Max(TMath::Min((mu->IsoR03SumPt() + mu->IsoR03EmEt() + mu->IsoR03HadEt()) / (mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-    else		     hDLepSel[27]->Fill(TMath::Max(TMath::Min((mu->IsoR03SumPt() + mu->IsoR03EmEt() + mu->IsoR03HadEt()) / (mu->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
-    if(isGenLepton == kTRUE) hDLepSel[28]->Fill(TMath::Min(mu->Pt(),99.99),NNLOWeight->GetVal());
-    else		     hDLepSel[29]->Fill(TMath::Min(mu->Pt(),99.99),NNLOWeight->GetVal());
-    if(isoAux > 0 && isoAux < 20.0){
-      if(isGenLepton == kTRUE) hDLepSel2D[0]->Fill(isoAux,mu->Pt());
-      else                     hDLepSel2D[1]->Fill(isoAux,mu->Pt());
-    }
-    if(isGenLepton == kTRUE && fIsData == kFALSE){
-      hDLepSel2D[4]->Fill(TMath::Max(TMath::Min(GenLeptons->At(indexGen)->Pt()-mu->Pt(),1.999),-1.999),GenLeptons->At(indexGen)->Pt());
-      hDLepSel2D[5]->Fill(TMath::Max(TMath::Min((GenLeptons->At(indexGen)->Pt()-mu->Pt())/GenLeptons->At(indexGen)->Pt(),0.999),-0.999),GenLeptons->At(indexGen)->Pt());
+    hDLepSel2D[0+(int)(isGenLepton==kTRUE)]->Fill(TMath::Min(mu->BestTrk()->PtErr()/mu->BestTrk()->Pt(),0.399),TMath::Min(mu->Pt(),399.999));
+    if (mu->BestTrk()->PtErr()/mu->BestTrk()->Pt() >= 0.3) continue;
+    hDLepSel2D[2+(int)(isGenLepton==kTRUE)]->Fill(TMath::Max(TMath::Min(MVAValue,0.999),0.000),TMath::Min(mu->Pt(),399.999));
+    if(isGenLepton == kTRUE) {
+      hDLepSel[205]->Fill(TMath::Min(GenLeptons->At(nMu)->Pt(),199.999),NNLOWeight->GetVal());
+      hDLepSel[215]->Fill(GenLeptons->At(nMu)->AbsEta(),NNLOWeight->GetVal());
     }
 
-    if(isoAux/(mu->Pt()-0.0) < 1.0){
-      int theHisto = 30;
-      if(isGenLepton == kFALSE) theHisto = 31;
-      hDLepSel[theHisto]->Fill(0.0,NNLOWeight->GetVal());
-      if(isoAux < (mu->Pt()-10.0)*0.05) hDLepSel[theHisto]->Fill(1.0,NNLOWeight->GetVal());
-      if(isoAux < (mu->Pt()-10.0)*0.10) hDLepSel[theHisto]->Fill(2.0,NNLOWeight->GetVal());
-      if(isoAux < (mu->Pt()-10.0)*0.15) hDLepSel[theHisto]->Fill(3.0,NNLOWeight->GetVal());
-      if(isoAux < (mu->Pt()-10.0)*0.20) hDLepSel[theHisto]->Fill(4.0,NNLOWeight->GetVal());
-      if(isoAux < (mu->Pt()-10.0)*0.25) hDLepSel[theHisto]->Fill(5.0,NNLOWeight->GetVal());
-      if(isoAux < (mu->Pt()-10.0)*0.30) hDLepSel[theHisto]->Fill(6.0,NNLOWeight->GetVal());
-      if(isoAux < (mu->Pt()-10.0)*0.35) hDLepSel[theHisto]->Fill(7.0,NNLOWeight->GetVal());
-      if(isoAux < (mu->Pt()-10.0)*0.40) hDLepSel[theHisto]->Fill(8.0,NNLOWeight->GetVal());
-      if(isoAux < (mu->Pt()-10.0)*0.45) hDLepSel[theHisto]->Fill(9.0,NNLOWeight->GetVal());
-      if(isoAux < (mu->Pt()-10.0)*0.50) hDLepSel[theHisto]->Fill(10.0,NNLOWeight->GetVal());
-      if(isoAux < (mu->Pt()- 0.0)*0.05) hDLepSel[theHisto]->Fill(11.0,NNLOWeight->GetVal());
-      if(isoAux < (mu->Pt()- 0.0)*0.10) hDLepSel[theHisto]->Fill(12.0,NNLOWeight->GetVal());
-      if(isoAux < (mu->Pt()- 0.0)*0.15) hDLepSel[theHisto]->Fill(13.0,NNLOWeight->GetVal());
-      if(isoAux < (mu->Pt()- 0.0)*0.20) hDLepSel[theHisto]->Fill(14.0,NNLOWeight->GetVal());
-      if(isoAux < (mu->Pt()- 0.0)*0.25) hDLepSel[theHisto]->Fill(15.0,NNLOWeight->GetVal());
-      if(isoAux < (mu->Pt()- 0.0)*0.30) hDLepSel[theHisto]->Fill(16.0,NNLOWeight->GetVal());
-      if(isoAux < (mu->Pt()- 0.0)*0.35) hDLepSel[theHisto]->Fill(17.0,NNLOWeight->GetVal());
-      if(isoAux < (mu->Pt()- 0.0)*0.40) hDLepSel[theHisto]->Fill(18.0,NNLOWeight->GetVal());
-      if(isoAux < (mu->Pt()- 0.0)*0.45) hDLepSel[theHisto]->Fill(19.0,NNLOWeight->GetVal());
-      if(isoAux < (mu->Pt()- 0.0)*0.50) hDLepSel[theHisto]->Fill(20.0,NNLOWeight->GetVal());
-      if(isoAux <  1) hDLepSel[theHisto]->Fill(21.0,NNLOWeight->GetVal());
-      if(isoAux <  2) hDLepSel[theHisto]->Fill(22.0,NNLOWeight->GetVal());
-      if(isoAux <  3) hDLepSel[theHisto]->Fill(23.0,NNLOWeight->GetVal());
-      if(isoAux <  4) hDLepSel[theHisto]->Fill(24.0,NNLOWeight->GetVal());
-      if(isoAux <  5) hDLepSel[theHisto]->Fill(25.0,NNLOWeight->GetVal());
-      if(isoAux <  6) hDLepSel[theHisto]->Fill(26.0,NNLOWeight->GetVal());
-      if(isoAux <  7) hDLepSel[theHisto]->Fill(27.0,NNLOWeight->GetVal());
-      if(isoAux <  8) hDLepSel[theHisto]->Fill(28.0,NNLOWeight->GetVal());
-      if(isoAux <  9) hDLepSel[theHisto]->Fill(29.0,NNLOWeight->GetVal());
-      if(isoAux < 10) hDLepSel[theHisto]->Fill(30.0,NNLOWeight->GetVal());
-    } // iso vs. Pt study
+    Double_t MVACut = -1.0;
+    Double_t eta = mu->AbsEta();
+    if     (mu->Pt() <  20 && eta <  1.479) MVACut = 0.86;
+    else if(mu->Pt() <  20 && eta >= 1.479) MVACut = 0.82;
+    else if(mu->Pt() >= 20 && eta <  1.479) MVACut = 0.82;
+    else if(mu->Pt() >= 20 && eta >= 1.479) MVACut = 0.86;
+
+    double dRMin = 999.;
+    for (UInt_t nm=0; nm<fMuons->GetEntries(); nm++) {
+      const Muon *mu2 = fMuons->At(nm);
+      if(mu->BestTrk() == 0) continue;
+      if(mu == mu2) continue;
+      if(MathUtils::DeltaR(mu->Mom(), mu2->Mom()) < dRMin) dRMin = MathUtils::DeltaR(mu->Mom(), mu2->Mom());
+    }
+
+    hDLepSel2D[4+(int)(isGenLepton==kTRUE)]->Fill(dRMin,TMath::Min(mu->Pt(),399.999));
+    if (MVAValue <= MVACut) continue;
+    if(isGenLepton == kTRUE) {
+      hDLepSel[206]->Fill(TMath::Min(GenLeptons->At(nMu)->Pt(),199.999),NNLOWeight->GetVal());
+      hDLepSel[216]->Fill(GenLeptons->At(nMu)->AbsEta(),NNLOWeight->GetVal());
+    }
+    hDLepSel2D[6+(int)(isGenLepton==kTRUE)]->Fill(dRMin,TMath::Min(mu->Pt(),399.999));
+
   } // Muon loop
 
   // Electron loop
@@ -457,14 +368,12 @@ void LeptonEvtSelMod::Process()
     if(isGenTau == kTRUE) continue;
 
     bool isGenLepton = kFALSE;
-    int indexGen = -1;
     for (UInt_t j=0; j<GenLeptons->GetEntries(); j++) {
       MCParticle *gen = GenLeptons->At(j);
       if(!gen->Is(MCParticle::kEl)) continue;
       if(gen->Charge() != el->Charge()) continue;
       if(MathUtils::DeltaR(gen->Phi(), gen->Eta(), el->Phi(), el->Eta()) < 0.1){
         isGenLepton = kTRUE;
-        indexGen = j;
 	break;
       }
     }
@@ -585,7 +494,6 @@ void LeptonEvtSelMod::Process()
 
     if(fBrem >= 1) fBrem = 0.999;
 */
-
     double betaForCiC = IsolationTools::BetaE(fTracks, el, fVertices->At(0), 0.0, 0.2, 0.4, 0.02); 
     Int_t result0 = ElectronTools::PassTightId(el, *&fVertices, fConversions, 0, betaForCiC);
     Int_t result1 = ElectronTools::PassTightId(el, *&fVertices, fConversions, 1, betaForCiC);
@@ -751,26 +659,27 @@ void LeptonEvtSelMod::Process()
         else					    {hDEleConvSel[71]->Fill(TMath::Min(el->Pt(),99.99),NNLOWeight->GetVal());}
       }
     }
+
     if(passElIdVBTF80 && passIso           && passConvVetoNoFit && el->CorrectedNExpectedHitsInner() <= 0){
       hDCutEleSel[theHistoEle+14]->Fill(TMath::Min(scEt,199.99),NNLOWeight->GetVal());
       Double_t d0_real = TMath::Abs(el->BestTrk()->D0Corrected(*fVertices->At(0)));
-      if(isGenLepton == kTRUE) {hDD0LepSel[20]->Fill(TMath::Min(d0_real,0.0999),NNLOWeight->GetVal());}
-      else		       {hDD0LepSel[30]->Fill(TMath::Min(d0_real,0.0999),NNLOWeight->GetVal());}
-      if(isGenLepton == kTRUE) {hDD0LepSel[21]->Fill(TMath::Min(TMath::Abs(el->D0PV()),0.0999),NNLOWeight->GetVal());}
-      else		       {hDD0LepSel[31]->Fill(TMath::Min(TMath::Abs(el->D0PV()),0.0999),NNLOWeight->GetVal());}
-      if(isGenLepton == kTRUE) {hDD0LepSel[22]->Fill(TMath::Min(TMath::Abs(el->D0PVCkf()),0.0999),NNLOWeight->GetVal());}
-      else		       {hDD0LepSel[32]->Fill(TMath::Min(TMath::Abs(el->D0PVCkf()),0.0999),NNLOWeight->GetVal());}
-      if(isGenLepton == kTRUE) {hDD0LepSel[23]->Fill(TMath::Min(TMath::Abs(el->D0PVSignificance()),9.9999),NNLOWeight->GetVal());}
-      else		       {hDD0LepSel[33]->Fill(TMath::Min(TMath::Abs(el->D0PVSignificance()),9.9999),NNLOWeight->GetVal());}
-      if(isGenLepton == kTRUE) {hDD0LepSel[24]->Fill(TMath::Min(TMath::Abs(el->Ip3dPVSignificance()),9.9999),NNLOWeight->GetVal());}
-      else		       {hDD0LepSel[34]->Fill(TMath::Min(TMath::Abs(el->Ip3dPVSignificance()),9.9999),NNLOWeight->GetVal());}
-      if(isGenLepton == kTRUE) {hDD0LepSel[25]->Fill(TMath::Min(TMath::Abs(el->D0PVCkfSignificance()),9.9999),NNLOWeight->GetVal());}
-      else		       {hDD0LepSel[35]->Fill(TMath::Min(TMath::Abs(el->D0PVCkfSignificance()),9.9999),NNLOWeight->GetVal());}
-      if(isGenLepton == kTRUE) {hDD0LepSel[26]->Fill(TMath::Min(TMath::Abs(el->Ip3dPVCkfSignificance()),9.9999),NNLOWeight->GetVal());}
-      else		       {hDD0LepSel[36]->Fill(TMath::Min(TMath::Abs(el->Ip3dPVCkfSignificance()),9.9999),NNLOWeight->GetVal());}
+      if(isGenLepton == kTRUE) {hDD0LepSel[ 0]->Fill(TMath::Min(d0_real,0.0999),NNLOWeight->GetVal());}
+      else		       {hDD0LepSel[10]->Fill(TMath::Min(d0_real,0.0999),NNLOWeight->GetVal());}
+      if(isGenLepton == kTRUE) {hDD0LepSel[ 1]->Fill(TMath::Min(TMath::Abs(el->D0PV()),0.0999),NNLOWeight->GetVal());}
+      else		       {hDD0LepSel[11]->Fill(TMath::Min(TMath::Abs(el->D0PV()),0.0999),NNLOWeight->GetVal());}
+      if(isGenLepton == kTRUE) {hDD0LepSel[ 2]->Fill(TMath::Min(TMath::Abs(el->D0PVCkf()),0.0999),NNLOWeight->GetVal());}
+      else		       {hDD0LepSel[12]->Fill(TMath::Min(TMath::Abs(el->D0PVCkf()),0.0999),NNLOWeight->GetVal());}
+      if(isGenLepton == kTRUE) {hDD0LepSel[ 3]->Fill(TMath::Min(TMath::Abs(el->D0PVSignificance()),9.9999),NNLOWeight->GetVal());}
+      else		       {hDD0LepSel[13]->Fill(TMath::Min(TMath::Abs(el->D0PVSignificance()),9.9999),NNLOWeight->GetVal());}
+      if(isGenLepton == kTRUE) {hDD0LepSel[ 4]->Fill(TMath::Min(TMath::Abs(el->Ip3dPVSignificance()),9.9999),NNLOWeight->GetVal());}
+      else		       {hDD0LepSel[14]->Fill(TMath::Min(TMath::Abs(el->Ip3dPVSignificance()),9.9999),NNLOWeight->GetVal());}
+      if(isGenLepton == kTRUE) {hDD0LepSel[ 5]->Fill(TMath::Min(TMath::Abs(el->D0PVCkfSignificance()),9.9999),NNLOWeight->GetVal());}
+      else		       {hDD0LepSel[15]->Fill(TMath::Min(TMath::Abs(el->D0PVCkfSignificance()),9.9999),NNLOWeight->GetVal());}
+      if(isGenLepton == kTRUE) {hDD0LepSel[ 6]->Fill(TMath::Min(TMath::Abs(el->Ip3dPVCkfSignificance()),9.9999),NNLOWeight->GetVal());}
+      else		       {hDD0LepSel[16]->Fill(TMath::Min(TMath::Abs(el->Ip3dPVCkfSignificance()),9.9999),NNLOWeight->GetVal());}
       double d0_real_1rst = 0.0; if(fAllVertices->At(0)) d0_real_1rst = el->BestTrk()->D0Corrected(*fAllVertices->At(0));
-      if(isGenLepton == kTRUE) {hDD0LepSel[29]->Fill(TMath::Min(TMath::Abs(d0_real_1rst),0.0999),NNLOWeight->GetVal());}
-      else		       {hDD0LepSel[39]->Fill(TMath::Min(TMath::Abs(d0_real_1rst),0.0999),NNLOWeight->GetVal());}
+      if(isGenLepton == kTRUE) {hDD0LepSel[ 7]->Fill(TMath::Min(TMath::Abs(d0_real_1rst),0.0999),NNLOWeight->GetVal());}
+      else		       {hDD0LepSel[17]->Fill(TMath::Min(TMath::Abs(d0_real_1rst),0.0999),NNLOWeight->GetVal());}
     }
 
     if(                  passIso && passD0 && passConvVetoNoFit && el->CorrectedNExpectedHitsInner() <= 0){
@@ -780,29 +689,6 @@ void LeptonEvtSelMod::Process()
     delete electronID;
     bool ElNoIsoCuts = passElIdVBTF80 && passD0 && passConvVetoNoFit && el->CorrectedNExpectedHitsInner() <= 0;
     if(!ElNoIsoCuts) continue;
-
-    if(el->TrackIsolationDr03()/ el->Pt() < 0.10 && el->Pt() > 20.0 && el->Pt() < 40.0){
-      double sumPt = 0.0; int nTracks = 0;
-      Double_t zLepton = 0.0;
-      if(el->BestTrk()) zLepton = el->BestTrk()->DzCorrected(*fVertices->At(0));
-      for(unsigned int i = 0; i < fTracks->GetEntries(); i++) {
-        const mithep::Track* pTrack = fTracks->At(i);
-    	if(MathUtils::DeltaR(pTrack->Mom(), el->Mom()) < 0.05 ||
-    	   MathUtils::DeltaR(pTrack->Mom(), el->Mom()) > 0.3) continue;
-        Double_t deltaZ = TMath::Abs(pTrack->DzCorrected(*fVertices->At(0)) - zLepton);
-	if(deltaZ > 0.1) continue;
-        if(isGenLepton == kTRUE) hDLepSel[75]->Fill(TMath::Min(pTrack->Pt(),9.999),NNLOWeight->GetVal());
-	else                     hDLepSel[85]->Fill(TMath::Min(pTrack->Pt(),9.999),NNLOWeight->GetVal());
-        sumPt = sumPt + pTrack->Pt(); nTracks++;
-      }
-      if(isGenLepton == kTRUE){
-        hDLepSel[73]->Fill(TMath::Min(sumPt,9.999),NNLOWeight->GetVal());
-        hDLepSel[74]->Fill(TMath::Min((double)nTracks,9.499),NNLOWeight->GetVal());
-      } else {
-        hDLepSel[83]->Fill(TMath::Min(sumPt,9.999),NNLOWeight->GetVal());
-        hDLepSel[84]->Fill(TMath::Min((double)nTracks,9.499),NNLOWeight->GetVal());
-      }
-    }
 
     isoAux = el->TrackIsolationDr03();
     if(isGenLepton == kTRUE) hDLepSel[100]->Fill(TMath::Max(TMath::Min(isoAux/(el->Pt()-0.0),0.999),0.000),NNLOWeight->GetVal());
@@ -885,12 +771,7 @@ void LeptonEvtSelMod::Process()
     else		     hDLepSel[129]->Fill(TMath::Min(el->Pt(),99.99),NNLOWeight->GetVal());
 
     if(isoAux > 0 && isoAux < 20.0){
-      if(isGenLepton == kTRUE) hDLepSel2D[2]->Fill(isoAux,el->Pt());
-      else                     hDLepSel2D[3]->Fill(isoAux,el->Pt());
-    }
-    if(isGenLepton == kTRUE && fIsData == kFALSE){
-      hDLepSel2D[6]->Fill(TMath::Max(TMath::Min(GenLeptons->At(indexGen)->Pt()-el->Pt(),1.999),-1.999),GenLeptons->At(indexGen)->Pt());
-      hDLepSel2D[7]->Fill(TMath::Max(TMath::Min((GenLeptons->At(indexGen)->Pt()-el->Pt())/GenLeptons->At(indexGen)->Pt(),0.999),-0.999),GenLeptons->At(indexGen)->Pt());
+      hDLepSel2D[8+(int)(isGenLepton==kTRUE)]->Fill(isoAux,el->Pt());
     }
 
     if(isoAux / (el->Pt()-0.0) < 1.0){
@@ -950,90 +831,80 @@ void LeptonEvtSelMod::SlaveBegin()
   ReqBranch(fPileupEnergyDensityName,fPileupEnergyDensity);
   ReqBranch(fBeamSpotName,           fBeamSpot);
 
+  fMuonTools = new MuonTools();
+  fMuonIDMVA = new MuonIDMVA();
+  std::vector<std::string> muonidiso_weightfiles;
+  muonidiso_weightfiles.push_back(string((getenv("CMSSW_BASE")+string("/src/MitPhysics/data/MuonMVAWeights/MuonIsoMVA_BDTG_V0_barrel_lowpt.weights.xml"))));
+  muonidiso_weightfiles.push_back(string((getenv("CMSSW_BASE")+string("/src/MitPhysics/data/MuonMVAWeights/MuonIsoMVA_BDTG_V0_barrel_highpt.weights.xml"))));
+  muonidiso_weightfiles.push_back(string((getenv("CMSSW_BASE")+string("/src/MitPhysics/data/MuonMVAWeights/MuonIsoMVA_BDTG_V0_endcap_lowpt.weights.xml"))));
+  muonidiso_weightfiles.push_back(string((getenv("CMSSW_BASE")+string("/src/MitPhysics/data/MuonMVAWeights/MuonIsoMVA_BDTG_V0_endcap_highpt.weights.xml"))));
+  muonidiso_weightfiles.push_back(string((getenv("CMSSW_BASE")+string("/src/MitPhysics/data/MuonMVAWeights/MuonIsoMVA_BDTG_V0_tracker.weights.xml"))));
+  muonidiso_weightfiles.push_back(string((getenv("CMSSW_BASE")+string("/src/MitPhysics/data/MuonMVAWeights/MuonIsoMVA_BDTG_V0_global.weights.xml"))));
+  fMuonIDMVA->Initialize("MuonIso_BDTG_IsoRings",
+  		    MuonIDMVA::kIsoRingsV0,
+  		    kTRUE,
+  		    muonidiso_weightfiles,RhoUtilities::CMS_RHO_RHOKT6PFJETS);
+
   char sb[200];
 
   // Isolation
   for(int i=0; i<80; i++){
-    sprintf(sb,"hDIsoMLepSel0_%d", i);  hDIsoMLepSel0[i]  = new TH1D(sb,sb,100,0.0,1.0);
-    sprintf(sb,"hDIsoMLepSel1_%d", i);  hDIsoMLepSel1[i]  = new TH1D(sb,sb,100,0.0,1.0);
     sprintf(sb,"hDIsoELepSel0_%d", i);  hDIsoELepSel0[i]  = new TH1D(sb,sb,100,0.0,1.0);
     sprintf(sb,"hDIsoELepSel1_%d", i);  hDIsoELepSel1[i]  = new TH1D(sb,sb,100,0.0,1.0);
-    AddOutput(hDIsoMLepSel0[i]);
-    AddOutput(hDIsoMLepSel1[i]);
     AddOutput(hDIsoELepSel0[i]);
     AddOutput(hDIsoELepSel1[i]);
   }
 
-  // Muons
-  sprintf(sb,"hDLepSel_%d", 0);  hDLepSel[ 0]  = new TH1D(sb,sb,100,0.0,1.0);
-  sprintf(sb,"hDLepSel_%d", 1);  hDLepSel[ 1]  = new TH1D(sb,sb,100,0.0,1.0);
-  sprintf(sb,"hDLepSel_%d", 2);  hDLepSel[ 2]  = new TH1D(sb,sb,100,0.0,1.0);
-  sprintf(sb,"hDLepSel_%d", 3);  hDLepSel[ 3]  = new TH1D(sb,sb,100,0.0,1.0);
-  sprintf(sb,"hDLepSel_%d", 4);  hDLepSel[ 4]  = new TH1D(sb,sb,100,0.0,1.0);
-  sprintf(sb,"hDLepSel_%d", 5);  hDLepSel[ 5]  = new TH1D(sb,sb,100,0.0,1.0);
-  sprintf(sb,"hDLepSel_%d", 6);  hDLepSel[ 6]  = new TH1D(sb,sb,100,0.0,1.0);
-  sprintf(sb,"hDLepSel_%d", 7);  hDLepSel[ 7]  = new TH1D(sb,sb,100,0.0,1.0);
-  sprintf(sb,"hDLepSel_%d", 8);  hDLepSel[ 8]  = new TH1D(sb,sb,100,0.0,1.0);
-  sprintf(sb,"hDLepSel_%d", 9);  hDLepSel[ 9]  = new TH1D(sb,sb,100,0.0,1.0);
-  sprintf(sb,"hDLepSel_%d",10);  hDLepSel[10]  = new TH1D(sb,sb,100,0.0,1.0);
-  sprintf(sb,"hDLepSel_%d",11);  hDLepSel[11]  = new TH1D(sb,sb,100,0.0,1.0);
-  sprintf(sb,"hDLepSel_%d",12);  hDLepSel[12]  = new TH1D(sb,sb,100,0.0,1.0);
-  sprintf(sb,"hDLepSel_%d",13);  hDLepSel[13]  = new TH1D(sb,sb,100,0.0,1.0);
-  sprintf(sb,"hDLepSel_%d",14);  hDLepSel[14]  = new TH1D(sb,sb,100,0.0,1.0);
-  sprintf(sb,"hDLepSel_%d",15);  hDLepSel[15]  = new TH1D(sb,sb,100,0.0,1.0);
+  sprintf(sb,"hDLepSel_%d", 0);  hDLepSel[ 0]  = new TH1D(sb,sb,8,-0.5,7.5);
+  sprintf(sb,"hDLepSel_%d", 1);  hDLepSel[ 1]  = new TH1D(sb,sb,8,-0.5,7.5);
+  sprintf(sb,"hDLepSel_%d", 2);  hDLepSel[ 2]  = new TH1D(sb,sb,100,0.0,20.0);
+  sprintf(sb,"hDLepSel_%d", 3);  hDLepSel[ 3]  = new TH1D(sb,sb,100,0.0,20.0);
+  sprintf(sb,"hDLepSel_%d", 4);  hDLepSel[ 4]  = new TH1D(sb,sb,10,-0.5,9.5);
+  sprintf(sb,"hDLepSel_%d", 5);  hDLepSel[ 5]  = new TH1D(sb,sb,10,-0.5,9.5);
+  sprintf(sb,"hDLepSel_%d", 6);  hDLepSel[ 6]  = new TH1D(sb,sb,10,-0.5,9.5);
+  sprintf(sb,"hDLepSel_%d", 7);  hDLepSel[ 7]  = new TH1D(sb,sb,10,-0.5,9.5);
+  sprintf(sb,"hDLepSel_%d", 8);  hDLepSel[ 8]  = new TH1D(sb,sb,2,-0.5,1.5);
+  sprintf(sb,"hDLepSel_%d", 9);  hDLepSel[ 9]  = new TH1D(sb,sb,2,-0.5,1.5);
+  sprintf(sb,"hDLepSel_%d",10);  hDLepSel[10]  = new TH1D(sb,sb,20,-0.5,19.5);
+  sprintf(sb,"hDLepSel_%d",11);  hDLepSel[11]  = new TH1D(sb,sb,20,-0.5,19.5);
+  sprintf(sb,"hDLepSel_%d",12);  hDLepSel[12]  = new TH1D(sb,sb,2,-0.5,1.5);
+  sprintf(sb,"hDLepSel_%d",13);  hDLepSel[13]  = new TH1D(sb,sb,2,-0.5,1.5);
+  sprintf(sb,"hDLepSel_%d",14);  hDLepSel[14]  = new TH1D(sb,sb,10,-0.5,9.5);
+  sprintf(sb,"hDLepSel_%d",15);  hDLepSel[15]  = new TH1D(sb,sb,10,-0.5,9.5);
   sprintf(sb,"hDLepSel_%d",16);  hDLepSel[16]  = new TH1D(sb,sb,100,0.0,1.0);
   sprintf(sb,"hDLepSel_%d",17);  hDLepSel[17]  = new TH1D(sb,sb,100,0.0,1.0);
-  sprintf(sb,"hDLepSel_%d",18);  hDLepSel[18]  = new TH1D(sb,sb,100,0.0,1.0);
-  sprintf(sb,"hDLepSel_%d",19);  hDLepSel[19]  = new TH1D(sb,sb,100,0.0,1.0);
-  sprintf(sb,"hDLepSel_%d",20);  hDLepSel[20]  = new TH1D(sb,sb,100,0.0,1.0);
-  sprintf(sb,"hDLepSel_%d",21);  hDLepSel[21]  = new TH1D(sb,sb,100,0.0,1.0);
+  sprintf(sb,"hDLepSel_%d",18);  hDLepSel[18]  = new TH1D(sb,sb,40,0.0,20.0);
+  sprintf(sb,"hDLepSel_%d",19);  hDLepSel[19]  = new TH1D(sb,sb,40,0.0,20.0);
+  sprintf(sb,"hDLepSel_%d",20);  hDLepSel[20]  = new TH1D(sb,sb,100,0.0,0.1);
+  sprintf(sb,"hDLepSel_%d",21);  hDLepSel[21]  = new TH1D(sb,sb,100,0.0,0.1);
   sprintf(sb,"hDLepSel_%d",22);  hDLepSel[22]  = new TH1D(sb,sb,100,0.0,1.0);
   sprintf(sb,"hDLepSel_%d",23);  hDLepSel[23]  = new TH1D(sb,sb,100,0.0,1.0);
-  sprintf(sb,"hDLepSel_%d",24);  hDLepSel[24]  = new TH1D(sb,sb,100,0.0,1.0);
-  sprintf(sb,"hDLepSel_%d",25);  hDLepSel[25]  = new TH1D(sb,sb,100,0.0,1.0);
-  sprintf(sb,"hDLepSel_%d",26);  hDLepSel[26]  = new TH1D(sb,sb,100,0.0,1.0);
-  sprintf(sb,"hDLepSel_%d",27);  hDLepSel[27]  = new TH1D(sb,sb,100,0.0,1.0);
-  sprintf(sb,"hDLepSel_%d",28);  hDLepSel[28]  = new TH1D(sb,sb,200,0.,100.0);
-  sprintf(sb,"hDLepSel_%d",29);  hDLepSel[29]  = new TH1D(sb,sb,200,0.,100.0);
-  sprintf(sb,"hDLepSel_%d",30);  hDLepSel[30]  = new TH1D(sb,sb,41,-0.5,40.5);
-  sprintf(sb,"hDLepSel_%d",31);  hDLepSel[31]  = new TH1D(sb,sb,41,-0.5,40.5);
+  sprintf(sb,"hDLepSel_%d",24);  hDLepSel[24]  = new TH1D(sb,sb,100,0.0,0.1);
+  sprintf(sb,"hDLepSel_%d",25);  hDLepSel[25]  = new TH1D(sb,sb,100,0.0,0.1);
+  sprintf(sb,"hDLepSel_%d",26);  hDLepSel[26]  = new TH1D(sb,sb,100,0.0,0.1);
+  sprintf(sb,"hDLepSel_%d",27);  hDLepSel[27]  = new TH1D(sb,sb,100,0.0,0.1);
+  sprintf(sb,"hDLepSel_%d",28);  hDLepSel[28]  = new TH1D(sb,sb,100,0.0,10.0);
+  sprintf(sb,"hDLepSel_%d",29);  hDLepSel[29]  = new TH1D(sb,sb,100,0.0,10.0);
+  sprintf(sb,"hDLepSel_%d",30);  hDLepSel[30]  = new TH1D(sb,sb,100,0.0,10.0);
+  sprintf(sb,"hDLepSel_%d",31);  hDLepSel[31]  = new TH1D(sb,sb,100,0.0,10.0);
+  sprintf(sb,"hDLepSel_%d",32);  hDLepSel[32]  = new TH1D(sb,sb,100,0.0,10.0);
+  sprintf(sb,"hDLepSel_%d",33);  hDLepSel[33]  = new TH1D(sb,sb,100,0.0,10.0);
+  sprintf(sb,"hDLepSel_%d",34);  hDLepSel[34]  = new TH1D(sb,sb,100,0.0,10.0);
+  sprintf(sb,"hDLepSel_%d",35);  hDLepSel[35]  = new TH1D(sb,sb,100,0.0,10.0);
+  sprintf(sb,"hDLepSel_%d",36);  hDLepSel[36]  = new TH1D(sb,sb,100,0.0,1.0);
+  sprintf(sb,"hDLepSel_%d",37);  hDLepSel[37]  = new TH1D(sb,sb,100,0.0,1.0);
+  sprintf(sb,"hDLepSel_%d",38);  hDLepSel[38]  = new TH1D(sb,sb,100,0.0,1.0);
+  sprintf(sb,"hDLepSel_%d",39);  hDLepSel[39]  = new TH1D(sb,sb,100,0.0,1.0);
+  sprintf(sb,"hDLepSel_%d",40);  hDLepSel[40]  = new TH1D(sb,sb,100,0.0,1.0);
+  sprintf(sb,"hDLepSel_%d",41);  hDLepSel[41]  = new TH1D(sb,sb,100,0.0,1.0);
+  sprintf(sb,"hDLepSel_%d",42);  hDLepSel[42]  = new TH1D(sb,sb,100,0.0,1.0);
+  sprintf(sb,"hDLepSel_%d",43);  hDLepSel[43]  = new TH1D(sb,sb,100,0.0,1.0);
+  sprintf(sb,"hDLepSel_%d",44);  hDLepSel[44]  = new TH1D(sb,sb,100,0.0,1.0);
+  sprintf(sb,"hDLepSel_%d",45);  hDLepSel[45]  = new TH1D(sb,sb,100,0.0,1.0);
+  sprintf(sb,"hDLepSel_%d",46);  hDLepSel[46]  = new TH1D(sb,sb,100,0.0,1.0);
+  sprintf(sb,"hDLepSel_%d",47);  hDLepSel[47]  = new TH1D(sb,sb,100,0.0,1.0);
 
-  for(int i=0; i<32; i++){
-    AddOutput(hDLepSel[i]);
-  }
-
-  sprintf(sb,"hDLepSel_%d",70);  hDLepSel[70]  = new TH1D(sb,sb,100,0.,10.0);
-  sprintf(sb,"hDLepSel_%d",71);  hDLepSel[71]  = new TH1D(sb,sb,10,-0.5,9.5);
-  sprintf(sb,"hDLepSel_%d",72);  hDLepSel[72]  = new TH1D(sb,sb,100,0.,10.0);
-  sprintf(sb,"hDLepSel_%d",73);  hDLepSel[73]  = new TH1D(sb,sb,100,0.,10.0);
-  sprintf(sb,"hDLepSel_%d",74);  hDLepSel[74]  = new TH1D(sb,sb,10,-0.5,9.5);
-  sprintf(sb,"hDLepSel_%d",75);  hDLepSel[75]  = new TH1D(sb,sb,100,0.,10.0);
-  sprintf(sb,"hDLepSel_%d",80);  hDLepSel[80]  = new TH1D(sb,sb,100,0.,10.0);
-  sprintf(sb,"hDLepSel_%d",81);  hDLepSel[81]  = new TH1D(sb,sb,10,-0.5,9.5);
-  sprintf(sb,"hDLepSel_%d",82);  hDLepSel[82]  = new TH1D(sb,sb,100,0.,10.0);
-  sprintf(sb,"hDLepSel_%d",83);  hDLepSel[83]  = new TH1D(sb,sb,100,0.,10.0);
-  sprintf(sb,"hDLepSel_%d",84);  hDLepSel[84]  = new TH1D(sb,sb,10,-0.5,9.5);
-  sprintf(sb,"hDLepSel_%d",85);  hDLepSel[85]  = new TH1D(sb,sb,100,0.,10.0);
-
-  for(int i=70; i<76; i++){
-    AddOutput(hDLepSel[i]);
-  }
-  for(int i=80; i<86; i++){
-    AddOutput(hDLepSel[i]);
-  }
-
-  sprintf(sb,"hDLepSel_%d",90);  hDLepSel[90]  = new TH1D(sb,sb,8,-0.5,7.5);
-  sprintf(sb,"hDLepSel_%d",91);  hDLepSel[91]  = new TH1D(sb,sb,8,-0.5,7.5);
-  sprintf(sb,"hDLepSel_%d",92);  hDLepSel[92]  = new TH1D(sb,sb,2,-0.5,1.5);
-  sprintf(sb,"hDLepSel_%d",93);  hDLepSel[93]  = new TH1D(sb,sb,2,-0.5,1.5);
-  sprintf(sb,"hDLepSel_%d",94);  hDLepSel[94]  = new TH1D(sb,sb,30,-0.5,29.5);
-  sprintf(sb,"hDLepSel_%d",95);  hDLepSel[95]  = new TH1D(sb,sb,30,-0.5,29.5);
-  sprintf(sb,"hDLepSel_%d",96);  hDLepSel[96]  = new TH1D(sb,sb,100,0.0,20.0);
-  sprintf(sb,"hDLepSel_%d",97);  hDLepSel[97]  = new TH1D(sb,sb,100,0.0,20.0);
-  sprintf(sb,"hDLepSel_%d",98);  hDLepSel[98]  = new TH1D(sb,sb,20,-0.5,19.5);
-  sprintf(sb,"hDLepSel_%d",99);  hDLepSel[99]  = new TH1D(sb,sb,20,-0.5,19.5);
-
-  for(int i=90; i<100; i++){
+  for(int i=0; i<48; i++){
     AddOutput(hDLepSel[i]);
   }
 
@@ -1113,6 +984,26 @@ void LeptonEvtSelMod::SlaveBegin()
   }
 
   // Lepton Id
+  sprintf(sb,"hDLepSel_%d",200);  hDLepSel[200]  = new TH1D(sb,sb,200,0,200);
+  sprintf(sb,"hDLepSel_%d",201);  hDLepSel[201]  = new TH1D(sb,sb,200,0,200);
+  sprintf(sb,"hDLepSel_%d",202);  hDLepSel[202]  = new TH1D(sb,sb,200,0,200);
+  sprintf(sb,"hDLepSel_%d",203);  hDLepSel[203]  = new TH1D(sb,sb,200,0,200);
+  sprintf(sb,"hDLepSel_%d",204);  hDLepSel[204]  = new TH1D(sb,sb,200,0,200);
+  sprintf(sb,"hDLepSel_%d",205);  hDLepSel[205]  = new TH1D(sb,sb,200,0,200);
+  sprintf(sb,"hDLepSel_%d",206);  hDLepSel[206]  = new TH1D(sb,sb,200,0,200);
+  sprintf(sb,"hDLepSel_%d",210);  hDLepSel[210]  = new TH1D(sb,sb,96,0,2.4);
+  sprintf(sb,"hDLepSel_%d",211);  hDLepSel[211]  = new TH1D(sb,sb,96,0,2.4);
+  sprintf(sb,"hDLepSel_%d",212);  hDLepSel[212]  = new TH1D(sb,sb,96,0,2.4);
+  sprintf(sb,"hDLepSel_%d",213);  hDLepSel[213]  = new TH1D(sb,sb,96,0,2.4);
+  sprintf(sb,"hDLepSel_%d",214);  hDLepSel[214]  = new TH1D(sb,sb,96,0,2.4);
+  sprintf(sb,"hDLepSel_%d",215);  hDLepSel[215]  = new TH1D(sb,sb,96,0,2.4);
+  sprintf(sb,"hDLepSel_%d",216);  hDLepSel[216]  = new TH1D(sb,sb,96,0,2.4);
+
+  for(int i=0; i<=6; i++){
+    AddOutput(hDLepSel[i+200]);
+    AddOutput(hDLepSel[i+210]);
+  }
+
   sprintf(sb,"hDLepSel_%d",221);  hDLepSel[221]  = new TH1D(sb,sb,200,0,200);
   sprintf(sb,"hDLepSel_%d",222);  hDLepSel[222]  = new TH1D(sb,sb,200,0,200);
   sprintf(sb,"hDLepSel_%d",223);  hDLepSel[223]  = new TH1D(sb,sb,200,0,200);
@@ -1130,22 +1021,22 @@ void LeptonEvtSelMod::SlaveBegin()
 
   for(int i=1; i<=7; i++){
     AddOutput(hDLepSel[i+220]);
-  }
-  for(int i=1; i<=7; i++){
     AddOutput(hDLepSel[i+230]);
   }
 
   // 2D
-  sprintf(sb,"hDLepSel2D_%d",0);   hDLepSel2D[0] = new TH2D(sb,sb,50,0.0,20.0,50,0,100);
-  sprintf(sb,"hDLepSel2D_%d",1);   hDLepSel2D[1] = new TH2D(sb,sb,50,0.0,20.0,50,0,100); 
-  sprintf(sb,"hDLepSel2D_%d",2);   hDLepSel2D[2] = new TH2D(sb,sb,50,0.0,20.0,50,0,100); 
-  sprintf(sb,"hDLepSel2D_%d",3);   hDLepSel2D[3] = new TH2D(sb,sb,50,0.0,20.0,50,0,100); 
-  sprintf(sb,"hDLepSel2D_%d",4);   hDLepSel2D[4] = new TH2D(sb,sb,100,-2.0,2.0,100,0,100); 
-  sprintf(sb,"hDLepSel2D_%d",5);   hDLepSel2D[5] = new TH2D(sb,sb,100,-1.0,1.0,100,0,100); 
-  sprintf(sb,"hDLepSel2D_%d",6);   hDLepSel2D[6] = new TH2D(sb,sb,100,-2.0,2.0,100,0,100); 
-  sprintf(sb,"hDLepSel2D_%d",7);   hDLepSel2D[7] = new TH2D(sb,sb,100,-1.0,1.0,100,0,100); 
+  sprintf(sb,"hDLepSel2D_%d",0);   hDLepSel2D[0] = new TH2D(sb,sb,40,0.0,0.4,40,0,400);
+  sprintf(sb,"hDLepSel2D_%d",1);   hDLepSel2D[1] = new TH2D(sb,sb,40,0.0,0.4,40,0,400); 
+  sprintf(sb,"hDLepSel2D_%d",2);   hDLepSel2D[2] = new TH2D(sb,sb,50,0.0,1.0,40,0,400);
+  sprintf(sb,"hDLepSel2D_%d",3);   hDLepSel2D[3] = new TH2D(sb,sb,50,0.0,1.0,40,0,400); 
+  sprintf(sb,"hDLepSel2D_%d",4);   hDLepSel2D[4] = new TH2D(sb,sb,80,0.0,4.0,40,0,400);
+  sprintf(sb,"hDLepSel2D_%d",5);   hDLepSel2D[5] = new TH2D(sb,sb,80,0.0,4.0,40,0,400); 
+  sprintf(sb,"hDLepSel2D_%d",6);   hDLepSel2D[6] = new TH2D(sb,sb,80,0.0,4.0,40,0,400);
+  sprintf(sb,"hDLepSel2D_%d",7);   hDLepSel2D[7] = new TH2D(sb,sb,80,0.0,4.0,40,0,400); 
+  sprintf(sb,"hDLepSel2D_%d",8);   hDLepSel2D[8] = new TH2D(sb,sb,50,0.0,20.0,50,0,100); 
+  sprintf(sb,"hDLepSel2D_%d",9);   hDLepSel2D[9] = new TH2D(sb,sb,50,0.0,20.0,50,0,100); 
 
-  for(int i=0; i<8; i++){
+  for(int i=0; i<10; i++){
     AddOutput(hDLepSel2D[i]);
   }
 
@@ -1170,7 +1061,7 @@ void LeptonEvtSelMod::SlaveBegin()
   }
 
   // d0 studies
-  for(int j=0; j<4; j++){
+  for(int j=0; j<2; j++){
     sprintf(sb,"hDD0LepSel_%d", 0+10*j); hDD0LepSel[ 0+10*j] = new TH1D(sb,sb,100,0.0,0.1);
     sprintf(sb,"hDD0LepSel_%d", 1+10*j); hDD0LepSel[ 1+10*j] = new TH1D(sb,sb,100,0.0,0.1);
     sprintf(sb,"hDD0LepSel_%d", 2+10*j); hDD0LepSel[ 2+10*j] = new TH1D(sb,sb,100,0.0,0.1);
@@ -1179,11 +1070,9 @@ void LeptonEvtSelMod::SlaveBegin()
     sprintf(sb,"hDD0LepSel_%d", 5+10*j); hDD0LepSel[ 5+10*j] = new TH1D(sb,sb,100,0.,10);
     sprintf(sb,"hDD0LepSel_%d", 6+10*j); hDD0LepSel[ 6+10*j] = new TH1D(sb,sb,100,0.,10);
     sprintf(sb,"hDD0LepSel_%d", 7+10*j); hDD0LepSel[ 7+10*j] = new TH1D(sb,sb,80,0.,40);
-    sprintf(sb,"hDD0LepSel_%d", 8+10*j); hDD0LepSel[ 8+10*j] = new TH1D(sb,sb,80,0.,40);
-    sprintf(sb,"hDD0LepSel_%d", 9+10*j); hDD0LepSel[ 9+10*j] = new TH1D(sb,sb,100,0.0,0.1);
   }
 
-  for(int j=0; j<4; j++){
+  for(int j=0; j<2; j++){
     AddOutput(hDD0LepSel[ 0+10*j]);
     AddOutput(hDD0LepSel[ 1+10*j]);
     AddOutput(hDD0LepSel[ 2+10*j]);
@@ -1192,8 +1081,6 @@ void LeptonEvtSelMod::SlaveBegin()
     AddOutput(hDD0LepSel[ 5+10*j]);
     AddOutput(hDD0LepSel[ 6+10*j]);
     AddOutput(hDD0LepSel[ 7+10*j]);
-    AddOutput(hDD0LepSel[ 8+10*j]);
-    AddOutput(hDD0LepSel[ 9+10*j]);
   }
 }
 
@@ -1201,6 +1088,8 @@ void LeptonEvtSelMod::SlaveBegin()
 void LeptonEvtSelMod::SlaveTerminate()
 {
   // Run finishing code on the computer (slave) that did the analysis
+  delete fMuonTools;
+  delete fMuonIDMVA;
 }
 
 //--------------------------------------------------------------------------------------------------

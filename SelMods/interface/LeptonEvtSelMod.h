@@ -17,6 +17,7 @@
 #include "MitAna/DataTree/interface/CollectionsFwd.h"
 #include "MitAna/DataTree/interface/DecayParticleFwd.h"
 #include "MitPhysics/Utils/interface/MuonTools.h"
+#include "MitPhysics/Utils/interface/MuonIDMVA.h"
 #include "MitPhysics/Utils/interface/IsolationTools.h"
 #include "MitAna/DataTree/interface/PFCandidateCol.h"
 #include "MitAna/DataTree/interface/PileupEnergyDensityCol.h"
@@ -69,22 +70,20 @@ namespace mithep
       const PileupEnergyDensityCol *fPileupEnergyDensity;
       TString                   fBeamSpotName;           //name of beamspot collection
       const BeamSpotCol        *fBeamSpot;               //!beamspot branch
+      MuonTools        *fMuonTools;
+      MuonIDMVA        *fMuonIDMVA;
 
       TH1D         *hDLepSel[300];
       TH2D         *hDLepSel2D[10];
       Double_t      fCuts[6][8];
       TH1D         *hDCutEleSel[400];
       TH1D         *hDEleConvSel[80];
-      TH1D         *hDD0LepSel[40];
+      TH1D         *hDD0LepSel[20];
 
-      TH1D         *hDIsoMLepSel0[80];
-      TH1D         *hDIsoMLepSel1[80];
       TH1D         *hDIsoELepSel0[80];
       TH1D         *hDIsoELepSel1[80];
 
       int          fNEventsProcessed;
-
-      MuonTools    myMuonTools;
 
       void         Begin();
       void         Process();
