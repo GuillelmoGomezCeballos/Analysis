@@ -65,9 +65,8 @@ void LeptonEvtSelMod::Process()
   ParticleOArr *leptonsFakeable    = GetObjThisEvt<ParticleOArr>("MergedLeptonsFakeable");
   MetOArr *CleanMet	           = GetObjThisEvt<MetOArr>(fMetName);
   const Met *caloMet	           = CleanMet->At(0);
-
   Bool_t RemoveLeptons = kFALSE;
-  if(GenLeptons->GetEntries() == 2){
+  if(GenLeptons && GenLeptons->GetEntries() == 2){
     CompositeParticle dilepton;
     dilepton.AddDaughter(GenLeptons->At(0));
     dilepton.AddDaughter(GenLeptons->At(1));
@@ -166,7 +165,6 @@ void LeptonEvtSelMod::Process()
   LoadBranch(fPileupEnergyDensityName);
   LoadBranch(fBeamSpotName);
   //if(fMuons->GetEntries() + fElectrons->GetEntries() < 2) {return;}
-
   LoadBranch(fAllVertexName);
   LoadBranch(fPFCandidatesName);
   double isoAux;
@@ -181,28 +179,32 @@ void LeptonEvtSelMod::Process()
     if(mu->AbsEta() >= 2.5) continue;
 
     bool isGenTau = kFALSE;
-    for (UInt_t j=0; j<GenTaus->GetEntries(); j++) {
-      MCParticle *genTau = GenTaus->At(j);
-      if(MathUtils::DeltaR(genTau->Mom(), mu->Mom()) < 0.1){
-        isGenTau = kTRUE;
-	break;
+    if(GenTaus){
+      for (UInt_t j=0; j<GenTaus->GetEntries(); j++) {
+        MCParticle *genTau = GenTaus->At(j);
+        if(MathUtils::DeltaR(genTau->Mom(), mu->Mom()) < 0.1){
+          isGenTau = kTRUE;
+	  break;
+        }
       }
     }
     if(isGenTau == kTRUE) continue;
 
     bool isGenLepton = kFALSE;
     int nMu = -1;
-    for (UInt_t j=0; j<GenLeptons->GetEntries(); j++) {
-      MCParticle *gen = GenLeptons->At(j);
-      if(!gen->Is(MCParticle::kMu)) continue;
-      if(gen->Charge() != mu->Charge()) continue;
-      if(MathUtils::DeltaR(gen->Phi(), gen->Eta(), mu->Phi(), mu->Eta()) < 0.1){
-        isGenLepton = kTRUE;
-	nMu = j;
-	break;
+    if(GenLeptons){
+      for (UInt_t j=0; j<GenLeptons->GetEntries(); j++) {
+        MCParticle *gen = GenLeptons->At(j);
+        if(!gen->Is(MCParticle::kMu)) continue;
+        if(gen->Charge() != mu->Charge()) continue;
+        if(MathUtils::DeltaR(gen->Phi(), gen->Eta(), mu->Phi(), mu->Eta()) < 0.1){
+          isGenLepton = kTRUE;
+	  nMu = j;
+	  break;
+        }
       }
     }
-    if(isGenLepton == kTRUE) {
+    if(isGenLepton == kTRUE && fIsData == kFALSE) {
       hDLepSel[200]->Fill(TMath::Min(GenLeptons->At(nMu)->Pt(),199.999),NNLOWeight->GetVal());
       hDLepSel[210]->Fill(GenLeptons->At(nMu)->AbsEta(),NNLOWeight->GetVal());
     }
@@ -255,7 +257,7 @@ void LeptonEvtSelMod::Process()
 	            (mu->IsTrackerMuon() &&
 	             mu->Quality().Quality(MuonQuality::TMLastStationTight));
     if(loosepass == kFALSE) continue;
-    if(isGenLepton == kTRUE) {
+    if(isGenLepton == kTRUE && fIsData == kFALSE) {
       hDLepSel[201]->Fill(TMath::Min(GenLeptons->At(nMu)->Pt(),199.999),NNLOWeight->GetVal());
       hDLepSel[211]->Fill(GenLeptons->At(nMu)->AbsEta(),NNLOWeight->GetVal());
     }
@@ -273,7 +275,7 @@ void LeptonEvtSelMod::Process()
 		  mu->BestTrk()->PtErr()/mu->BestTrk()->Pt() < 1.0 &&
 		  mu->TrkKink() < 20.0;
     if(!idpass) continue;
-    if(isGenLepton == kTRUE) {
+    if(isGenLepton == kTRUE && fIsData == kFALSE) {
       hDLepSel[202]->Fill(TMath::Min(GenLeptons->At(nMu)->Pt(),199.999),NNLOWeight->GetVal());
       hDLepSel[212]->Fill(GenLeptons->At(nMu)->AbsEta(),NNLOWeight->GetVal());
     }
@@ -285,7 +287,7 @@ void LeptonEvtSelMod::Process()
 
     if(dz_real >= 0.100) continue;
     if(d0_real >= 0.100) continue;
-    if(isGenLepton == kTRUE) {
+    if(isGenLepton == kTRUE && fIsData == kFALSE) {
       hDLepSel[203]->Fill(TMath::Min(GenLeptons->At(nMu)->Pt(),199.999),NNLOWeight->GetVal());
       hDLepSel[213]->Fill(GenLeptons->At(nMu)->AbsEta(),NNLOWeight->GetVal());
     }
@@ -298,7 +300,7 @@ void LeptonEvtSelMod::Process()
     hDLepSel[34+(int)(isGenLepton==kTRUE)]->Fill(TMath::Min(TMath::Abs(mu->Ip3dPVBSSignificance()),9.9999),NNLOWeight->GetVal());
 
     if(d0_real >= 0.020) continue;
-    if(isGenLepton == kTRUE) {
+    if(isGenLepton == kTRUE && fIsData == kFALSE) {
       hDLepSel[204]->Fill(TMath::Min(GenLeptons->At(nMu)->Pt(),199.999),NNLOWeight->GetVal());
       hDLepSel[214]->Fill(GenLeptons->At(nMu)->AbsEta(),NNLOWeight->GetVal());
     }
@@ -320,7 +322,7 @@ void LeptonEvtSelMod::Process()
     hDLepSel2D[0+(int)(isGenLepton==kTRUE)]->Fill(TMath::Min(mu->BestTrk()->PtErr()/mu->BestTrk()->Pt(),0.399),TMath::Min(mu->Pt(),399.999));
     if (mu->BestTrk()->PtErr()/mu->BestTrk()->Pt() >= 0.3) continue;
     hDLepSel2D[2+(int)(isGenLepton==kTRUE)]->Fill(TMath::Max(TMath::Min(MVAValue,0.999),0.000),TMath::Min(mu->Pt(),399.999));
-    if(isGenLepton == kTRUE) {
+    if(isGenLepton == kTRUE && fIsData == kFALSE) {
       hDLepSel[205]->Fill(TMath::Min(GenLeptons->At(nMu)->Pt(),199.999),NNLOWeight->GetVal());
       hDLepSel[215]->Fill(GenLeptons->At(nMu)->AbsEta(),NNLOWeight->GetVal());
     }
@@ -342,7 +344,7 @@ void LeptonEvtSelMod::Process()
 
     hDLepSel2D[4+(int)(isGenLepton==kTRUE)]->Fill(dRMin,TMath::Min(mu->Pt(),399.999));
     if (MVAValue <= MVACut) continue;
-    if(isGenLepton == kTRUE) {
+    if(isGenLepton == kTRUE && fIsData == kFALSE) {
       hDLepSel[206]->Fill(TMath::Min(GenLeptons->At(nMu)->Pt(),199.999),NNLOWeight->GetVal());
       hDLepSel[216]->Fill(GenLeptons->At(nMu)->AbsEta(),NNLOWeight->GetVal());
     }

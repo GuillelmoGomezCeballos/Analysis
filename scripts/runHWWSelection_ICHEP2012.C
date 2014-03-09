@@ -546,51 +546,63 @@ void runHWWSelection(const char *catalogDir   = "~/scratch0/catalog",
   else if(nsel == 255){
     fDecay = 19;
   }
-  else if(nsel == 291){
+  else if(nsel == 290){
     myRootFile = "histo_bbww_8tev";
     files[0]   = "/data/blue/ceballos/skims/bbww8tev/*.root";
     //files[0]   = "/data/blue/cmsprod/bbww/sqrts_8tev/*.root";
     fDecay = 125; theMH = 125; theWidth =  4.03e-03; theBWflag = -1;
   }
-  else if(nsel == 292){
+  else if(nsel == 291){
     myRootFile = "histo_bbww_14tev";
     files[0]   = "/data/blue/ceballos/skims/bbww14tev/*.root";
     //files[0]   = "/data/blue/cmsprod/bbww/sqrts_14tev/*.root";
     fDecay = 125; theMH = 125; theWidth =  4.03e-03; theBWflag = -1;
   }
-  else if(nsel == 293){
+  else if(nsel == 292){
     myRootFile = "histo_wwss_qed_2_qcd_99_matching";
     files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_2_qcd_99_matching_unmerged_v2/*.root";
     fDecay = 34;
     addLheWeights = true; isSaveAll = true;
   }
-  else if(nsel == 294){
+  else if(nsel == 293){
     myRootFile = "histo_wwss_qed_2_qcd_99_no_matching";
     files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_2_qcd_99_no_matching_unmerged_v2/*.root";
     fDecay = 34;
     addLheWeights = true; isSaveAll = true;
   }
-  else if(nsel == 295){
+  else if(nsel == 294){
     myRootFile = "histo_wwss_qed_4_qcd_99_lt012";
     files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_4_qcd_99_lt012_unmerged/*.root";
     fDecay = 34;
     addLheWeights = true; isSaveAll = true;
   }
-  else if(nsel == 296){
+  else if(nsel == 295){
     myRootFile = "histo_wwss_qed_4_qcd_99_lm0123";
     files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_4_qcd_99_lm0123_unmerged_v2/*.root";
     fDecay = 34;
     addLheWeights = true; isSaveAll = true;
   }
-  else if(nsel == 297){
+  else if(nsel == 296){
     myRootFile = "histo_wwss_qed_4_qcd_99_ls0ls1";
     files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_4_qcd_99_ls0ls1_unmerged_v2/*.root";
     fDecay = 34;
     addLheWeights = true; isSaveAll = true;
   }
+  else if(nsel == 297){
+    myRootFile = "histo_qed_5_qcd_0_wz_lt012";
+    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_5_qcd_0_wz_lt1_1p25_unmerged/*.root";
+    fDecay = 34;
+    addLheWeights = true; isSaveAll = true;
+  }
   else if(nsel == 298){
-    myRootFile = "histo_qed_5_qcd_0_wz";
-    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_5_qcd_0_wz_unmerged/*.root";
+    myRootFile = "histo_qed_5_qcd_0_wz_lm0123";
+    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU//*.root";
+    fDecay = 34;
+    addLheWeights = true; isSaveAll = true;
+  }
+  else if(nsel == 299){
+    myRootFile = "histo_qed_5_qcd_0_wz_ls0ls1";
+    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU//*.root";
     fDecay = 34;
     addLheWeights = true; isSaveAll = true;
   }
