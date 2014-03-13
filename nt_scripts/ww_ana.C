@@ -444,6 +444,8 @@ void ww_ana
       printf("--- reading event %5d of %5d\n",evt,nBgd);
     bgdEvent.tree_->GetEntry(evt);
 
+    if(bgdEvent.lep1_.Pt() < 1.0) continue;
+
     if(!(((bgdEvent.cuts_ & SmurfTree::Lep1FullSelection) == SmurfTree::Lep1FullSelection && (bgdEvent.cuts_ & SmurfTree::Lep2FullSelection) != SmurfTree::Lep2FullSelection) ||
          ((bgdEvent.cuts_ & SmurfTree::Lep1FullSelection) != SmurfTree::Lep1FullSelection && (bgdEvent.cuts_ & SmurfTree::Lep2FullSelection) == SmurfTree::Lep2FullSelection) ||
 	  bgdEvent.dstype_ != SmurfTree::data)) continue;
@@ -1020,6 +1022,8 @@ void ww_ana
       printf("--- reading event %5d of %5d\n",evt,nSyst);
     systEvent.tree_->GetEntry(evt);
 
+    if(systEvent.lep1_.Pt() < 1.0) continue;
+
     if(systEvent.dstype_ == SmurfTree::data &&
       (systEvent.cuts_ & SmurfTree::Trigger) != SmurfTree::Trigger) continue;
     if(systEvent.dstype_ == SmurfTree::data && systEvent.run_ <  minRun) continue;
@@ -1263,6 +1267,8 @@ void ww_ana
     if (evt%100000 == 0 && verboseLevel > 0)
        printf("--- reading Signal event %5d of %5d\n",evt,nSig);
     sigEvent.tree_->GetEntry(evt);
+
+    if(sigEvent.lep1_.Pt() < 1.0) continue;
 
     bool lId = (sigEvent.cuts_ & SmurfTree::Lep1FullSelection) == SmurfTree::Lep1FullSelection && 
                (sigEvent.cuts_ & SmurfTree::Lep2FullSelection) == SmurfTree::Lep2FullSelection;
@@ -1524,6 +1530,8 @@ void ww_ana
     if (evt%100000 == 0 && verboseLevel > 0)
       printf("--- reading event %5d of %5d\n",evt,nData);
     dataEvent.tree_->GetEntry(evt);
+
+    if(dataEvent.lep1_.Pt() < 1.0) continue;
 
     bool lId = (dataEvent.cuts_ & SmurfTree::Lep1FullSelection) == SmurfTree::Lep1FullSelection && (dataEvent.cuts_ & SmurfTree::Lep2FullSelection) == SmurfTree::Lep2FullSelection;
 
@@ -1820,7 +1828,7 @@ void ww_ana
   double QCDscale_VV[2] = {1.03,1.05};
 
   double XS_QCDscale_ggH[3] = {1.160, 0.920, 1.000};
-  double XS_QCDscale_WW[3]  = {1.042, 0.978, 1.000};
+  double XS_QCDscale_WW[3]  = {1.042, 0.974, 1.000};
   if     (nJetsType == 1){
     XS_QCDscale_ggH[0] = 1.000;
     XS_QCDscale_ggH[1] = 1.280;
@@ -2377,6 +2385,7 @@ void ww_ana
   newcardShape << Form("QCDscale_ggH1in                        lnN    -     -   %5.3f   -     -     -	  -     -     -     -     -	-  \n",XS_QCDscale_ggH[1]);  
   newcardShape << Form("QCDscale_ggH2in                        lnN    -     -   %5.3f   -     -     -	  -     -     -     -	  -	-  \n",XS_QCDscale_ggH[2]);  
   newcardShape << Form("QCDscale_VV		               lnN  %5.3f   -     -   %5.3f   -     -     -     -     -     -     -	-  \n",QCDscale_VV[0],QCDscale_VV[1]);  
+  newcardShape << Form("CMS_UEPS                               lnN  %5.3f %5.3f   -     -     -     -     -     -     -     -     -	-  \n",1.035,1.035);  
   newcardShape << Form("QCDscale_ggVV		               lnN    -   1.300   -     -     -     -     -     -     -     -     -	-  \n");  
   newcardShape << Form("QCDscale_VVV		               lnN    -     -     -     -   1.500   -     -     -     -     -     -	-  \n");	     
   newcardShape << Form("CMS_ww_Wg3l		               lnN    -     -     -     -     -     -     -     -   1.400   -     -	-  \n");	     

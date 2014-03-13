@@ -16,7 +16,7 @@ TFile *_file1 = TFile::Open(outputFile,"recreate");
 _file1->cd();
 
 char cutString[200];
-if     (skim == 0) sprintf(cutString,"met>20||lid3!=0");
+if     (skim == 0) sprintf(cutString,"lep1->Pt()>10.");
 else if(skim == 1) sprintf(cutString,"(type==1||type==2)&&lid3==0&&((cuts & 524288) == 524288)");
 else if(skim == 2) sprintf(cutString,"min(pmet,pTrackMet)>20&&(TMath::Abs(dilep->mass()-91.1876)>15||type==1||type==2)&&lid3==0&&dilep->pt()>45&&njets<=3");
 else if(skim == 3) sprintf(cutString,"((cuts & 4) == 4) && ((cuts & 512) == 512)");
