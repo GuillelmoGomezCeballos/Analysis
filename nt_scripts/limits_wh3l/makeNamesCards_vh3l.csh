@@ -1,6 +1,6 @@
 #!/bin/tcsh
 
-setenv MAINDIR /home/ceballos/releases/CMSSW_5_2_8/src/Ana/nt_scripts/limits_wh3l;
+setenv MAINDIR /home/ceballos/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/limits_wh3l;
 
 foreach mass (110 115 120 125 130 135 140 150 160 170 180 190 200)
 

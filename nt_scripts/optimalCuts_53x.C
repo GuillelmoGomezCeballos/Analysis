@@ -204,14 +204,15 @@ void optimalCuts_53x
   else if(thePlot >= 19 && thePlot <= 19) {nBinPlot = 200; xminPlot = 0.0; xmaxPlot = 200.0;}
   else if(thePlot >= 20 && thePlot <= 22) {nBinPlot = 180; xminPlot = 0.0; xmaxPlot = 180.0;}
   else if(thePlot >= 26 && thePlot <= 26) {nBinPlot = 100; xminPlot =-2.5; xmaxPlot = 2.5;}
-  else if(thePlot >= 23 && thePlot <= 29) {nBinPlot = 100; xminPlot = 0.0; xmaxPlot = 5.0;}
+  else if(thePlot >= 23 && thePlot <= 28) {nBinPlot = 100; xminPlot = 0.0; xmaxPlot = 5.0;}
+  else if(thePlot >= 29 && thePlot <= 29) {nBinPlot = 100; xminPlot = -1.0; xmaxPlot = 1.0;}
   else if(thePlot >= 30 && thePlot <= 30) {nBinPlot = 200; xminPlot = -5.0; xmaxPlot = 15.0;}
   else if(thePlot >= 31 && thePlot <= 32) {nBinPlot = 300; xminPlot = 0.0; xmaxPlot = 600.0;}
   else if(thePlot >= 33 && thePlot <= 33) {nBinPlot = 90; xminPlot = 0.0; xmaxPlot = 180.0;}
   else if(thePlot >= 34 && thePlot <= 34) {nBinPlot = 100; xminPlot = 0.0; xmaxPlot =  1000.0;}
   else if(thePlot >= 35 && thePlot <= 35) {nBinPlot = 50; xminPlot = 0.0; xmaxPlot =  8.75;}
   else if(thePlot >= 36 && thePlot <= 36) {nBinPlot = 3; xminPlot = -0.5; xmaxPlot =  2.5;}
-  else if(thePlot >= 37 && thePlot <= 37) {nBinPlot = 200; xminPlot = 0.0; xmaxPlot =  200.0;}
+  else if(thePlot >= 37 && thePlot <= 37) {nBinPlot = 200; xminPlot = 0.0; xmaxPlot =  2000.0;}
   else if(thePlot >= 38 && thePlot <= 38) {nBinPlot = 50; xminPlot = 0.0; xmaxPlot =  8.75;}
   else if(thePlot >= 39 && thePlot <= 39) {nBinPlot = 100; xminPlot = 0.0; xmaxPlot =  1.0;}
   else if(thePlot >= 40 && thePlot <= 41) {nBinPlot = 180; xminPlot = 0.0; xmaxPlot = 180.0;}
@@ -293,6 +294,9 @@ void optimalCuts_53x
   unsigned int patternTopVeto         = SmurfTree::TopVeto;
   unsigned int patternTopTag          = SmurfTree::TopTag;
   unsigned int patternTopTagNotInJets = SmurfTree::TopTagNotInJets;
+
+  float ewkMVA = -999.;
+  bgdEvent.tree_->SetBranchAddress("ewkMVA", &ewkMVA );
 
   int nBgd=bgdEvent.tree_->GetEntries();
   for (int i=0; i<nBgd; ++i) {
@@ -456,8 +460,8 @@ void optimalCuts_53x
           Njet3 == nJetsType &&
           bgdEvent.lep1_.Pt() > 20. &&
           bgdEvent.lep2_.Pt() > 20 &&
-          //passMET == true &&
-	  //passNewCuts == true &&
+          passMET == true &&
+	  passNewCuts == true &&
          (fabs(bgdEvent.dilep_.M()-91.1876) > 15. || bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me) && 
          (bgdEvent.cuts_ & patternTopVeto) == patternTopVeto &&
          //(bgdEvent.cuts_ & patternTopTagNotInJets) == patternTopTagNotInJets &&
@@ -496,20 +500,16 @@ void optimalCuts_53x
 	if(fDecay == 9) isSignalDecay = true;
       }
     } // Z selection
-    if(channel == 5){ // ttbar selection
+    if(channel == 5){ // Hem selection
       if(
-	  bgdEvent.dilep_.M()   > 12 &&
+	  bgdEvent.dilep_.M() > 20 && bgdEvent.dilep_.M() < 200 && 
          (bgdEvent.cuts_ & SmurfTree::ExtraLeptonVeto) == SmurfTree::ExtraLeptonVeto &&
           charge == 0 &&
-          bgdEvent.lep1_.Pt() > 20. &&
-          bgdEvent.lep2_.Pt() > 20. &&
-          passMET == true &&
-	  bgdEvent.njets_ >= 2 &&
-         (fabs(bgdEvent.dilep_.M()-91.1876) > 15. || bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me) && 
-	  bgdEvent.jet1Btag_ >= 2.1 &&
-	  bgdEvent.jet2Btag_ >= 2.1 &&
-         (nJetsType == 0 || bgdEvent.njets_ >= 4) &&
-        ((nJetsType != 2 || bgdEvent.njets_ >= 4) && (bgdEvent.jet1_+bgdEvent.jet2_).M() > 500 && TMath::Abs(bgdEvent.jet1_.Eta()-bgdEvent.jet2_.Eta()) > 3.5) &&
+          Njet3 == nJetsType && (nJetsType != 2 || ((bgdEvent.jet1_+bgdEvent.jet2_).M() > 500 && TMath::Abs(bgdEvent.jet1_.Eta()-bgdEvent.jet2_.Eta()) > 3.5)) &&
+          bgdEvent.lep1_.Pt() > 35. &&
+          bgdEvent.lep2_.Pt() > 35. &&
+         (bgdEvent.cuts_ & patternTopVeto) == patternTopVeto &&
+	  bgdEvent.mt_ < 50 &&
 	 (bgdEvent.type_ == lDecay || lDecay == 4 || (lDecay == 5 && (bgdEvent.type_ == SmurfTree::mm || bgdEvent.type_ == SmurfTree::ee)) || (lDecay == 6 && (bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me))) &&
 	 1 == 1
 	){
@@ -517,7 +517,7 @@ void optimalCuts_53x
 	passCuts = true;
 	if(fDecay == 5 || fDecay == 13) isSignalDecay = true;
       }
-    } // ttbar selection
+    } // Hem selection
 
     if(channel==15||channel==16 ||channel==17||channel==18){ // HHbbww selection
       bool passBtag[3] = {false,false,false};
@@ -898,7 +898,7 @@ void optimalCuts_53x
       else if(thePlot ==26) {if(fabs(bgdEvent.lid1_)==13) myVar = bgdEvent.lep1_.Eta();else if(fabs(bgdEvent.lid2_)==13) myVar = bgdEvent.lep2_.Eta(); else myVar=9;}
       else if(thePlot ==27) myVar = TMath::Min(fabs(bgdEvent.jet1_.Eta()),fabs(bgdEvent.jet2_.Eta()));
       else if(thePlot ==28) myVar = TMath::Max(fabs(bgdEvent.jet1_.Eta()),fabs(bgdEvent.jet2_.Eta()));
-      else if(thePlot ==29) myVar = TMath::Max(fabs(bgdEvent.jet1_.Eta()),fabs(bgdEvent.jet2_.Eta()));
+      else if(thePlot ==29) myVar = TMath::Max(TMath::Min((double)ewkMVA,0.999),-0.999);
       else if(thePlot ==30) myVar = TMath::Max(bgdEvent.jet1Btag_,bgdEvent.jet2Btag_);
       else if(thePlot ==31) myVar = 2*HWWKin.CalcMR();
       else if(thePlot ==32) myVar = 2*HWWKin.CalcMRNEW();
@@ -906,7 +906,7 @@ void optimalCuts_53x
       else if(thePlot ==34) myVar = Mjj;
       else if(thePlot ==35) myVar = qqDeltaEta;
       else if(thePlot ==36) myVar = Njet3;
-      else if(thePlot ==37) myVar = (bgdEvent.jet1_+bgdEvent.jet2_).M();
+      else if(thePlot ==37) myVar = TMath::Min((bgdEvent.jet1_+bgdEvent.jet2_).M(),1999.999);
       else if(thePlot ==38) myVar = TMath::Abs(bgdEvent.jet1_.Eta()-bgdEvent.jet2_.Eta());
       else if(thePlot ==39) myVar = TMath::Min(TMath::Max((1.3491*log((bgdEvent.jet1_+bgdEvent.jet2_).M())-0.01163*(bgdEvent.jet1_.Eta()*bgdEvent.jet2_.Eta())+1.433*TMath::Abs(bgdEvent.jet1_.Eta()-bgdEvent.jet2_.Eta())-7.647)/15.00,0.001),0.999);
       else if(thePlot ==40) myVar = DeltaPhi(bgdEvent.jet1_.Phi() ,bgdEvent.jet2_.Phi())*180.0/TMath::Pi();
@@ -994,6 +994,7 @@ void optimalCuts_53x
   }
 
   if((channel >= 0 && channel <= 8000)){
+    sigEvent.tree_->SetBranchAddress("ewkMVA", &ewkMVA );
     int nSig=sigEvent.tree_->GetEntries();
     for (int i=0; i<nSig; ++i) {
 
@@ -1125,8 +1126,8 @@ void optimalCuts_53x
           Njet3 == nJetsType &&
           sigEvent.lep1_.Pt() > 20. &&
           sigEvent.lep2_.Pt() > 20 &&
-          //passMET == true &&
-	  //passNewCuts == true &&
+          passMET == true &&
+	  passNewCuts == true &&
          (fabs(sigEvent.dilep_.M()-91.1876) > 15. || sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me) && 
          (sigEvent.cuts_ & patternTopVeto) == patternTopVeto &&
          //(sigEvent.cuts_ & patternTopTagNotInJets) == patternTopTagNotInJets &&
@@ -1163,27 +1164,23 @@ void optimalCuts_53x
       }
     } // Z selection
 
-    if(channel == 5){ // ttbar selection
+    if(channel == 5){ // Hem selection
       if(
-	  sigEvent.dilep_.M()   > 12 &&
+	  sigEvent.dilep_.M() > 20 && sigEvent.dilep_.M() < 200 && 
          (sigEvent.cuts_ & SmurfTree::ExtraLeptonVeto) == SmurfTree::ExtraLeptonVeto &&
           charge == 0 &&
-          sigEvent.lep1_.Pt() > 20. &&
-          sigEvent.lep2_.Pt() > 20. &&
-          passMET == true &&
-	  sigEvent.njets_ >= 2 &&
-         (fabs(sigEvent.dilep_.M()-91.1876) > 15. || sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me) && 
-	  sigEvent.jet1Btag_ >= 2.1 &&
-	  sigEvent.jet2Btag_ >= 2.1 &&
-         (nJetsType == 0 || sigEvent.njets_ >= 4) &&
-        ((nJetsType != 2 || sigEvent.njets_ >= 4) && (sigEvent.jet1_+sigEvent.jet2_).M() > 500 && TMath::Abs(sigEvent.jet1_.Eta()-sigEvent.jet2_.Eta()) > 3.5) &&
+          Njet3 == nJetsType && (nJetsType != 2 || ((sigEvent.jet1_+sigEvent.jet2_).M() > 500 && TMath::Abs(sigEvent.jet1_.Eta()-sigEvent.jet2_.Eta()) > 3.5)) &&
+          sigEvent.lep1_.Pt() > 35. &&
+          sigEvent.lep2_.Pt() > 35. &&
+         (sigEvent.cuts_ & patternTopVeto) == patternTopVeto &&
+	  sigEvent.mt_ < 50 &&
 	 (sigEvent.type_ == lDecay || lDecay == 4 || (lDecay == 5 && (sigEvent.type_ == SmurfTree::mm || sigEvent.type_ == SmurfTree::ee)) || (lDecay == 6 && (sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me))) &&
 	 1 == 1
 	){
 	//
 	passCuts = true;
       }
-    } // ttbar selection
+    } // Hem selection
 
     if(channel==15||channel==16 ||channel==17||channel==18){ // HHbbww selection
       bool passBtag[3] = {false,false,false};
@@ -1411,7 +1408,7 @@ void optimalCuts_53x
       else if(thePlot ==26) {if(fabs(sigEvent.lid1_)==13) myVar = sigEvent.lep1_.Eta();else if(fabs(sigEvent.lid2_)==13) myVar = sigEvent.lep2_.Eta(); else myVar=9;}
       else if(thePlot ==27) myVar = TMath::Min(fabs(sigEvent.jet1_.Eta()),fabs(sigEvent.jet2_.Eta()));
       else if(thePlot ==28) myVar = TMath::Max(fabs(sigEvent.jet1_.Eta()),fabs(sigEvent.jet2_.Eta()));
-      else if(thePlot ==29) myVar = TMath::Max(fabs(sigEvent.jet1_.Eta()),fabs(sigEvent.jet2_.Eta()));
+      else if(thePlot ==29) myVar = TMath::Max(TMath::Min((double)ewkMVA,0.999),-0.999);
       else if(thePlot ==30) myVar = TMath::Max(sigEvent.jet1Btag_,sigEvent.jet2Btag_);
       else if(thePlot ==31) myVar = 2*HWWKin.CalcMR();
       else if(thePlot ==32) myVar = 2*HWWKin.CalcMRNEW();
@@ -1419,7 +1416,7 @@ void optimalCuts_53x
       else if(thePlot ==34) myVar = Mjj;
       else if(thePlot ==35) myVar = qqDeltaEta;
       else if(thePlot ==36) myVar = Njet3;
-      else if(thePlot ==37) myVar = (sigEvent.jet1_+sigEvent.jet2_).M();
+      else if(thePlot ==37) myVar = TMath::Min((sigEvent.jet1_+sigEvent.jet2_).M(),1999.999);
       else if(thePlot ==38) myVar = TMath::Abs(sigEvent.jet1_.Eta()-sigEvent.jet2_.Eta());
       else if(thePlot ==39) myVar = TMath::Min(TMath::Max((1.3491*log((sigEvent.jet1_+sigEvent.jet2_).M())-0.01163*(sigEvent.jet1_.Eta()*sigEvent.jet2_.Eta())+1.433*TMath::Abs(sigEvent.jet1_.Eta()-sigEvent.jet2_.Eta())-7.647)/15.00,0.001),0.999);
       else if(thePlot ==40) myVar = DeltaPhi(sigEvent.jet1_.Phi() ,sigEvent.jet2_.Phi())*180.0/TMath::Pi();
@@ -1487,6 +1484,7 @@ void optimalCuts_53x
     }
     } // Loop over signal
   }
+  dataEvent.tree_->SetBranchAddress("ewkMVA", &ewkMVA );
   int nData=dataEvent.tree_->GetEntries();
   double nSelectedData = 0;
   for (int i=0; i<nData; ++i) {
@@ -1623,8 +1621,8 @@ void optimalCuts_53x
           Njet3 == nJetsType &&
           dataEvent.lep1_.Pt() > 20. &&
           dataEvent.lep2_.Pt() > 20 &&
-          //passMET == true &&
-	  //passNewCuts == true &&
+          passMET == true &&
+	  passNewCuts == true &&
          (fabs(dataEvent.dilep_.M()-91.1876) > 15. || dataEvent.type_ == SmurfTree::em || dataEvent.type_ == SmurfTree::me) && 
          (dataEvent.cuts_ & patternTopVeto) == patternTopVeto &&
          //(dataEvent.cuts_ & patternTopTagNotInJets) == patternTopTagNotInJets &&
@@ -1662,27 +1660,23 @@ void optimalCuts_53x
       }
     } // Z selection
 
-    if(channel == 5){ // ttbar selection
+    if(channel == 5){ // Hem selection
       if(
-	  dataEvent.dilep_.M()   > 12 &&
+	  dataEvent.dilep_.M() > 20 && dataEvent.dilep_.M() < 200 && 
          (dataEvent.cuts_ & SmurfTree::ExtraLeptonVeto) == SmurfTree::ExtraLeptonVeto &&
           charge == 0 &&
-          dataEvent.lep1_.Pt() > 20. &&
-          dataEvent.lep2_.Pt() > 20. &&
-          passMET == true &&
-	  dataEvent.njets_ >= 2 &&
-         (fabs(dataEvent.dilep_.M()-91.1876) > 15. || dataEvent.type_ == SmurfTree::em || dataEvent.type_ == SmurfTree::me) && 
-	  dataEvent.jet1Btag_ >= 2.1 &&
-	  dataEvent.jet2Btag_ >= 2.1 &&
-         (nJetsType == 0 || dataEvent.njets_ >= 4) &&
-        ((nJetsType != 2 || dataEvent.njets_ >= 4) && (dataEvent.jet1_+dataEvent.jet2_).M() > 500 && TMath::Abs(dataEvent.jet1_.Eta()-dataEvent.jet2_.Eta()) > 3.5) &&
+          Njet3 == nJetsType && (nJetsType != 2 || ((dataEvent.jet1_+dataEvent.jet2_).M() > 500 && TMath::Abs(dataEvent.jet1_.Eta()-dataEvent.jet2_.Eta()) > 3.5)) &&
+          dataEvent.lep1_.Pt() > 35. &&
+          dataEvent.lep2_.Pt() > 35. &&
+         (dataEvent.cuts_ & patternTopVeto) == patternTopVeto &&
+	  dataEvent.mt_ < 50 &&
 	 (dataEvent.type_ == lDecay || lDecay == 4 || (lDecay == 5 && (dataEvent.type_ == SmurfTree::mm || dataEvent.type_ == SmurfTree::ee)) || (lDecay == 6 && (dataEvent.type_ == SmurfTree::em || dataEvent.type_ == SmurfTree::me))) &&
 	 1 == 1
 	){
 	//
 	passCuts = true;
       }
-    } // ttbar selection
+    } // Hem selection
 
     if(channel==15||channel==16 ||channel==17||channel==18){ // HHbbww selection
       bool passBtag[3] = {false,false,false};
@@ -1864,7 +1858,7 @@ void optimalCuts_53x
       else if(thePlot ==26) {if(fabs(dataEvent.lid1_)==13) myVar = dataEvent.lep1_.Eta();else if(fabs(dataEvent.lid2_)==13) myVar = dataEvent.lep2_.Eta(); else myVar=9;}
       else if(thePlot ==27) myVar = TMath::Min(fabs(dataEvent.jet1_.Eta()),fabs(dataEvent.jet2_.Eta()));
       else if(thePlot ==28) myVar = TMath::Max(fabs(dataEvent.jet1_.Eta()),fabs(dataEvent.jet2_.Eta()));
-      else if(thePlot ==29) myVar = TMath::Max(fabs(dataEvent.jet1_.Eta()),fabs(dataEvent.jet2_.Eta()));
+      else if(thePlot ==29) myVar = TMath::Max(TMath::Min((double)ewkMVA,0.999),-0.999);
       else if(thePlot ==30) myVar = TMath::Max(dataEvent.jet1Btag_,dataEvent.jet2Btag_);
       else if(thePlot ==31) myVar = 2*HWWKin.CalcMR();
       else if(thePlot ==32) myVar = 2*HWWKin.CalcMRNEW();
@@ -1872,7 +1866,7 @@ void optimalCuts_53x
       else if(thePlot ==34) myVar = Mjj;
       else if(thePlot ==35) myVar = qqDeltaEta;
       else if(thePlot ==36) myVar = Njet3;
-      else if(thePlot ==37) myVar = (dataEvent.jet1_+dataEvent.jet2_).M();
+      else if(thePlot ==37) myVar = TMath::Min((dataEvent.jet1_+dataEvent.jet2_).M(),1999.999);
       else if(thePlot ==38) myVar = TMath::Abs(dataEvent.jet1_.Eta()-dataEvent.jet2_.Eta());
       else if(thePlot ==39) myVar = TMath::Min(TMath::Max((1.3491*log((dataEvent.jet1_+dataEvent.jet2_).M())-0.01163*(dataEvent.jet1_.Eta()*dataEvent.jet2_.Eta())+1.433*TMath::Abs(dataEvent.jet1_.Eta()-dataEvent.jet2_.Eta())-7.647)/15.00,0.001),0.999);
       else if(thePlot ==40) myVar = DeltaPhi(dataEvent.jet1_.Phi() ,dataEvent.jet2_.Phi())*180.0/TMath::Pi();

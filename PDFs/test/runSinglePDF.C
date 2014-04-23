@@ -3,7 +3,7 @@
 #include <string>
 #include "TTree.h"
 #include "TFile.h"
-#include "/home/ceballos/releases/CMSSW_5_3_14/src/Ana/PDFs/interface/pdf.h"
+#include "/home/ceballos/releases/CMSSW_5_3_14/src/Analysis/PDFs/interface/pdf.h"
 void runSinglePDF(std::string iName,int iPDF,std::string iPDFName, int nsel, unsigned int nJetsType = 0) {
   mithep::pdf a(iName, iPDF, iPDFName, nsel, nJetsType);
 }

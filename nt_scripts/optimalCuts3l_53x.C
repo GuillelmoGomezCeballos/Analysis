@@ -2877,6 +2877,8 @@ void optimalCuts3l_53x
       newcardCut << Form("UEPS                       lnN 1.030 1.030	  -     -     -	    -       -   1.030 1.030\n");
       newcardCut << Form("pdf_qqbar                  lnN %5.3f %5.3f    1.015 1.040   -	  1.300   1.500 %5.3f %5.3f\n",PDF_VH,PDF_VH,PDF_VH,PDF_VH);
       newcardCut << Form("QCDscale_VH                lnN %5.3f %5.3f	  -     -     -	    -       -   %5.3f %5.3f\n",QCDscale_VH,QCDscale_VH,QCDscale_VH,QCDscale_VH);	  
+      newcardCut << Form("BRhiggs_htt		     lnN  1.0569    -	  -	-     -    -	   -  1.0569	 -\n");
+      newcardCut << Form("BRhiggs_hvv		     lnN     -   1.0423   -	-     -    -	   -	 -     1.0423\n");
       newcardCut << Form("CMS_vh3l_WZ_8TeV           lnN   -	 -      1.050   -     -     -       -     -	-  \n");	  
       newcardCut << Form("CMS_vh3l%d_stat_WH_htt_8TeV  lnN %5.3f   -	 -      -     -     -       -     -     -  \n",nsel,signalError[1]);	
       newcardCut << Form("CMS_vh3l%d_stat_WH_hww_8TeV  lnN   -   %5.3f	 -      -     -     -       -     -     -  \n",nsel,signalError[0]);	
@@ -3204,6 +3206,8 @@ void optimalCuts3l_53x
       newcardShape << Form("UEPS				   lnN   1.030 1.030   -     -     -	 -	 -   1.030 1.030\n");
       newcardShape << Form("pdf_qqbar				   lnN   %5.3f %5.3f 1.015 1.040   -	1.300  1.500 %5.3f %5.3f\n",PDF_VH,PDF_VH,PDF_VH,PDF_VH);
       newcardShape << Form("QCDscale_VH 			   lnN   %5.3f %5.3f   -     -     -	 -	 -   %5.3f %5.3f\n",QCDscale_VH,QCDscale_VH,QCDscale_VH,QCDscale_VH);			  
+      newcardShape << Form("BRhiggs_htt 	                   lnN  1.0569    -     -	  -	-    -       -  1.0569     -\n");
+      newcardShape << Form("BRhiggs_hvv 	                   lnN     -   1.0423   -	  -	-    -       -     -	 1.0423\n");
       newcardShape << Form("CMS_vh3l_WZ_8TeV			   lnN     -	 -   1.090   -     -	 -	 -     -     - \n");
       if(histo_WH_htt->GetSumOfWeights() > 0)	 
       newcardShape << Form("CMS_MVAWH_httStatBounding_8TeV_vh3l%d     shape   1.000   -     -     -     -	 -	 -     -     - \n",nsel);
