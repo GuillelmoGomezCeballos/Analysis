@@ -120,6 +120,7 @@ cat compare.txt >> pdf_nnpdf_alphas.txt;
 root -l -q -b runSinglePDF.C+\(\"${dirB}\",0,\"NNPDF21_as_0121_100.LHgrid\",${NSEL},${NJETS}\);
 cat compare.txt >> pdf_nnpdf_alphas.txt;
 
+rm -f compare.txt;
 root -l -q -b final_pdf_error.C+;
 
 exit 0;

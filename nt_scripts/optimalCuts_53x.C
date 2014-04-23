@@ -204,7 +204,8 @@ void optimalCuts_53x
   else if(thePlot >= 19 && thePlot <= 19) {nBinPlot = 200; xminPlot = 0.0; xmaxPlot = 200.0;}
   else if(thePlot >= 20 && thePlot <= 22) {nBinPlot = 180; xminPlot = 0.0; xmaxPlot = 180.0;}
   else if(thePlot >= 26 && thePlot <= 26) {nBinPlot = 100; xminPlot =-2.5; xmaxPlot = 2.5;}
-  else if(thePlot >= 23 && thePlot <= 29) {nBinPlot = 100; xminPlot = 0.0; xmaxPlot = 5.0;}
+  else if(thePlot >= 23 && thePlot <= 28) {nBinPlot = 100; xminPlot = 0.0; xmaxPlot = 5.0;}
+  else if(thePlot >= 29 && thePlot <= 29) {nBinPlot = 100; xminPlot = -1.0; xmaxPlot = 1.0;}
   else if(thePlot >= 30 && thePlot <= 30) {nBinPlot = 200; xminPlot = -5.0; xmaxPlot = 15.0;}
   else if(thePlot >= 31 && thePlot <= 32) {nBinPlot = 300; xminPlot = 0.0; xmaxPlot = 600.0;}
   else if(thePlot >= 33 && thePlot <= 33) {nBinPlot = 90; xminPlot = 0.0; xmaxPlot = 180.0;}
@@ -293,6 +294,9 @@ void optimalCuts_53x
   unsigned int patternTopVeto         = SmurfTree::TopVeto;
   unsigned int patternTopTag          = SmurfTree::TopTag;
   unsigned int patternTopTagNotInJets = SmurfTree::TopTagNotInJets;
+
+  float ewkMVA = -999.;
+  bgdEvent.tree_->SetBranchAddress("ewkMVA", &ewkMVA );
 
   int nBgd=bgdEvent.tree_->GetEntries();
   for (int i=0; i<nBgd; ++i) {
@@ -456,8 +460,8 @@ void optimalCuts_53x
           Njet3 == nJetsType &&
           bgdEvent.lep1_.Pt() > 20. &&
           bgdEvent.lep2_.Pt() > 20 &&
-          //passMET == true &&
-	  //passNewCuts == true &&
+          passMET == true &&
+	  passNewCuts == true &&
          (fabs(bgdEvent.dilep_.M()-91.1876) > 15. || bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me) && 
          (bgdEvent.cuts_ & patternTopVeto) == patternTopVeto &&
          //(bgdEvent.cuts_ & patternTopTagNotInJets) == patternTopTagNotInJets &&
@@ -894,7 +898,7 @@ void optimalCuts_53x
       else if(thePlot ==26) {if(fabs(bgdEvent.lid1_)==13) myVar = bgdEvent.lep1_.Eta();else if(fabs(bgdEvent.lid2_)==13) myVar = bgdEvent.lep2_.Eta(); else myVar=9;}
       else if(thePlot ==27) myVar = TMath::Min(fabs(bgdEvent.jet1_.Eta()),fabs(bgdEvent.jet2_.Eta()));
       else if(thePlot ==28) myVar = TMath::Max(fabs(bgdEvent.jet1_.Eta()),fabs(bgdEvent.jet2_.Eta()));
-      else if(thePlot ==29) myVar = TMath::Max(fabs(bgdEvent.jet1_.Eta()),fabs(bgdEvent.jet2_.Eta()));
+      else if(thePlot ==29) myVar = TMath::Max(TMath::Min((double)ewkMVA,0.999),-0.999);
       else if(thePlot ==30) myVar = TMath::Max(bgdEvent.jet1Btag_,bgdEvent.jet2Btag_);
       else if(thePlot ==31) myVar = 2*HWWKin.CalcMR();
       else if(thePlot ==32) myVar = 2*HWWKin.CalcMRNEW();
@@ -990,6 +994,7 @@ void optimalCuts_53x
   }
 
   if((channel >= 0 && channel <= 8000)){
+    sigEvent.tree_->SetBranchAddress("ewkMVA", &ewkMVA );
     int nSig=sigEvent.tree_->GetEntries();
     for (int i=0; i<nSig; ++i) {
 
@@ -1121,8 +1126,8 @@ void optimalCuts_53x
           Njet3 == nJetsType &&
           sigEvent.lep1_.Pt() > 20. &&
           sigEvent.lep2_.Pt() > 20 &&
-          //passMET == true &&
-	  //passNewCuts == true &&
+          passMET == true &&
+	  passNewCuts == true &&
          (fabs(sigEvent.dilep_.M()-91.1876) > 15. || sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me) && 
          (sigEvent.cuts_ & patternTopVeto) == patternTopVeto &&
          //(sigEvent.cuts_ & patternTopTagNotInJets) == patternTopTagNotInJets &&
@@ -1403,7 +1408,7 @@ void optimalCuts_53x
       else if(thePlot ==26) {if(fabs(sigEvent.lid1_)==13) myVar = sigEvent.lep1_.Eta();else if(fabs(sigEvent.lid2_)==13) myVar = sigEvent.lep2_.Eta(); else myVar=9;}
       else if(thePlot ==27) myVar = TMath::Min(fabs(sigEvent.jet1_.Eta()),fabs(sigEvent.jet2_.Eta()));
       else if(thePlot ==28) myVar = TMath::Max(fabs(sigEvent.jet1_.Eta()),fabs(sigEvent.jet2_.Eta()));
-      else if(thePlot ==29) myVar = TMath::Max(fabs(sigEvent.jet1_.Eta()),fabs(sigEvent.jet2_.Eta()));
+      else if(thePlot ==29) myVar = TMath::Max(TMath::Min((double)ewkMVA,0.999),-0.999);
       else if(thePlot ==30) myVar = TMath::Max(sigEvent.jet1Btag_,sigEvent.jet2Btag_);
       else if(thePlot ==31) myVar = 2*HWWKin.CalcMR();
       else if(thePlot ==32) myVar = 2*HWWKin.CalcMRNEW();
@@ -1479,6 +1484,7 @@ void optimalCuts_53x
     }
     } // Loop over signal
   }
+  dataEvent.tree_->SetBranchAddress("ewkMVA", &ewkMVA );
   int nData=dataEvent.tree_->GetEntries();
   double nSelectedData = 0;
   for (int i=0; i<nData; ++i) {
@@ -1615,8 +1621,8 @@ void optimalCuts_53x
           Njet3 == nJetsType &&
           dataEvent.lep1_.Pt() > 20. &&
           dataEvent.lep2_.Pt() > 20 &&
-          //passMET == true &&
-	  //passNewCuts == true &&
+          passMET == true &&
+	  passNewCuts == true &&
          (fabs(dataEvent.dilep_.M()-91.1876) > 15. || dataEvent.type_ == SmurfTree::em || dataEvent.type_ == SmurfTree::me) && 
          (dataEvent.cuts_ & patternTopVeto) == patternTopVeto &&
          //(dataEvent.cuts_ & patternTopTagNotInJets) == patternTopTagNotInJets &&
@@ -1852,7 +1858,7 @@ void optimalCuts_53x
       else if(thePlot ==26) {if(fabs(dataEvent.lid1_)==13) myVar = dataEvent.lep1_.Eta();else if(fabs(dataEvent.lid2_)==13) myVar = dataEvent.lep2_.Eta(); else myVar=9;}
       else if(thePlot ==27) myVar = TMath::Min(fabs(dataEvent.jet1_.Eta()),fabs(dataEvent.jet2_.Eta()));
       else if(thePlot ==28) myVar = TMath::Max(fabs(dataEvent.jet1_.Eta()),fabs(dataEvent.jet2_.Eta()));
-      else if(thePlot ==29) myVar = TMath::Max(fabs(dataEvent.jet1_.Eta()),fabs(dataEvent.jet2_.Eta()));
+      else if(thePlot ==29) myVar = TMath::Max(TMath::Min((double)ewkMVA,0.999),-0.999);
       else if(thePlot ==30) myVar = TMath::Max(dataEvent.jet1Btag_,dataEvent.jet2Btag_);
       else if(thePlot ==31) myVar = 2*HWWKin.CalcMR();
       else if(thePlot ==32) myVar = 2*HWWKin.CalcMRNEW();

@@ -22,6 +22,11 @@
    0.56 \pm  0.07 &    2.69 \pm  0.27 &  153 &  155.26 \pm  3.44 &   59.13 \pm  0.82 &    3.86 \pm  0.05 &   79.95 \pm  3.25 &    0.62 \pm  0.61 &   11.70 \pm  0.47\\
    0.35 \pm  0.05 &    2.14 \pm  0.23 &   45 &   47.67 \pm  1.33 &   34.86 \pm  0.63 &    1.88 \pm  0.04 &    9.63 \pm  1.17 &    0.00 \pm  0.00 &    1.29 \pm  0.11\\
    0.30 \pm  0.05 &    2.10 \pm  0.24 &   33 &   33.22 \pm  1.14 &   23.99 \pm  0.52 &    1.38 \pm  0.03 &    7.19 \pm  1.01 &    0.00 \pm  0.00 &    0.65 \pm  0.07\\
+====> WZ VBS
+       if(dataEvent.event_ ==  89453736 || dataEvent.event_ == 1190375613 || 
+          dataEvent.event_ == 114252084 || dataEvent.event_ ==  536218638 ||
+	  dataEvent.event_ == 744134481) passCuts[lType][WZSEL] = false;
+
 ====> spin 0/2-reweighting
 * spin0-0j-8tev
     myWeight=myWeight*0.82;

@@ -34,7 +34,7 @@ pdf::pdf(std::string iName,int iPDF,std::string iPDFName, int nsel, unsigned int
   double sumRECO = 0.0;
   double sumGEN = 0.0;
 
-  bool useDYMVA = true;
+  bool useDYMVA = false;
   bool WWXSSel = false; double ptLepMin = 10.0;
   if(nsel == 1) WWXSSel = true;
   if(WWXSSel == true) ptLepMin = 20.;

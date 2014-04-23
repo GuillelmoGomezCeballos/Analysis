@@ -24,13 +24,13 @@
 ./runPDF.sh  9 1; rm -rf hwwsel1j_wwggww;   mkdir hwwsel1j_wwggww;   mv pdf_*txt  hwwsel1j_wwggww/;
 ./runPDF.sh 10 1; rm -rf hwwsel1j_hww;      mkdir hwwsel1j_hww;      mv pdf_*txt  hwwsel1j_hww/;
 
-./runPDF.sh 11 0; rm -rf zzsel0j_zz2l;	    mkdir zzsel0j_zz2l;      mv pdf_*txt  zzsel0j_zz2l/;
-./runPDF.sh 12 0; rm -rf zzsel0j_wz3l;	    mkdir zzsel0j_wz3l;      mv pdf_*txt  zzsel0j_wz3l/;
-./runPDF.sh 13 0; rm -rf zzsel0j_zh;	    mkdir zzsel0j_zh;        mv pdf_*txt  zzsel0j_zh/;
+./runPDF.sh 11 0; rm -rf zzsel0j_zz2l;     mkdir zzsel0j_zz2l;      mv pdf_*txt  zzsel0j_zz2l/;
+./runPDF.sh 12 0; rm -rf zzsel0j_wz3l;     mkdir zzsel0j_wz3l;      mv pdf_*txt  zzsel0j_wz3l/;
+./runPDF.sh 13 0; rm -rf zzsel0j_zh;	   mkdir zzsel0j_zh;	    mv pdf_*txt  zzsel0j_zh/;
 
-./runPDF.sh 11 1; rm -rf zzsel1j_zz2l;	    mkdir zzsel1j_zz2l;      mv pdf_*txt  zzsel1j_zz2l/;
-./runPDF.sh 12 1; rm -rf zzsel1j_wz3l;	    mkdir zzsel1j_wz3l;      mv pdf_*txt  zzsel1j_wz3l/;
-./runPDF.sh 13 1; rm -rf zzsel1j_zh;	    mkdir zzsel1j_zh;        mv pdf_*txt  zzsel1j_zh/;
+./runPDF.sh 11 1; rm -rf zzsel1j_zz2l;     mkdir zzsel1j_zz2l;      mv pdf_*txt  zzsel1j_zz2l/;
+./runPDF.sh 12 1; rm -rf zzsel1j_wz3l;     mkdir zzsel1j_wz3l;      mv pdf_*txt  zzsel1j_wz3l/;
+./runPDF.sh 13 1; rm -rf zzsel1j_zh;	   mkdir zzsel1j_zh;	    mv pdf_*txt  zzsel1j_zh/;
 
-./runPDF.sh 14 0; rm -rf wwsssel_wwss;	    mkdir wwsssel_wwss;      mv pdf_*txt  wwsssel_wwss/;
-./runPDF.sh 15 0; rm -rf wwsssel_wz3l;	    mkdir wwsssel_wz3l;      mv pdf_*txt  wwsssel_wz3l/;
+./runPDF.sh 14 0; rm -rf wwsssel_wwss;     mkdir wwsssel_wwss;      mv pdf_*txt  wwsssel_wwss/;
+./runPDF.sh 15 0; rm -rf wwsssel_wz3l;     mkdir wwsssel_wz3l;      mv pdf_*txt  wwsssel_wz3l/;
