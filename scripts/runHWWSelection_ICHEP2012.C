@@ -546,65 +546,135 @@ void runHWWSelection(const char *catalogDir   = "~/scratch0/catalog",
   else if(nsel == 255){
     fDecay = 19;
   }
-  else if(nsel == 290){
+  else if(nsel == 256){
     myRootFile = "histo_bbww_8tev";
     files[0]   = "/data/blue/ceballos/skims/bbww8tev/*.root";
     //files[0]   = "/data/blue/cmsprod/bbww/sqrts_8tev/*.root";
     fDecay = 125; theMH = 125; theWidth =  4.03e-03; theBWflag = -1;
   }
-  else if(nsel == 291){
+  else if(nsel == 257){
     myRootFile = "histo_bbww_14tev";
     files[0]   = "/data/blue/ceballos/skims/bbww14tev/*.root";
     //files[0]   = "/data/blue/cmsprod/bbww/sqrts_14tev/*.root";
     fDecay = 125; theMH = 125; theWidth =  4.03e-03; theBWflag = -1;
   }
-  else if(nsel == 292){
+  else if(nsel == 260){
+    myRootFile = "histo_ZH_HToGoldGoldGamma";
+    files[0]   = "/castor/cern.ch/user/a/arapyan/Bambu/029c/ZH_HToGoldGoldGamma/*.root";
+    fDecay = 125;
+  }
+  else if(nsel == 261){
+    myRootFile = "histo_wwss_qed_4_qcd_99_ls0ls1";
+    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_4_qcd_99_ls0ls1/*.root";
+    fDecay = 34;
+    addLheWeights = true;
+  }
+  else if(nsel == 281){
     myRootFile = "histo_wwss_qed_2_qcd_99_matching";
     files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_2_qcd_99_matching_unmerged_v2/*.root";
     fDecay = 34;
     addLheWeights = true; isSaveAll = true;
   }
-  else if(nsel == 293){
+  else if(nsel == 282){
     myRootFile = "histo_wwss_qed_2_qcd_99_no_matching";
     files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_2_qcd_99_no_matching_unmerged_v2/*.root";
     fDecay = 34;
     addLheWeights = true; isSaveAll = true;
   }
-  else if(nsel == 294){
+  else if(nsel == 283){
     myRootFile = "histo_wwss_qed_4_qcd_99_lt012";
     files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_4_qcd_99_lt012_unmerged/*.root";
     fDecay = 34;
     addLheWeights = true; isSaveAll = true;
   }
-  else if(nsel == 295){
+  else if(nsel == 284){
     myRootFile = "histo_wwss_qed_4_qcd_99_lm0123";
     files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_4_qcd_99_lm0123_unmerged_v2/*.root";
     fDecay = 34;
     addLheWeights = true; isSaveAll = true;
   }
-  else if(nsel == 296){
+  else if(nsel == 285){
     myRootFile = "histo_wwss_qed_4_qcd_99_ls0ls1";
     files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_4_qcd_99_ls0ls1_unmerged_v2/*.root";
     fDecay = 34;
     addLheWeights = true; isSaveAll = true;
   }
-  else if(nsel == 297){
+  else if(nsel == 286){
+    myRootFile = "histo_qed_5_qcd_0_wz";
+    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_5_qcd_0_wz_unmerged/*.root";
+    fDecay = 34;
+    addLheWeights = true; isSaveAll = true;
+  }
+  else if(nsel == 287){
     myRootFile = "histo_qed_5_qcd_0_wz_lt012";
     files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_5_qcd_0_wz_lt1_1p25_unmerged/*.root";
     fDecay = 34;
     addLheWeights = true; isSaveAll = true;
   }
-  else if(nsel == 298){
-    myRootFile = "histo_qed_5_qcd_0_wz_lm0123";
-    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU//*.root";
+  else if(nsel == 288){
+    myRootFile = "histo_qed_5_qcd_0_wzgamma";
+    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_5_qcd_0_wzgamma_unmerged/*.root";
     fDecay = 34;
     addLheWeights = true; isSaveAll = true;
   }
-  else if(nsel == 299){
+  else if(nsel == 289){
     myRootFile = "histo_qed_5_qcd_0_wz_ls0ls1";
     files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU//*.root";
     fDecay = 34;
     addLheWeights = true; isSaveAll = true;
+  }
+  else if(nsel == 290){
+    myRootFile = "histo_qed_4_qcd_99_ls_lm_lt";
+    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_4_qcd_99_ls_lm_lt_v5_unmerged/*.root";
+    fDecay = 34;
+    addLheWeights = true; isSaveAll = true;
+  }
+  else if(nsel == 291){
+    myRootFile = "histo_wwss_qed_2_qcd_99_sm";
+    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_2_qcd_99_sm_unmerged/*.root";
+    fDecay = 34;
+    addLheWeights = true; isSaveAll = true;
+  }
+  else if(nsel == 292){
+    myRootFile = "histo_wwss_qed_4_qcd_99_sm";
+    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_4_qcd_99_sm_unmerged/*.root";
+    fDecay = 34;
+    addLheWeights = true; isSaveAll = true;
+  }
+  else if(nsel == 293){
+    myRootFile = "histo_wwss_qed_4_qcd_0_sm";
+    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_4_qcd_0_sm_unmerged/*.root";
+    fDecay = 34;
+    addLheWeights = true; isSaveAll = true;
+  }
+  else if(nsel == 294){
+    myRootFile = "histo_wzgamma_qed_3_qcd_99_sm";
+    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/wzgamma_qed_3_qcd_99_sm/*.root";
+    fDecay = 27;
+    addLheWeights = true;
+  }
+  else if(nsel == 295){
+    myRootFile = "histo_wzgamma_qed_5_qcd_99_sm";
+    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/wzgamma_qed_5_qcd_99_sm_unmerged/*.root";
+    fDecay = 27;
+    addLheWeights = true;
+  }
+  else if(nsel == 296){
+    myRootFile = "histo_wzgamma_qed_5_qcd_0_sm";
+    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/wzgamma_qed_5_qcd_0_sm/*.root";
+    fDecay = 27;
+    addLheWeights = true;
+  }
+  else if(nsel == 297){
+    myRootFile = "histo_wzgamma_qed_5_qcd_0_lt1_1p25";
+    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/wzgamma_qed_5_qcd_0_lt1_1p25_unmerged/*.root";
+    fDecay = 27;
+    addLheWeights = true;
+  }
+  else if(nsel == 298){
+    myRootFile = "histo_hpp_mh200";
+    files[0]   = "/castor/cern.ch/user/a/arapyan/Bambu/029c/mh200/*.root";
+    fDecay = 125;
   }
   else if(nsel == 299){
     myRootFile = "histo_ww_new";
@@ -1663,13 +1733,11 @@ void runHWWSelection(const char *catalogDir   = "~/scratch0/catalog",
   else {
     WlnEvtSelMod1    ->Add(HwwMakeNtupleMod0);
     HwwMakeNtupleMod0->Add(HwwMakeNtupleMod1);
-    if(nsel == 203 || nsel == 206 || nsel >= 300){
-      HwwMakeNtupleMod1->Add(HwwMakeNtupleMod2);
-      HwwMakeNtupleMod2->Add(HwwMakeNtupleMod3);
-      if(isPhotonMCSel == true){
-         cout << "isPhotonMCSel is true" << endl;
-        HwwMakeNtupleMod3->Add(HwwMakeNtupleMod4);
-      }
+    HwwMakeNtupleMod1->Add(HwwMakeNtupleMod2);
+    HwwMakeNtupleMod2->Add(HwwMakeNtupleMod3);
+    if(isPhotonMCSel == true){
+       cout << "isPhotonMCSel is true" << endl;
+      HwwMakeNtupleMod3->Add(HwwMakeNtupleMod4);
     }
   }
 
