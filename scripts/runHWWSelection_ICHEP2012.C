@@ -564,8 +564,33 @@ void runHWWSelection(const char *catalogDir   = "~/scratch0/catalog",
     fDecay = 125;
   }
   else if(nsel == 261){
+    myRootFile = "histo_hpp_mh160";
+    files[0]   = "/castor/cern.ch/user/a/arapyan/Bambu/029c/DoublyChargedHiggsToWWToLL_M-160_TuneZ2_8TeV-madgraph/*.root";
+    fDecay = 125;
+  }
+  else if(nsel == 262){
+    myRootFile = "histo_hpp_mh200";
+    files[0]   = "/castor/cern.ch/user/a/arapyan/Bambu/029c/DoublyChargedHiggsToWWToLL_M-200_TuneZ2_8TeV-madgraph/*.root";
+    fDecay = 125;
+  }
+  else if(nsel == 263){
+    myRootFile = "histo_hpp_mh400";
+    files[0]   = "/castor/cern.ch/user/a/arapyan/Bambu/029c/DoublyChargedHiggsToWWToLL_M-400_TuneZ2_8TeV-madgraph/*.root";
+    fDecay = 125;
+  }
+  else if(nsel == 264){
+    myRootFile = "histo_hpp_mh600";
+    files[0]   = "/castor/cern.ch/user/a/arapyan/Bambu/029c/DoublyChargedHiggsToWWToLL_M-600_TuneZ2_8TeV-madgraph/*.root";
+    fDecay = 125;
+  }
+  else if(nsel == 265){
+    myRootFile = "histo_hpp_mh800";
+    files[0]   = "/castor/cern.ch/user/a/arapyan/Bambu/029c/DoublyChargedHiggsToWWToLL_M-800_TuneZ2_8TeV-madgraph/*.root";
+    fDecay = 125;
+  }
+  else if(nsel == 280){
     myRootFile = "histo_wwss_qed_4_qcd_99_ls0ls1";
-    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_4_qcd_99_ls0ls1/*.root";
+    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_4_qcd_99_ls0ls1_v4_unmerged/*.root";
     fDecay = 34;
     addLheWeights = true;
   }
@@ -595,9 +620,9 @@ void runHWWSelection(const char *catalogDir   = "~/scratch0/catalog",
   }
   else if(nsel == 285){
     myRootFile = "histo_wwss_qed_4_qcd_99_ls0ls1";
-    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_4_qcd_99_ls0ls1_unmerged_v2/*.root";
+    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_4_qcd_99_ls0ls1_v12_unmerged/*.root";
     fDecay = 34;
-    addLheWeights = true; isSaveAll = true;
+    addLheWeights = true; isSaveAll = false;
   }
   else if(nsel == 286){
     myRootFile = "histo_qed_5_qcd_0_wz";
@@ -625,9 +650,9 @@ void runHWWSelection(const char *catalogDir   = "~/scratch0/catalog",
   }
   else if(nsel == 290){
     myRootFile = "histo_qed_4_qcd_99_ls_lm_lt";
-    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_4_qcd_99_ls_lm_lt_v5_unmerged/*.root";
+    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_4_qcd_99_ls_lm_lt_v8_unmerged/*.root";
     fDecay = 34;
-    addLheWeights = true; isSaveAll = true;
+    addLheWeights = true;
   }
   else if(nsel == 291){
     myRootFile = "histo_wwss_qed_2_qcd_99_sm";
@@ -670,11 +695,6 @@ void runHWWSelection(const char *catalogDir   = "~/scratch0/catalog",
     files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/wzgamma_qed_5_qcd_0_lt1_1p25_unmerged/*.root";
     fDecay = 27;
     addLheWeights = true;
-  }
-  else if(nsel == 298){
-    myRootFile = "histo_hpp_mh200";
-    files[0]   = "/castor/cern.ch/user/a/arapyan/Bambu/029c/mh200/*.root";
-    fDecay = 125;
   }
   else if(nsel == 299){
     myRootFile = "histo_ww_new";
