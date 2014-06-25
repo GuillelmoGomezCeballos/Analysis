@@ -35,7 +35,7 @@ void optimalCuts3l_53x
  TString systInputFile    = "ntuples_53x/hww_syst_3l.root",
  bool fillInfoNote = true,
  double mhAna = 125,
- int period = 13
+ int period = 3
  )
 {
   bool applyFRCorr   = true;

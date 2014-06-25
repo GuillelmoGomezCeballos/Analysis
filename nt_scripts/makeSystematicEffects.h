@@ -352,16 +352,16 @@ void makeSystematicEffects(int lid1_, int lid2_, LorentzVector lep1_, LorentzVec
 	  (pllx+met*cos(metPhi)+plly+met*sin(metPhi))*
 	  (pllx+met*cos(metPhi)+plly+met*sin(metPhi));
     if(mtZ >= 0) mtZ = sqrt(mtZ); else mtZ = 0.0;
-    double p2l2jx  = lep1_.px()+lep2_.px()+jet1_.px()*1.05+jet2_.px()*1.05;
-    double p2l2jy  = lep1_.py()+lep2_.py()+jet1_.py()*1.05+jet2_.py()*1.05;
-    double p2l2jz  = lep1_.pz()+lep2_.pz()+jet1_.pz()*1.05+jet2_.pz()*1.05;
-    double e2l2j   = lep1_.E() +lep2_.E() +jet1_.E() *1.05+jet2_.E() *1.05;
+    double p2l2jx  = lep1_.px()+lep2_.px()+jet1_.px()*1.04+jet2_.px()*1.04;
+    double p2l2jy  = lep1_.py()+lep2_.py()+jet1_.py()*1.04+jet2_.py()*1.04;
+    double p2l2jz  = lep1_.pz()+lep2_.pz()+jet1_.pz()*1.04+jet2_.pz()*1.04;
+    double e2l2j   = lep1_.E() +lep2_.E() +jet1_.E() *1.04+jet2_.E() *1.04;
     m2l2j = e2l2j*e2l2j -p2l2jx*p2l2jx -p2l2jy*p2l2jy -p2l2jz*p2l2jz;
     if(m2l2j >=0) m2l2j = sqrt(m2l2j); else m2l2j = 0.0;
-    double p2jx  = jet1_.px()*1.05+jet2_.px()*1.05;
-    double p2jy  = jet1_.py()*1.05+jet2_.py()*1.05;
-    double p2jz  = jet1_.pz()*1.05+jet2_.pz()*1.05;
-    double e2j   = jet1_.E() *1.05+jet2_.E() *1.05;
+    double p2jx  = jet1_.px()*1.04+jet2_.px()*1.04;
+    double p2jy  = jet1_.py()*1.04+jet2_.py()*1.04;
+    double p2jz  = jet1_.pz()*1.04+jet2_.pz()*1.04;
+    double e2j   = jet1_.E() *1.04+jet2_.E() *1.04;
     m2j = e2j*e2j -p2jx*p2jx -p2jy*p2jy -p2jz*p2jz;
     if(m2j >=0) m2j = sqrt(m2j); else m2j = 0.0;
   }
@@ -389,16 +389,16 @@ void makeSystematicEffects(int lid1_, int lid2_, LorentzVector lep1_, LorentzVec
 	  (pllx+met*cos(metPhi)+plly+met*sin(metPhi))*
 	  (pllx+met*cos(metPhi)+plly+met*sin(metPhi));
     if(mtZ >= 0) mtZ = sqrt(mtZ); else mtZ = 0.0;
-    double p2l2jx  = lep1_.px()+lep2_.px()+jet1_.px()*0.95+jet2_.px()*0.95;
-    double p2l2jy  = lep1_.py()+lep2_.py()+jet1_.py()*0.95+jet2_.py()*0.95;
-    double p2l2jz  = lep1_.pz()+lep2_.pz()+jet1_.pz()*0.95+jet2_.pz()*0.95;
-    double e2l2j   = lep1_.E() +lep2_.E() +jet1_.E() *0.95+jet2_.E() *0.95;
+    double p2l2jx  = lep1_.px()+lep2_.px()+jet1_.px()*0.96+jet2_.px()*0.96;
+    double p2l2jy  = lep1_.py()+lep2_.py()+jet1_.py()*0.96+jet2_.py()*0.96;
+    double p2l2jz  = lep1_.pz()+lep2_.pz()+jet1_.pz()*0.96+jet2_.pz()*0.96;
+    double e2l2j   = lep1_.E() +lep2_.E() +jet1_.E() *0.96+jet2_.E() *0.96;
     m2l2j = e2l2j*e2l2j -p2l2jx*p2l2jx -p2l2jy*p2l2jy -p2l2jz*p2l2jz;
     if(m2l2j >=0) m2l2j = sqrt(m2l2j); else m2l2j = 0.0;
-    double p2jx  = jet1_.px()*0.95+jet2_.px()*0.95;
-    double p2jy  = jet1_.py()*0.95+jet2_.py()*0.95;
-    double p2jz  = jet1_.pz()*0.95+jet2_.pz()*0.95;
-    double e2j   = jet1_.E() *0.95+jet2_.E() *0.95;
+    double p2jx  = jet1_.px()*0.96+jet2_.px()*0.96;
+    double p2jy  = jet1_.py()*0.96+jet2_.py()*0.96;
+    double p2jz  = jet1_.pz()*0.96+jet2_.pz()*0.96;
+    double e2j   = jet1_.E() *0.96+jet2_.E() *0.96;
     m2j = e2j*e2j -p2jx*p2jx -p2jy*p2jy -p2jz*p2jz;
     if(m2j >=0) m2j = sqrt(m2j); else m2j = 0.0;
   }

@@ -47,7 +47,7 @@ void ww_ana
  int thePlot = 9,
  int lSel = 4,
  unsigned int nJetsType = 0,
- TString bgdInputFile    = "ntuples_53x/backgroundA_skim6.root",
+ TString bgdInputFile    = "ntuples_53x/backgroundD_skim6.root",
  TString signalInputFile = "ntuples_53x/hww125.root",
  TString dataInputFile   = "ntuples_53x/data_skim6.root",
  TString systInputFile   = "ntuples_53x/hww_syst_skim6.root",
@@ -187,7 +187,7 @@ void ww_ana
 
   int nBinPlot      = 200;
   double xminPlot   = 0.0;
-  double xmaxPlot   = 400.0;
+  double xmaxPlot   = 200.0;
 
   if     (thePlot >=  8 && thePlot <=  8) {nBinPlot = 50;  xminPlot =   0.0; xmaxPlot = 400.0;}
   else if(thePlot >= 12 && thePlot <= 12) {nBinPlot =200;  xminPlot =   0.0; xmaxPlot = 200.0;}
@@ -220,7 +220,7 @@ void ww_ana
   else if(thePlot >= 49 && thePlot <= 52) {nBinPlot = 300; xminPlot = -15.; xmaxPlot = 15.;}
   else if(thePlot >= 53 && thePlot <= 55) {nBinPlot = 36; xminPlot = 0.0; xmaxPlot = 180.0;}
   else if(thePlot >= 56 && thePlot <= 56) {nBinPlot = 100; xminPlot = 0.0; xmaxPlot = 100.0;}
-  else if(thePlot >= 57 && thePlot <= 57) {nBinPlot = 44; xminPlot = 0.0; xmaxPlot = 4.4;}
+  else if(thePlot >= 57 && thePlot <= 57) {nBinPlot = 50; xminPlot = 0.0; xmaxPlot = 5.0;}
 
   TH1D* histos;
   histos = new TH1D("histos", "histos", nBinPlot, xminPlot, xmaxPlot);
@@ -453,6 +453,21 @@ void ww_ana
       (bgdEvent.cuts_ & SmurfTree::Trigger) != SmurfTree::Trigger) continue;
     if(bgdEvent.dstype_ == SmurfTree::data && bgdEvent.run_ <  minRun) continue;
     if(bgdEvent.dstype_ == SmurfTree::data && bgdEvent.run_ >  maxRun) continue;
+
+    LorentzVector genjet_jer1;
+    double deltaRJJGen = 999.9;
+    if(DeltaR(bgdEvent.jet1_.Phi(),bgdEvent.jet1_.Eta(),bgdEvent.genjet1_.Phi(),bgdEvent.genjet1_.Eta()) < deltaRJJGen) {
+      deltaRJJGen = DeltaR(bgdEvent.jet1_.Phi(),bgdEvent.jet1_.Eta(),bgdEvent.genjet1_.Phi(),bgdEvent.genjet1_.Eta());
+      genjet_jer1 = bgdEvent.genjet1_;
+    }
+    if(DeltaR(bgdEvent.jet1_.Phi(),bgdEvent.jet1_.Eta(),bgdEvent.genjet2_.Phi(),bgdEvent.genjet2_.Eta()) < deltaRJJGen) {
+      deltaRJJGen = DeltaR(bgdEvent.jet1_.Phi(),bgdEvent.jet1_.Eta(),bgdEvent.genjet2_.Phi(),bgdEvent.genjet2_.Eta());
+      genjet_jer1 = bgdEvent.genjet2_;
+    }
+    if(DeltaR(bgdEvent.jet1_.Phi(),bgdEvent.jet1_.Eta(),bgdEvent.genjet3_.Phi(),bgdEvent.genjet3_.Eta()) < deltaRJJGen) {
+      deltaRJJGen = DeltaR(bgdEvent.jet1_.Phi(),bgdEvent.jet1_.Eta(),bgdEvent.genjet3_.Phi(),bgdEvent.genjet3_.Eta());
+      genjet_jer1 = bgdEvent.genjet3_;
+    }
 
     int fDecay = 0;
     if     (bgdEvent.dstype_ == SmurfTree::data  	   ) fDecay =  1;
@@ -850,7 +865,7 @@ void ww_ana
 	else if(thePlot ==52) myVar = bgdEvent.trackMet_*sin(bgdEvent.trackMetPhi_);
 	else if(thePlot ==53) myVar = DeltaPhi(bgdEvent.jet3_.Phi(),bgdEvent.jet4_.Phi())*180.0/TMath::Pi();
 	else if(thePlot ==55) myVar = bgdEvent.dPhiDiLepMET_*180.0/TMath::Pi();
-	else if(thePlot ==57) myVar = bgdEvent.dR_;
+	else if(thePlot ==57) myVar = TMath::Min(deltaRJJGen,4.999);
         if     (fDecay == 14 || fDecay == 29 || fDecay == 30){
           histo0->Fill(myVar,theWeight);
         }
@@ -1072,11 +1087,11 @@ void ww_ana
     if(useDYMVA == false){
       if     (systEvent.njets_ == 0) passMET = passMET && (usedMet > 45. || systEvent.type_ == SmurfTree::em || systEvent.type_ == SmurfTree::me);
       else if(systEvent.njets_ == 1) passMET = passMET && (usedMet > 45. || systEvent.type_ == SmurfTree::em || systEvent.type_ == SmurfTree::me);
-      else                          passMET = passMET && (systEvent.met_ > 45.0 || systEvent.type_ == SmurfTree::em || systEvent.type_ == SmurfTree::me);
+      else                           passMET = passMET && (systEvent.met_ > 45.0 || systEvent.type_ == SmurfTree::em || systEvent.type_ == SmurfTree::me);
     } else {
       if     (systEvent.njets_ == 0) passMET = passMET && (systEvent.dymva_ >  0.88 || systEvent.type_ == SmurfTree::em || systEvent.type_ == SmurfTree::me);
       else if(systEvent.njets_ == 1) passMET = passMET && (systEvent.dymva_ >  0.84 || systEvent.type_ == SmurfTree::em || systEvent.type_ == SmurfTree::me);
-      else                          passMET = passMET && (systEvent.met_   >  45.0 || systEvent.type_ == SmurfTree::em || systEvent.type_ == SmurfTree::me);
+      else                           passMET = passMET && (systEvent.met_   >  45.0 || systEvent.type_ == SmurfTree::em || systEvent.type_ == SmurfTree::me);
     }
     bool dPhiDiLepJetCut = true;
     if(useDYMVA == false){
@@ -1274,6 +1289,21 @@ void ww_ana
                (sigEvent.cuts_ & SmurfTree::Lep2FullSelection) == SmurfTree::Lep2FullSelection;
 
     if(!lId) continue;
+
+    LorentzVector genjet_jer1;
+    double deltaRJJGen = 999.9;
+    if(DeltaR(sigEvent.jet1_.Phi(),sigEvent.jet1_.Eta(),sigEvent.genjet1_.Phi(),sigEvent.genjet1_.Eta()) < deltaRJJGen) {
+      deltaRJJGen = DeltaR(sigEvent.jet1_.Phi(),sigEvent.jet1_.Eta(),sigEvent.genjet1_.Phi(),sigEvent.genjet1_.Eta());
+      genjet_jer1 = sigEvent.genjet1_;
+    }
+    if(DeltaR(sigEvent.jet1_.Phi(),sigEvent.jet1_.Eta(),sigEvent.genjet2_.Phi(),sigEvent.genjet2_.Eta()) < deltaRJJGen) {
+      deltaRJJGen = DeltaR(sigEvent.jet1_.Phi(),sigEvent.jet1_.Eta(),sigEvent.genjet2_.Phi(),sigEvent.genjet2_.Eta());
+      genjet_jer1 = sigEvent.genjet2_;
+    }
+    if(DeltaR(sigEvent.jet1_.Phi(),sigEvent.jet1_.Eta(),sigEvent.genjet3_.Phi(),sigEvent.genjet3_.Eta()) < deltaRJJGen) {
+      deltaRJJGen = DeltaR(sigEvent.jet1_.Phi(),sigEvent.jet1_.Eta(),sigEvent.genjet3_.Phi(),sigEvent.genjet3_.Eta());
+      genjet_jer1 = sigEvent.genjet3_;
+    }
 
     bool passSystCuts[2][nSelTypesSyst-2] = {{false, false, false, false, false},
 			                     {false, false, false, false, false}};
@@ -1484,7 +1514,7 @@ void ww_ana
 	else if(thePlot ==52) myVar = sigEvent.trackMet_*sin(sigEvent.trackMetPhi_);
 	else if(thePlot ==53) myVar = DeltaPhi(sigEvent.jet3_.Phi(),sigEvent.jet4_.Phi())*180.0/TMath::Pi();
 	else if(thePlot ==55) myVar = sigEvent.dPhiDiLepMET_*180.0/TMath::Pi();
-	else if(thePlot ==57) myVar = sigEvent.dR_;
+	else if(thePlot ==57) myVar = TMath::Min(deltaRJJGen,4.999);
       	histos->Fill(myVar,theWeight);
       } // end making plots
 
@@ -1640,7 +1670,7 @@ void ww_ana
 	else if(thePlot ==52) myVar = dataEvent.trackMet_*sin(dataEvent.trackMetPhi_);
 	else if(thePlot ==53) myVar = DeltaPhi(dataEvent.jet3_.Phi(),dataEvent.jet4_.Phi())*180.0/TMath::Pi();
 	else if(thePlot ==55) myVar = dataEvent.dPhiDiLepMET_*180.0/TMath::Pi();
-	else if(thePlot ==57) myVar = dataEvent.dR_;
+	else if(thePlot ==57) myVar = TMath::Min(0.0,4.999);
       	histo5->Fill(myVar,1.0);
       } // end making plots
 
@@ -1823,25 +1853,31 @@ void ww_ana
   if(showSignalOnly == false) printf("Syst(xWjM) = %6.4f %6.4f %6.4f %6.4f %6.4f %6.4f %6.4f\n",systEffect[JESUP][10]-1,systEffect[JESDOWN][10]-1,systEffect[LEPP][10]-1,systEffect[LEPM][10]-1,systEffect[MET][10]-1,systEffect[EFFP][10]-1,systEffect[EFFM][10]-1);
 
   double WjetsSyst = 1.36;
-  double pdf_qqbar[5] = {1.022,1.040,1.040,1.040,1.040}; // qqWW,VV,VVV,Wg3l,Wgamma
-  double pdf_gg[2] = {1.007,1.080}; // Higgs,ggWW
+  double pdf_qqbar[5] = {1.013,1.040,1.040,1.040,1.040}; // qqWW,VV,VVV,Wg3l,Wgamma
+  double pdf_gg[2] = {1.008,1.080}; // ggWW,Higgs
   double QCDscale_VV[2] = {1.03,1.05};
 
   double XS_QCDscale_ggH[3] = {1.160, 0.920, 1.000};
-  double XS_QCDscale_WW[3]  = {1.042, 0.974, 1.000};
+  double XS_QCDscale_WW[3]  = {1.035, 0.987, 1.000};
   if     (nJetsType == 1){
+    pdf_qqbar[0] = 1.033;
+    pdf_gg[0] = 1.007;
     XS_QCDscale_ggH[0] = 1.000;
     XS_QCDscale_ggH[1] = 1.280;
     XS_QCDscale_ggH[2] = 0.970;
     XS_QCDscale_WW[0] = 1.000; XS_QCDscale_WW[1] = 1.076; XS_QCDscale_WW[2] = 0.914;
   }
   else if(nJetsType == 2){
+    pdf_qqbar[0] = 1.033;
+    pdf_gg[0] = 1.007;
     XS_QCDscale_ggH[0] = 1.000;
     XS_QCDscale_ggH[1] = 1.000;
     XS_QCDscale_ggH[2] = 1.350;
     XS_QCDscale_WW[0] = 1.000; XS_QCDscale_WW[1] = 1.000; XS_QCDscale_WW[2] = 1.420;
   }
   else if(nJetsType == 3){
+    pdf_qqbar[0] = 1.019;
+    pdf_gg[0] = 1.008;
     XS_QCDscale_ggH[0] = 1.000;
     XS_QCDscale_ggH[1] = 1.0+0.28*(1.0-events_0Jet[1]/histo_Higgs->GetSumOfWeights());
     XS_QCDscale_ggH[2] = 1.0-0.03*(1.0-events_0Jet[1]/histo_Higgs->GetSumOfWeights());
@@ -2457,13 +2493,13 @@ Double_t DYBkgScaleFactorKappa(Int_t jetBin) {
 
 Double_t TopBkgScaleFactor(Int_t jetBin) {
   assert(jetBin >=0 && jetBin <= 2);
-  Double_t TopBkgScaleFactor[3] = { 1.11772, 1.07841, 1.12262   };
+  Double_t TopBkgScaleFactor[3] = {  1.11623, 1.0799, 1.15335  };
   return TopBkgScaleFactor[jetBin];
 }
 
 Double_t TopBkgScaleFactorKappa(Int_t jetBin) {
   assert(jetBin >=0 && jetBin <= 2);
-  Double_t TopBkgScaleFactorKappa[3] = { 1.12165, 1.03079, 1.02698   };
+  Double_t TopBkgScaleFactorKappa[3] = { 1.12232, 1.0307, 1.02679   };
   return TopBkgScaleFactorKappa[jetBin];
 }
 

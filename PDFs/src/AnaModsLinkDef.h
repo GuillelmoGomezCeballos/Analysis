@@ -1,6 +1,7 @@
 #ifndef MODS_LINKDEF_H
 #define MODS_LINKDEF_H
 #include "Analysis/PDFs/interface/pdf.h"
+#include "Analysis/PDFs/interface/pdfFiller.h"
 #include "Analysis/PDFs/interface/pdf_reweighting.h"
 #include "Analysis/PDFs/interface/MitNtupleEvent.h"
 #include "Analysis/PDFs/interface/MitPDFNtupleEvent.h"
@@ -16,6 +17,7 @@
 #pragma link C++ namespace mithep;
 
 #pragma link C++ class mithep::pdf+;
+#pragma link C++ class mithep::pdfFiller+;
 #pragma link C++ class mithep::pdf_reweighting+;
 #pragma link C++ class MitNtupleEvent+;
 #pragma link C++ class MitPDFNtupleEvent+;

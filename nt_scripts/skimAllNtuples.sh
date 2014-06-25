@@ -12,7 +12,7 @@ root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"wz_py.root\",\"wz_py_skim0.root\",0\);             mv wz_py_skim0.root       wz_py.root;
 
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"gghww125_minlo.root\",\"gghww125_minlo_skim0.root\",0\);    mv gghww125_minlo_skim0.root  gghww125_minlo.root;
-root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"hww125.root\",\"hww125_skim0.root\",0\);		       mv hww125_skim0.root	     hww125.root;
+root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"hww125.root\",\"hww125_skim0.root\",0\);                    mv hww125_skim0.root	     hww125.root;
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"hzz4l125.root\",\"hzz4l125_skim0.root\",0\); 	       mv hzz4l125_skim0.root	     hzz4l125.root;
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"vhtt125.root\",\"vhtt125_skim0.root\",0\);		       mv vhtt125_skim0.root	     vhtt125.root;
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"xww0m125.root\",\"xww0m125_skim0.root\",0\); 	       mv xww0m125_skim0.root	     xww0m125.root;
@@ -44,7 +44,8 @@ root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"wz3l_ewk_lt012.root\",\"wz3l_ewk_lt012_skim0.root\",0\);					mv wz3l_ewk_lt012_skim0.root			 wz3l_ewk_lt012.root;
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"wwss_ph_wh.root\",\"wwss_ph_wh_skim0.root\",0\);						mv wwss_ph_wh_skim0.root			 wwss_ph_wh.root;
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"wwss_ph_noh.root\",\"wwss_ph_noh_skim0.root\",0\);						mv wwss_ph_noh_skim0.root			 wwss_ph_noh.root;
-root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"wwss_qed_4_qcd_99_ls_lm_lt.root\",\"wwss_qed_4_qcd_99_ls_lm_lt_skim0.root\",0\);		mv wwss_qed_4_qcd_99_ls_lm_lt_skim0.root	 wwss_qed_4_qcd_99_ls_lm_lt.root;
+root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"wwss_qed_4_qcd_99_ls_lm_lt.root\",\"wwss_qed_4_qcd_99_ls_lm_lt_skim0.root\",0\); 	 	mv wwss_qed_4_qcd_99_ls_lm_lt_skim0.root	 wwss_qed_4_qcd_99_ls_lm_lt.root;
+root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"wwss_qed_4_qcd_99_ls_lm_lt_v8.root\",\"wwss_qed_4_qcd_99_ls_lm_lt_v8_skim0.root\",0\);       mv wwss_qed_4_qcd_99_ls_lm_lt_v8_skim0.root	 wwss_qed_4_qcd_99_ls_lm_lt_v8.root;
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"wwss_qed_4_qcd_99_sm.root\",\"wwss_qed_4_qcd_99_sm_skim0.root\",0\); 	   mv wwss_qed_4_qcd_99_sm_skim0.root	  wwss_qed_4_qcd_99_sm.root;
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"wwss_qed_2_qcd_99_sm.root\",\"wwss_qed_2_qcd_99_sm_skim0.root\",0\); 	   mv wwss_qed_2_qcd_99_sm_skim0.root	  wwss_qed__qcd_99_sm.root;
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"wwss_qed_4_qcd_0_sm.root\",\"wwss_qed_4_qcd_0_sm_skim0.root\",0\);		   mv wwss_qed_4_qcd_0_sm_skim0.root	  wwss_qed_4_qcd_0_sm.root;
@@ -142,10 +143,6 @@ rm aux1.root
 #root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"aux1.root\",\"backgroundA_skim8_ls0ls1.root\",8\)
 #rm aux1.root
 
-hadd -f aux1.root backgroundA_skim8.root ww_dps.root wwss_qed_4_qcd_99_ls_lm_lt.root wz3l_ewk_lt012.root
-root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"aux1.root\",\"backgroundA_skim8_ls_lm_lt.root\",8\)
-rm aux1.root
-
 hadd -f aux1.root backgroundA_skim8.root ww_dps.root wwss_qed_4_qcd_99_sm.root wz3l_ewk_sm.root
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"aux1.root\",\"backgroundA_skim8_sm.root\",8\)
 rm aux1.root
@@ -154,15 +151,30 @@ hadd -f aux1.root backgroundEWK_skim8.root ww_dps.root wwss_qed_4_qcd_99_ls0ls1.
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"aux1.root\",\"backgroundEWK_skim8_ls0ls1.root\",8\)
 rm aux1.root
 
+hadd -f aux1.root backgroundEWK_skim8.root ww_dps.root wwss_qed_4_qcd_99_ls0ls1_v6.root
+root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"aux1.root\",\"backgroundEWK_skim8_ls0ls1_v6.root\",8\)
+rm aux1.root
+
+hadd -f aux1.root backgroundEWK_skim8.root ww_dps.root wwss_qed_4_qcd_99_ls0ls1_v12.root
+root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"aux1.root\",\"backgroundEWK_skim8_ls0ls1_v12.root\",8\)
+rm aux1.root
+
 hadd -f aux1.root backgroundEWK_skim8.root ww_dps.root wwss_qed_4_qcd_99_ls_lm_lt.root
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"aux1.root\",\"backgroundEWK_skim8_ls_lm_lt.root\",8\)
+rm aux1.root
+
+hadd -f aux1.root backgroundEWK_skim8.root ww_dps.root wwss_qed_4_qcd_99_ls_lm_lt_v8.root
+root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"aux1.root\",\"backgroundEWK_skim8_ls_lm_lt_v8.root\",8\)
 rm aux1.root
 
 hadd -f aux1.root backgroundEWK_skim8.root ww_dps.root wwss_qed_4_qcd_99_sm.root
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"aux1.root\",\"backgroundEWK_skim8_sm.root\",8\)
 rm aux1.root
 
+hadd -f backgroundEWK_skim8_sm_hpp_mh160.root backgroundEWK_skim8_sm.root hpp_mh160.root
 hadd -f backgroundEWK_skim8_sm_hpp_mh200.root backgroundEWK_skim8_sm.root hpp_mh200.root
+hadd -f backgroundEWK_skim8_sm_hpp_mh400.root backgroundEWK_skim8_sm.root hpp_mh400.root
+hadd -f backgroundEWK_skim8_sm_hpp_mh600.root backgroundEWK_skim8_sm.root hpp_mh600.root
 hadd -f backgroundEWK_skim8_sm_hpp_mh800.root backgroundEWK_skim8_sm.root hpp_mh800.root
 
 hadd -f aux1.root backgroundEWK_skim8.root ww_dps.root wwss_qed_4_qcd_99_sm.root wwss_qed_2_qcd_99_sm_subtr.root wwss_qed_2_qcd_99_sm_wwtype.root
@@ -186,10 +198,6 @@ rm aux2.root
 #hadd -f aux2.root backgroundA_skim14.root ww_dps.root wwss_qed_4_qcd_99_ls0ls1.root wz3l_ewk_ls0ls1.root
 #root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"aux2.root\",\"backgroundA_skim14_ls0ls1.root\",14\)
 #rm aux2.root
-
-hadd -f aux2.root backgroundA_skim14.root ww_dps.root wwss_qed_4_qcd_99_ls_lm_lt.root wz3l_ewk_lt012.root
-root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"aux2.root\",\"backgroundA_skim14_ls_lm_lt.root\",14\)
-rm aux2.root
 
 hadd -f aux2.root backgroundA_skim14.root ww_dps.root wwss_qed_4_qcd_99_sm.root wz3l_ewk_sm.root
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"aux2.root\",\"backgroundA_skim14_sm.root\",14\)
