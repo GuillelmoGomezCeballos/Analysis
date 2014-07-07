@@ -7,7 +7,7 @@ root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"backgroundD.root\",\"backgroundD_skim0.root\",0\); mv backgroundD_skim0.root backgroundD.root;
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"backgroundEWK.root\",\"backgroundEWK_skim0.root\",0\); mv backgroundEWK_skim0.root backgroundEWK.root;
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"zz.root\",\"zz_skim0.root\",0\);                   mv zz_skim0.root          zz.root;
- root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"zz4l_powheg.root\",\"zz4l_powheg_skim0.root\",0\); mv zz4l_powheg_skim0.root zz4l_powheg.root;
+root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"zz4l_powheg.root\",\"zz4l_powheg_skim0.root\",0\); mv zz4l_powheg_skim0.root zz4l_powheg.root;
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"wz.root\",\"wz_skim0.root\",0\);                   mv wz_skim0.root          wz.root;
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"wz_py.root\",\"wz_py_skim0.root\",0\);             mv wz_py_skim0.root       wz_py.root;
 

@@ -281,9 +281,9 @@ namespace TMVAGlob {
             cout << "--- the corresponding lines (line no. 239-241) in tmvaglob.C" << endl;
             cout << "--- --------------------------------------------------------------------" << endl;
             //c->Print(epsName);
-            // c->Print(pngName);
-            // c->Print(gifName);
-             c->Print(pdfName);
+            //c->Print(pngName);
+            //c->Print(gifName);
+            //c->Print(pdfName);
          }
       }
    }
