@@ -282,8 +282,8 @@ namespace TMVAGlob {
             cout << "--- --------------------------------------------------------------------" << endl;
             //c->Print(epsName);
             //c->Print(pngName);
-            //c->Print(gifName);
             //c->Print(pdfName);
+            //c->Print(gifName);
          }
       }
    }

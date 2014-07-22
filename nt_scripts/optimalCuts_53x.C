@@ -64,7 +64,8 @@ void optimalCuts_53x
   if(WWXSSel == true) ptLepMin = 20.;
 
   SmurfTree bgdEvent;
-  bgdEvent.LoadTree(bgdInputFile,-1);
+  if(thePlot != 63 && thePlot != 64) bgdEvent.LoadTree(bgdInputFile,-1);
+  else                               bgdEvent.LoadTree(bgdInputFile,0);
   bgdEvent.InitTree(0);
 
   SmurfTree sigEvent;
@@ -232,6 +233,7 @@ void optimalCuts_53x
   else if(thePlot >= 60 && thePlot <= 60) {nBinPlot = 40; xminPlot = 0.0; xmaxPlot = 4.0;}
   else if(thePlot >= 61 && thePlot <= 61) {nBinPlot = 180; xminPlot =  0.0; xmaxPlot =  180.0;}
   else if(thePlot >= 62 && thePlot <= 62) {nBinPlot = 72; xminPlot = -1.0; xmaxPlot =  1.0;}
+  else if(thePlot >= 63 && thePlot <= 64) {nBinPlot = 400; xminPlot = 0.0; xmaxPlot =  400.0;}
   nBin = nBinPlot;
 
   double nSigCut[6]  = {0,0,0,0,0,0};
@@ -304,6 +306,12 @@ void optimalCuts_53x
     if (i%100000 == 0 && verboseLevel > 0)
       printf("--- reading event %5d of %5d\n",i,nBgd);
     bgdEvent.tree_->GetEntry(i);
+    
+    if(thePlot == 63 || thePlot == 64){
+      if     (thePlot == 63) histo0->Fill(TMath::Min((bgdEvent.genlep1_+bgdEvent.genlep2_+bgdEvent.genmet_).Pt(),399.999),1.0);
+      else if(thePlot == 64) histo0->Fill(TMath::Min((bgdEvent.genPart1_+bgdEvent.genPart2_+bgdEvent.genPart3_+bgdEvent.genPart4_).Pt(),399.999),1.0);
+      continue;
+    }
 
     if(!(((bgdEvent.cuts_ & SmurfTree::Lep1FullSelection) == SmurfTree::Lep1FullSelection && (bgdEvent.cuts_ & SmurfTree::Lep2FullSelection) != SmurfTree::Lep2FullSelection) ||
          ((bgdEvent.cuts_ & SmurfTree::Lep1FullSelection) != SmurfTree::Lep1FullSelection && (bgdEvent.cuts_ & SmurfTree::Lep2FullSelection) == SmurfTree::Lep2FullSelection) ||

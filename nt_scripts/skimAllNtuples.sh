@@ -68,6 +68,7 @@ root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"backgroundA.root\",\"backgroundA_skim1.root\",1\)
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"data.root\",\"data_skim1.root\",1\)
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"hww_syst.root\",\"hww_syst_skim1.root\",1\)
+root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"backgroundD.root\",\"backgroundD_skim1.root\",1\)
 
 ################### trilepton
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"backgroundA.root\",\"backgroundA_3l.root\",5\)
