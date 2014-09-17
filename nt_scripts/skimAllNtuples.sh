@@ -27,6 +27,8 @@ root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"xww1m125_7tev.root\",\"xww1m125_7tev_skim0.root\",0\);	mv xww1m125_7tev_skim0.root   xww1m125_7tev.root;
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"xww1mix125_7tev.root\",\"xww1mix125_7tev_skim0.root\",0\);	mv xww1mix125_7tev_skim0.root xww1mix125_7tev.root;
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"xww1p125_7tev.root\",\"xww1p125_7tev_skim0.root\",0\);	mv xww1p125_7tev_skim0.root   xww1p125_7tev.root;
+root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"wpwp_8_tev_qed_4_qcd_99_atlas.root\",\"wpwp_8_tev_qed_4_qcd_99_atlas_skim0.root\",0\);	mv wpwp_8_tev_qed_4_qcd_99_atlas_skim0.root   wpwp_8_tev_qed_4_qcd_99_atlas.root;
+root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"wpwp_13_tev_qed_4_qcd_0.root\",\"wpwp_13_tev_qed_4_qcd_0_skim0.root\",0\);	mv wpwp_13_tev_qed_4_qcd_0_skim0.root   wpwp_13_tev_qed_4_qcd_0.root;
 
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"training.root\",\"training_skim0.root\",0\);              mv training_skim0.root 	   training.root;
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"hww_syst.root\",\"hww_syst_skim0.root\",0\);              mv hww_syst_skim0.root 	   hww_syst.root;

@@ -42,7 +42,7 @@ void optimalCuts_42x
  TString signalInputFile = "ntuples_42x_v9/hww126.root",
  TString dataInputFile   = "ntuples_42x_v9/data_skim6.root",
  bool fillInfoNote = false,
- double mhAna = 4,
+ double mhAna = 16,
  int period = 4
  )
 {
@@ -185,7 +185,8 @@ void optimalCuts_42x
   double xminPlot   = 0.0;
   double xmaxPlot   = 200.0;
 
-  if     (thePlot >=  8 && thePlot <=  8) {nBinPlot = 200; xminPlot = 0.0; xmaxPlot = 200.0;}
+  if     (thePlot >=  7 && thePlot <=  7) {nBinPlot =  25; xminPlot =  0.0; xmaxPlot = 200.0;}
+  else if(thePlot >=  8 && thePlot <=  8) {nBinPlot =  30; xminPlot = 60.0; xmaxPlot = 280.0;}
   else if(thePlot >= 13 && thePlot <= 13) {nBinPlot = 200; xminPlot = 0.0; xmaxPlot = 200.0;}
   else if(thePlot >=  0 && thePlot <= 14) {}
   else if(thePlot >= 15 && thePlot <= 16) {nBinPlot = 200; xminPlot = 0.0; xmaxPlot = 1.0;}

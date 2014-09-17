@@ -340,8 +340,8 @@ void GammaXEvtSelMod::Process()
 
   //  1 gamma + jets
   if(CleanPhotons->GetEntries() >= 1){
-    int nHisto = 0;
-    if(isGoodMCPhoton[0] == kFALSE) nHisto = 20;
+    //int nHisto = 0;
+    //if(isGoodMCPhoton[0] == kFALSE) nHisto = 20;
 
     JetOArr *NoGammaJets = new JetOArr;
     NoGammaJets->SetName("NoGammaJets");

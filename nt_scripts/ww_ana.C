@@ -61,7 +61,7 @@ void ww_ana
   double ptJetMin = 30.0; double ptLLMin = 30.0; double metMin = 20.0; double ptLMin = 20.0;
   double useFullStatTemplates = true;
 
-  bool fCheckProblem = true;
+  bool fCheckProblem = false;
 
   SmurfTree bgdEvent;
   bgdEvent.LoadTree(bgdInputFile,-1);

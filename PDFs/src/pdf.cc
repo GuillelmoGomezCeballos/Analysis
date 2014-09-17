@@ -5,9 +5,9 @@
 #include "TMath.h"
 #include "TFile.h"
 #include "LHAPDF/LHAPDF.h"
-#include "/afs/cern.ch/user/c/ceballos/releases/CMSSW_5_3_14/src/Smurf/Core/SmurfTree.h"
-#include "/afs/cern.ch/user/c/ceballos/releases/CMSSW_5_3_14/src/Smurf/Analysis/HWWlvlv/factors.h"
-#include "/afs/cern.ch/user/c/ceballos/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/trilepton.h"
+#include "/home/ceballos/releases/CMSSW_5_3_20/src/Smurf/Core/SmurfTree.h"
+#include "/home/ceballos/releases/CMSSW_5_3_20/src/Smurf/Analysis/HWWlvlv/factors.h"
+#include "/home/ceballos/releases/CMSSW_5_3_20/src/Analysis/nt_scripts/trilepton.h"
 #include "Analysis/PDFs/interface/pdf.h"
 
 using namespace mithep;
