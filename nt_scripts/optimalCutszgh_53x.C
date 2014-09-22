@@ -273,7 +273,7 @@ void optimalCutszgh_53x
     }
   }
 
-  //unsigned int patternTopVeto = SmurfTree::TopVeto;
+  unsigned int patternTopVeto = SmurfTree::TopVeto;
 
   int nBgd=bgdEvent.tree_->GetEntries();
   for (int evt=0; evt<nBgd; ++evt) {
@@ -395,7 +395,7 @@ void optimalCutszgh_53x
 
     double metNew[2]; metChange(bgdEvent.met_,bgdEvent.metPhi_,metNew,gamma);
     double theMET = metNew[0]; double theMETPHI = metNew[1]; 
-    bool passBtagVeto      = bgdEvent.nSoftMuons_ == 0 && (bgdEvent.jet1_.Pt() <= 20 || bgdEvent.jet1ProbBtag_ < 0.244) && (bgdEvent.jet2_.Pt() <= 20 || bgdEvent.jet2ProbBtag_ < 0.244) && (bgdEvent.jet3_.Pt() <= 20 || bgdEvent.jet3ProbBtag_ < 0.244) && (bgdEvent.jet4_.Pt() <= 20 || bgdEvent.jet4ProbBtag_ < 0.244);
+    bool passBtagVeto      = (bgdEvent.cuts_ & patternTopVeto) == patternTopVeto;
     bool passZMass         = fabs(dilep.mass()-91.1876) < 15.;
     bool passZMassLarge    = fabs(dilep.mass()-91.1876) < 30.;
     bool passZMassSB       = (dilep.mass() > 110.0 && dilep.mass() < 200.0);
@@ -711,7 +711,7 @@ void optimalCutszgh_53x
 
     double metNew[2]; metChange(dataEvent.met_,dataEvent.metPhi_,metNew,gamma);
     double theMET = metNew[0]; double theMETPHI = metNew[1]; 
-    bool passBtagVeto      = dataEvent.nSoftMuons_ == 0 && (dataEvent.jet1_.Pt() <= 20 || dataEvent.jet1ProbBtag_ < 0.244) && (dataEvent.jet2_.Pt() <= 20 || dataEvent.jet2ProbBtag_ < 0.244) && (dataEvent.jet3_.Pt() <= 20 || dataEvent.jet3ProbBtag_ < 0.244) && (dataEvent.jet4_.Pt() <= 20 || dataEvent.jet4ProbBtag_ < 0.244);
+    bool passBtagVeto      = (dataEvent.cuts_ & patternTopVeto) == patternTopVeto;
     bool passZMass         = fabs(dilep.mass()-91.1876) < 15.;
     bool passZMassLarge    = fabs(dilep.mass()-91.1876) < 30.;
     bool passZMassSB       = (dilep.mass() > 110.0 && dilep.mass() < 200.0);
@@ -747,7 +747,7 @@ void optimalCutszgh_53x
        if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLGF &&  passBtagVeto &&  passZMass		       && passMET && passPTLL && passDPhiLL && passDPhiZMET && passPTFrac) passCuts[lType][SIGFSEL]     = true;
 
        // blinded!
-       passCuts[1][SIGSEL] = false;
+       //passCuts[1][SIGSEL] = false;
 
     }
 
