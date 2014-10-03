@@ -23,13 +23,13 @@ void metChange(double met, double metPhi, double metNew[2], LorentzVector gamma)
 const int verboseLevel =   1;
 bool UseDyttDataDriven = false; // if true, then remove em events in dyll MC
 SmurfTree systEvent;
-const unsigned int nSelTypes = 8;
+const unsigned int nSelTypes = 10;
 const unsigned int nSelTypesSyst = 7;
 const bool showSignalOnly = false;
 
-enum selType {ZLGSEL=0, ZLGFSEL, ZLLGFSEL, WWSEL, BTAGSEL, SIGSEL, SIGFSEL, WWLOOSESEL};
-TString selTypeName[nSelTypes*2] = {"ZLGSEL-EM", "ZLGFSEL-EM", "ZLLGFSEL-EM", "WWSEL-EM", "BTAGSEL-EM", "SIGSEL-EM", "SIGFSEL-EM", "WWLOOSESEL-EM",
-                                    "ZLGSEL-LL", "ZLGFSEL-LL", "ZLLGFSEL-LL", "WWSEL-LL", "BTAGSEL-LL", "SIGSEL-LL", "SIGFSEL-LL", "WWLOOSESEL-LL"};
+enum selType {ZLGBSEL=0, ZLGESEL, ZLGFSEL, ZLLGSEL, ZLLGFSEL, WWSEL, BTAGSEL, SIGSEL, SIGFSEL, WWLOOSESEL};
+TString selTypeName[nSelTypes*2] = {"ZLGBSEL-EM", "ZLGESEL-EM", "ZLGFSEL-EM", "ZLLGSEL-EM", "ZLLGFSEL-EM", "WWSEL-EM", "BTAGSEL-EM", "SIGSEL-EM", "SIGFSEL-EM", "WWLOOSESEL-EM",
+                                    "ZLGBSEL-LL", "ZLGESEL-LL", "ZLGFSEL-LL", "ZLLGSEL-LL", "ZLLGFSEL-LL", "WWSEL-LL", "BTAGSEL-LL", "SIGSEL-LL", "SIGFSEL-LL", "WWLOOSESEL-LL"};
 enum selTypeSyst {JESUP=0, JESDOWN, LEPP, LEPM, MET, EFFP, EFFM};
 TString selTypeNameSyst[nSelTypesSyst*2] = {"JESUP-EM", "JESDOWN-EM", "LEPP-EM", "LEPM-EM", "MET-EM", "EFFP-EM", "EFFM-EM",
                                             "JESUP-LL", "JESDOWN-LL", "LEPP-LL", "LEPM-LL", "MET-LL", "EFFP-LL", "EFFM-LL"};
@@ -37,9 +37,9 @@ TString selTypeNameSyst[nSelTypesSyst*2] = {"JESUP-EM", "JESDOWN-EM", "LEPP-EM",
 // GF  == 10010, WBF == 10001, WH == 26, ZH == 24, ttH=121/122
 void optimalCutszgh_53x
 (
- int     mH  	 = 1125,
- int thePlot = 7,
- TString bgdInputFile    = "ntuples_53x/lgamma.root",
+ int     mH  	 = 95,
+ int thePlot = 29,
+ TString bgdInputFile    = "ntuples_53x/lgammachi95.root",
  TString dataInputFile   = "ntuples_53x/data_llg.root",
  int period = 3,
  int lSel = 2, 
@@ -54,14 +54,13 @@ void optimalCutszgh_53x
   cutValue[0] = var0; cutValue[1] = var1; cutValue[2] = var2; cutValue[3] = var3;
   double ptJetMin = 30.0;
 
-  double metMin   = 0.;
   double useFullStatTemplates = true;
   bool useWeightEWKCorr       = true;
 
-  // lepton to photon scale factor
-  double sfLepPho = 1.32;
-  // jet to photon scale factor
-  double sfJetPho = 1.75;
+  // lepton to photon scale factor (barrel/endcap)
+  double sfLepPho[2] = {1.50,1.17};
+  // jet to photon scale factor (barrel/endcap)
+  double sfJetPho[2] = {1.50,2.44};
 
   SmurfTree bgdEvent;
   bgdEvent.LoadTree(bgdInputFile,-1);
@@ -126,10 +125,6 @@ void optimalCutszgh_53x
   fhDPU->SetDirectory(0);
   delete fPUFile;
 
-  const int channel = mH;
-  if(channel > 1000 && channel < 2000) mH = channel-1000;
-  else assert(0);
-
   int nBinPlot      = 200;
   double xminPlot   = 0.0;
   double xmaxPlot   = 400.0;
@@ -139,11 +134,21 @@ void optimalCutszgh_53x
   else if(thePlot >= 12 && thePlot <= 13) {nBinPlot = 100; xminPlot = 0.0; xmaxPlot = 1.0;}
   else if(thePlot >= 14 && thePlot <= 14) {nBinPlot =  8; xminPlot = -0.5; xmaxPlot =  7.5;}
   else if(thePlot >= 15 && thePlot <= 15) {nBinPlot = 40; xminPlot = -0.5; xmaxPlot = 39.5;}
-  else if(thePlot >= 16 && thePlot <= 16) {nBinPlot = 50; xminPlot =  0.0; xmaxPlot = 2.5;}
+  else if(thePlot == 16 || thePlot == 27) {nBinPlot = 50; xminPlot =  0.0; xmaxPlot = 2.5;}
   else if(thePlot >= 17 && thePlot <= 25) {nBinPlot = 18; xminPlot = 0.0; xmaxPlot = 180.0;}
+  else if(thePlot ==  7 || thePlot == 26) {nBinPlot = 200; xminPlot = 0.0; xmaxPlot = 200.0;}
+  else if(thePlot >= 28 && thePlot <= 28) {nBinPlot = 60; xminPlot = 0.0; xmaxPlot = 6.0;}
 
-  TH1D* histos = new TH1D("histos", "histos", nBinPlot, xminPlot, xmaxPlot);
+  const int nBinMVA = 2;
+  Float_t xbins[nBinMVA+1] = {0, 1.479, 2.5};
+  TH1D* histoMVA = new TH1D("histoMVA", "histoMVA", nBinMVA, xbins);
+  histoMVA->Sumw2();
+
+  TH1D* histos;
+  if(thePlot != 29) histos = new TH1D("histos", "histos", nBinPlot, xminPlot, xmaxPlot);
+  else              histos = new TH1D("histos", "histos", nBinMVA, xbins);  
   histos->Sumw2();
+
   TH1D* histo0 = (TH1D*) histos->Clone("histo0");
   TH1D* histo1 = (TH1D*) histos->Clone("histo1");
   TH1D* histo2 = (TH1D*) histos->Clone("histo2");
@@ -158,10 +163,6 @@ void optimalCutszgh_53x
   histo4->Scale(0.0);
   histo5->Scale(0.0);
 
-  const int nBinMVA = 4;
-  Float_t xbins[nBinMVA+1] = {100, 200, 300, 500, 900};
-  TH1D* histoMVA = new TH1D("histoMVA", "histoMVA", nBinMVA, xbins);
-  histoMVA->Sumw2();
   TH1D *histo_Data   = (TH1D*) histoMVA->Clone("histo_Data");
   TH1D *histo_ZH_hinv= (TH1D*) histoMVA->Clone("histo_ZH_hinv");
   TH1D *histo_Zjets  = (TH1D*) histoMVA->Clone("histo_Zjets");
@@ -291,7 +292,7 @@ void optimalCutszgh_53x
     if(TMath::Abs(bgdEvent.lep1McId_) == 11 || TMath::Abs(bgdEvent.lep1McId_) == 13) nRealLeptons++;
     if(TMath::Abs(bgdEvent.lep2McId_) == 11 || TMath::Abs(bgdEvent.lep2McId_) == 13) nRealLeptons++;
     if(TMath::Abs(bgdEvent.lep3McId_) == 11 || TMath::Abs(bgdEvent.lep3McId_) == 13) nRealLeptons++;
-    LorentzVector lep1(0,0,0,0), lep2(0,0,0,0), gamma(0,0,0,0), gammaf(0,0,0,0), dilep(0,0,0,0), leppho(0,0,0,0);
+    LorentzVector lep1(0,0,0,0), lep2(0,0,0,0), gamma(0,0,0,0), gammaf(0,0,0,0), dilep(0,0,0,0), leppho(0,0,0,0), llpho(0,0,0,0);
     int charge = 0; int lType = 0; int lid1_ = 0; int lid2_ = 0; int lidPho = 0;
     if     ((bgdEvent.cuts_ & SmurfTree::Lep1FullSelection) == SmurfTree::Lep1FullSelection) {
       charge += (int)bgdEvent.lq1_;
@@ -301,8 +302,8 @@ void optimalCutszgh_53x
       if     (abs(bgdEvent.lid1_) == 13) lType += 1;
       else if(abs(bgdEvent.lid1_) == 11) lType += 10;
     }
-    else if((bgdEvent.cuts_ & SmurfTree::Lep1LooseEleV2) == SmurfTree::Lep1LooseEleV2 && TMath::Abs(bgdEvent.lep1_.eta()) < 2.5) {gamma  = bgdEvent.lep1_; lidPho = TMath::Abs(bgdEvent.lep1McId_);}
-    else if((bgdEvent.cuts_ & SmurfTree::Lep1LooseMuV1)  == SmurfTree::Lep1LooseMuV1  && TMath::Abs(bgdEvent.lep1_.eta()) < 2.5) {gammaf = bgdEvent.lep1_; lidPho = TMath::Abs(bgdEvent.lep1McId_);}
+    else if((bgdEvent.cuts_ & SmurfTree::Lep1LooseEleV2) == SmurfTree::Lep1LooseEleV2 && TMath::Abs(bgdEvent.lep1_.eta()) < 2.4) {gamma  = bgdEvent.lep1_; lidPho = TMath::Abs(bgdEvent.lep1McId_);}
+    else if((bgdEvent.cuts_ & SmurfTree::Lep1LooseMuV1)  == SmurfTree::Lep1LooseMuV1  && TMath::Abs(bgdEvent.lep1_.eta()) < 2.4) {gammaf = bgdEvent.lep1_; lidPho = TMath::Abs(bgdEvent.lep1McId_);}
 
     if     ((bgdEvent.cuts_ & SmurfTree::Lep2FullSelection) == SmurfTree::Lep2FullSelection) {
       charge += (int)bgdEvent.lq2_;
@@ -312,8 +313,8 @@ void optimalCutszgh_53x
       if     (abs(bgdEvent.lid2_) == 13) lType += 1;
       else if(abs(bgdEvent.lid2_) == 11) lType += 10;
     }
-    else if((bgdEvent.cuts_ & SmurfTree::Lep2LooseEleV2) == SmurfTree::Lep2LooseEleV2 && TMath::Abs(bgdEvent.lep2_.eta()) < 2.5) {gamma  = bgdEvent.lep2_; lidPho = TMath::Abs(bgdEvent.lep2McId_);}
-    else if((bgdEvent.cuts_ & SmurfTree::Lep2LooseMuV1)  == SmurfTree::Lep2LooseMuV1  && TMath::Abs(bgdEvent.lep2_.eta()) < 2.5) {gammaf = bgdEvent.lep2_; lidPho = TMath::Abs(bgdEvent.lep2McId_);}
+    else if((bgdEvent.cuts_ & SmurfTree::Lep2LooseEleV2) == SmurfTree::Lep2LooseEleV2 && TMath::Abs(bgdEvent.lep2_.eta()) < 2.4) {gamma  = bgdEvent.lep2_; lidPho = TMath::Abs(bgdEvent.lep2McId_);}
+    else if((bgdEvent.cuts_ & SmurfTree::Lep2LooseMuV1)  == SmurfTree::Lep2LooseMuV1  && TMath::Abs(bgdEvent.lep2_.eta()) < 2.4) {gammaf = bgdEvent.lep2_; lidPho = TMath::Abs(bgdEvent.lep2McId_);}
 
     if     ((bgdEvent.cuts_ & SmurfTree::Lep3FullSelection) == SmurfTree::Lep3FullSelection) {
       charge += (int)bgdEvent.lq3_;
@@ -323,11 +324,12 @@ void optimalCutszgh_53x
       if     (abs(bgdEvent.lid3_) == 13) lType += 1;
       else if(abs(bgdEvent.lid3_) == 11) lType += 10;
     }
-    else if((bgdEvent.cuts_ & SmurfTree::Lep3LooseEleV2) == SmurfTree::Lep3LooseEleV2 && TMath::Abs(bgdEvent.lep3_.eta()) < 2.5) {gamma  = bgdEvent.lep3_; lidPho = TMath::Abs(bgdEvent.lep3McId_);}
-    else if((bgdEvent.cuts_ & SmurfTree::Lep3LooseMuV1)  == SmurfTree::Lep3LooseMuV1  && TMath::Abs(bgdEvent.lep3_.eta()) < 2.5) {gammaf = bgdEvent.lep3_; lidPho = TMath::Abs(bgdEvent.lep3McId_);}
+    else if((bgdEvent.cuts_ & SmurfTree::Lep3LooseEleV2) == SmurfTree::Lep3LooseEleV2 && TMath::Abs(bgdEvent.lep3_.eta()) < 2.4) {gamma  = bgdEvent.lep3_; lidPho = TMath::Abs(bgdEvent.lep3McId_);}
+    else if((bgdEvent.cuts_ & SmurfTree::Lep3LooseMuV1)  == SmurfTree::Lep3LooseMuV1  && TMath::Abs(bgdEvent.lep3_.eta()) < 2.4) {gammaf = bgdEvent.lep3_; lidPho = TMath::Abs(bgdEvent.lep3McId_);}
 
     dilep = lep1+lep2;
     leppho = lep1+gamma;
+    llpho = lep1+lep2+gamma;
     if(gammaf.pt() > 0) leppho = lep1+gammaf;
 
     if(gamma.pt() > 0 && gammaf.pt() > 0) assert(0);
@@ -374,7 +376,7 @@ void optimalCutszgh_53x
     else if(bgdEvent.processId_==10010) fDecay = 42;
     else                                          {fDecay = 0;std::cout << bgdEvent.dstype_ << std::endl;}
 
-    if(nZLeptons == 2) {
+    if(nZLeptons >= 2) {
       if     (fDecay == 21) fDecay = 11;
       else if(fDecay == 27) fDecay = 17;
       else if(fDecay == 28) fDecay = 18;
@@ -390,21 +392,67 @@ void optimalCutszgh_53x
 
     bool passSystCuts[2][nSelTypesSyst-2] = {{false, false, false, false, false},
 			                     {false, false, false, false, false}};
-    bool passCuts[2][nSelTypes] = {{false, false, false, false, false, false,},
-                                   {false, false, false, false, false, false }};
+    bool passCuts[2][nSelTypes] = {{false, false, false, false, false, false, false, false, false,},
+                                   {false, false, false, false, false, false, false, false, false }};
+
+    double MT = sqrt(2.0*dilep.pt()*bgdEvent.met_*(1.0-cos(DeltaPhi(dilep.phi() ,bgdEvent.metPhi_))));
+
+    // 0      1      2       3     4   5      6        7           8  9            10            11     12  13    14
+    // lep1pt,lep2pt,dilmass,dilpt,met,metPhi,trackMet,trackMetPhi,mt,dPhiDiLepMET,dPhiMETTrkMET,pTFrac,mtZ,mlljj,mjj;
+    double outputVarLepP[15];
+    makeSystematicEffects(lid1_, lid2_, lep1, lep2, dilep, 
+                          MT, bgdEvent.met_, bgdEvent.metPhi_, 
+                          bgdEvent.trackMet_, bgdEvent.trackMetPhi_, 
+			  bgdEvent.njets_, bgdEvent.jet1_, bgdEvent.jet2_,
+			  year, 0, outputVarLepP);
+    double outputVarLepM[15];
+    makeSystematicEffects(lid1_, lid2_, lep1, lep2, dilep, 
+                          MT, bgdEvent.met_, bgdEvent.metPhi_, 
+                          bgdEvent.trackMet_, bgdEvent.trackMetPhi_, 
+			  bgdEvent.njets_, bgdEvent.jet1_, bgdEvent.jet2_,
+			  year, 1, outputVarLepM);
+    double outputVarMET[15];
+    makeSystematicEffects(lid1_, lid2_, lep1, lep2, dilep, 
+                          MT, bgdEvent.met_, bgdEvent.metPhi_, 
+                          bgdEvent.trackMet_, bgdEvent.trackMetPhi_, 
+			  bgdEvent.njets_, bgdEvent.jet1_, bgdEvent.jet2_,
+			  year, 2, outputVarMET);
 
     double metNew[2]; metChange(bgdEvent.met_,bgdEvent.metPhi_,metNew,gamma);
     double theMET = metNew[0]; double theMETPHI = metNew[1]; 
+
+    double metNewSyst[2]; metChange(outputVarMET[4],outputVarMET[5],metNewSyst,gamma);
+
     bool passBtagVeto      = (bgdEvent.cuts_ & patternTopVeto) == patternTopVeto;
+
     bool passZMass         = fabs(dilep.mass()-91.1876) < 15.;
+    bool passZMassSystP    = fabs(outputVarLepP[2]-91.1876) < 15.;
+    bool passZMassSystM    = fabs(outputVarLepM[2]-91.1876) < 15.;
+
     bool passZMassLarge    = fabs(dilep.mass()-91.1876) < 30.;
     bool passZMassSB       = (dilep.mass() > 110.0 && dilep.mass() < 200.0);
+
     bool passMET           = bgdEvent.met_ > cutValue[0];
-    bool passDPhiZMET      = DeltaPhi(dilep.phi() ,theMETPHI) > cutValue[1];
+    bool passMETSystMET    = outputVarMET[4] > cutValue[0];
+
+    bool passDPhiZMET        = DeltaPhi(dilep.phi() ,theMETPHI) > cutValue[1];
+    bool passDPhiZMETSystMET = DeltaPhi(dilep.phi() ,metNewSyst[1]) > cutValue[1];
+
     bool passPTFrac        = fabs(theMET-dilep.pt())/dilep.pt() < cutValue[2];
+    bool passPTFracSystP   = fabs(theMET-outputVarLepP[3])/outputVarLepP[3] < cutValue[2];
+    bool passPTFracSystM   = fabs(theMET-outputVarLepM[3])/outputVarLepM[3] < cutValue[2];
+    bool passPTFracSystMET = fabs(metNewSyst[0]-dilep.pt())/dilep.pt() < cutValue[2];
+
     bool passDPhiLL        = DeltaPhi(lep1.phi() ,lep2.phi()) < cutValue[3];
+
     bool passPTLL          = dilep.pt() > 60.;
-    bool passLLG           = charge == 0 && lep1.pt() > 20. && lep2.pt() > 20. && gamma.pt() > 20;
+    bool passPTLLSystP     = outputVarLepP[3] > 60.;
+    bool passPTLLSystM     = outputVarLepM[3] > 60.;
+
+    bool passLLG           = charge == 0 && lep1.pt() > 20.        && lep2.pt() > 20.        && gamma.pt() > 20;
+    bool passLLGSystP      = charge == 0 && outputVarLepP[0] > 20. && outputVarLepP[1] > 20. && gamma.pt() > 20;
+    bool passLLGSystM	   = charge == 0 && outputVarLepM[0] > 20. && outputVarLepM[1] > 20. && gamma.pt() > 20;
+
     bool passLLGF          = charge == 0 && lep1.pt() > 20. && lep2.pt() > 20. && gammaf.pt() > 20;
     bool passLG            = lep1.pt() > 30. && lep2.pt() <= 0. && gamma.pt() > 20;
     bool passLGF           = lep1.pt() > 30. && lep2.pt() <= 0. && gammaf.pt() > 20;
@@ -417,9 +465,9 @@ void optimalCutszgh_53x
     // trackSel[3] == reject events with isolated tracks with pt>10 and iso/pt<0.1 (not used by default)
     int trackSel[4] = {int((bgdEvent.jet2McId_%100-bgdEvent.jet2McId_%10)/10),int((bgdEvent.jet2McId_%1000-bgdEvent.jet2McId_%100)/100),int((bgdEvent.jet2McId_%10000-bgdEvent.jet2McId_%1000)/1000),int(bgdEvent.jet2McId_/10000)};
 
-    double MVAVar[6] = {sqrt(2.0*dilep.pt()*theMET*(1.0-cos(DeltaPhi(dilep.phi() ,theMETPHI)))),sqrt(2.0*dilep.pt()*theMET*(1.0-cos(DeltaPhi(dilep.phi() ,theMETPHI)))),sqrt(2.0*dilep.pt()*theMET*(1.0-cos(DeltaPhi(dilep.phi() ,theMETPHI)))),0,0,0};
-    for(int nv=0; nv<6; nv++) MVAVar[nv] = TMath::Min(TMath::Max(MVAVar[nv],xbins[0]+0.001),xbins[nBinMVA]-0.001);
-    double addLepEff	 = 1.0; double addLepEffUp   = 1.0; double addLepEffDown = 1.0;
+    double MVAVar = 0.5; if(TMath::Abs(gamma.Eta())>1.479) MVAVar = 2.0;
+
+    double addLepEff = 1.0; double addLepEffUp   = 1.0; double addLepEffDown = 1.0;
     addLepEff =                                leptonEfficiency(lep1.pt(), lep1.eta(), fhDEffMu, fhDEffEl, lid1_, 0);
     if(lep2.pt() > 0) addLepEff  = addLepEff * leptonEfficiency(lep2.pt(), lep2.eta(), fhDEffMu, fhDEffEl, lid2_, 0);
     if(addLepEff > 0) {
@@ -444,19 +492,27 @@ void optimalCutszgh_53x
     if(bgdEvent.jet4_.Pt()*0.95 > ptJetMin) NjetSyst[2]++;
     //NjetSyst[0] = nJetsType;NjetSyst[1] = nJetsType;NjetSyst[2] = nJetsType;
 
-    if(
-       theMET > metMin && lep1.pt() > 20.) {
+    if(1) {
 
-       if(passLG  && ((fabs(leppho.mass()-91.1876) < 45. && lType == 1) || (leppho.mass() > 100 && lType == 0))) passCuts[lType][ZLGSEL]  = true;
-       if(passLGF && ((fabs(leppho.mass()-91.1876) < 45. && lType == 1) || (leppho.mass() > 100 && lType == 0))) passCuts[lType][ZLGFSEL] = true;
+       if(NjetSyst[0] == nJetsType &&  passBtagVeto && passLG  && ((fabs(leppho.mass()-91.1876) < 15. && lid1_ == 11 && lType == 1) || (leppho.mass() > 100 && lid1_ == 13 && lType == 0)) && TMath::Abs(gamma.Eta()) <= 1.479) passCuts[lType][ZLGBSEL] = true;
+       if(NjetSyst[0] == nJetsType &&  passBtagVeto && passLG  && ((fabs(leppho.mass()-91.1876) < 15. && lid1_ == 11 && lType == 1) || (leppho.mass() > 100 && lid1_ == 13 && lType == 0)) && TMath::Abs(gamma.Eta()) >  1.479) passCuts[lType][ZLGESEL] = true;
+       if(NjetSyst[0] == nJetsType &&  passBtagVeto && passLGF && ((fabs(leppho.mass()-91.1876) < 45. && lType == 1) || (leppho.mass() > 100 && lType == 0))) passCuts[lType][ZLGFSEL] = true;
        if(passLLGF && passZMass) passCuts[lType][ZLLGFSEL] = true;
-       if(NjetSyst[0] >= 1	   && trackSel[2]+trackSel[3] == 0 && passLLG  && !passBtagVeto && !passZMass && passZMassSB								         ) passCuts[lType][WWLOOSESEL]  = true;
+       if(NjetSyst[0] >= 1	   && trackSel[2]+trackSel[3] == 0 && passLLG  && !passBtagVeto && !passZMass && passZMassSB								          ) passCuts[lType][WWLOOSESEL]  = true;
        if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG  &&  passBtagVeto && !passZMass && passZMassLarge && passMET && passPTLL && passDPhiLL && passDPhiZMET && passPTFrac) passCuts[lType][WWSEL]      = true;
-       if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG  && !passBtagVeto &&  passZMass		       && passMET && passPTLL && passDPhiLL && passDPhiZMET && passPTFrac) passCuts[lType][BTAGSEL]     = true;
-       if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG  &&  passBtagVeto &&  passZMass		       && passMET && passPTLL && passDPhiLL && passDPhiZMET && passPTFrac) passCuts[lType][SIGSEL]      = true;
-       if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLGF &&  passBtagVeto &&  passZMass		       && passMET && passPTLL && passDPhiLL && passDPhiZMET && passPTFrac) passCuts[lType][SIGFSEL]     = true;
-       if(NjetSyst[1] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG  &&  passBtagVeto &&  passZMass		       && passMET && passPTLL && passDPhiLL && passDPhiZMET && passPTFrac) passSystCuts[lType][JESUP]   = true;
-       if(NjetSyst[2] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG  &&  passBtagVeto &&  passZMass		       && passMET && passPTLL && passDPhiLL && passDPhiZMET && passPTFrac) passSystCuts[lType][JESDOWN] = true;
+       if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG  && !passBtagVeto &&  passZMass		       && passMET && passPTLL && passDPhiLL && passDPhiZMET && passPTFrac ) passCuts[lType][BTAGSEL]     = true;
+       if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLGF &&  passBtagVeto &&  passZMass		       && passMET && passPTLL && passDPhiLL && passDPhiZMET && passPTFrac ) passCuts[lType][SIGFSEL]     = true;
+
+       if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG       &&  passBtagVeto &&  passZMass             && passMET        && passPTLL      && passDPhiLL && passDPhiZMET        && passPTFrac       ) passCuts[lType][SIGSEL]      = true;
+       if(NjetSyst[1] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG       &&  passBtagVeto &&  passZMass	       && passMET        && passPTLL      && passDPhiLL && passDPhiZMET        && passPTFrac       ) passSystCuts[lType][JESUP]   = true;
+       if(NjetSyst[2] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG       &&  passBtagVeto &&  passZMass	       && passMET        && passPTLL      && passDPhiLL && passDPhiZMET        && passPTFrac       ) passSystCuts[lType][JESDOWN] = true;
+       if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLGSystP  &&  passBtagVeto &&  passZMassSystP	       && passMET        && passPTLLSystP && passDPhiLL && passDPhiZMET        && passPTFracSystP  ) passSystCuts[lType][LEPP]    = true;
+       if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLGSystM  &&  passBtagVeto &&  passZMassSystM	       && passMET        && passPTLLSystM && passDPhiLL && passDPhiZMET        && passPTFracSystM  ) passSystCuts[lType][LEPM]    = true;
+       if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG       &&  passBtagVeto &&  passZMass             && passMETSystMET && passPTLL      && passDPhiLL && passDPhiZMETSystMET && passPTFracSystMET) passSystCuts[lType][MET]     = true;
+
+       if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG  &&  fabs(llpho.mass()-91.1876) < 100.) passCuts[lType][ZLLGSEL] = true;
+
+       if(fDecay == 9 && (lidPho == 8 || lidPho == 22)) passCuts[lType][ZLLGSEL] = false;
 
       //if(isRealLepton == false &&
       //   (bgdEvent.dstype_ == SmurfTree::ttbar  || bgdEvent.dstype_ == SmurfTree::tw   || bgdEvent.dstype_ == SmurfTree::dyee || bgdEvent.dstype_ == SmurfTree::dymm ||
@@ -490,10 +546,16 @@ void optimalCutszgh_53x
       }
       else if(bgdEvent.dstype_ != SmurfTree::data){
 
-	if(bgdEvent.dstype_ == SmurfTree::wgstar) add = add*WGstarScaleFactor(bgdEvent.type_,theMET);
+	if(bgdEvent.dstype_ == SmurfTree::wgstar) add = add*WGstarScaleFactor(bgdEvent.type_,bgdEvent.met_);
 
-        if(fDecay == 31 || fDecay == 37 || fDecay == 38 || fDecay == 39) add = add*sfLepPho;
-        if(fDecay == 11 || fDecay == 17 || fDecay == 18 || fDecay == 9)  add = add*sfJetPho;
+        if(fDecay == 31 || fDecay == 37 || fDecay == 38 || fDecay == 39) {
+	  if(TMath::Abs(gamma.Eta()) <= 1.479) add = add*sfLepPho[0];
+	  else                                 add = add*sfLepPho[1];
+	}
+        if(fDecay == 11 || fDecay == 17 || fDecay == 18 || fDecay == 9) {
+	  if(TMath::Abs(gamma.Eta()) <= 1.479) add = add*sfJetPho[0];
+          else                                 add = add*sfJetPho[1];
+	}
 
 	theWeight = bgdEvent.scale1fb_*lumi*add*puWeight*trigEff*addLepEff;
       }
@@ -511,7 +573,7 @@ void optimalCutszgh_53x
 	else if(thePlot == 5) myVar = bgdEvent.jet2_.Pt();
 	else if(thePlot == 6) myVar = bgdEvent.jet3_.Pt();
 	else if(thePlot == 7) myVar = dilep.mass();
-	else if(thePlot == 8) myVar = MVAVar[0];
+	else if(thePlot == 8) myVar = MT;
 	else if(thePlot == 9) myVar = leppho.mass();
 	else if(thePlot ==10) myVar = dilep.pt();
 	else if(thePlot ==11) myVar = fabs(dilep.mass()-91.1876);
@@ -529,6 +591,10 @@ void optimalCutszgh_53x
 	else if(thePlot ==23) myVar = DeltaPhi(gamma.phi(),theMETPHI)*180.0/TMath::Pi();
 	else if(thePlot ==24) myVar = DeltaPhi(dilep.Phi() ,bgdEvent.metPhi_)*180.0/TMath::Pi();
 	else if(thePlot ==25) myVar = DeltaPhi(dilep.Phi() ,gamma.phi())*180.0/TMath::Pi();
+	else if(thePlot ==26) myVar = llpho.mass();
+	else if(thePlot ==27) myVar = TMath::Abs(gamma.Eta());
+	else if(thePlot ==28) myVar = TMath::Min(DeltaR(gamma.Phi(),gamma.Eta(),lep1.Phi(),lep1.Eta()),DeltaR(gamma.Phi(),gamma.Eta(),lep2.Phi(),lep2.Eta()));
+	else if(thePlot ==29) myVar = MVAVar;
 
       	if     (fDecay == 9 || fDecay == 19){
       	  histo0->Fill(myVar,theWeight);
@@ -593,53 +659,53 @@ void optimalCutszgh_53x
 	}
 
         if     (fDecay == 9 || fDecay == 19 || fDecay == 39){
-	  if(passCuts[1][SIGSEL])              histo_Zjets                        ->Fill(MVAVar[0], theWeight);
+	  if(passCuts[1][SIGSEL])              histo_Zjets                        ->Fill(MVAVar, theWeight);
         }
 	else if(fDecay == 11 || fDecay == 31){
-	  if(passCuts[1][SIGSEL])	       histo_VVV			  ->Fill(MVAVar[0], theWeight);
-          if(passCuts[1][SIGSEL])              histo_VVV_CMS_MVALepEffBoundingUp  ->Fill(MVAVar[0], theWeight*addLepEffUp  /addLepEff);
-          if(passCuts[1][SIGSEL])              histo_VVV_CMS_MVALepEffBoundingDown->Fill(MVAVar[0], theWeight*addLepEffDown/addLepEff);
-          if(passSystCuts[1][JESUP  ] == true) histo_VVV_CMS_MVAJESBoundingUp     ->Fill(MVAVar[1], theWeight);
-          if(passSystCuts[1][JESDOWN] == true) histo_VVV_CMS_MVAJESBoundingDown   ->Fill(MVAVar[2], theWeight);
-          if(passSystCuts[1][LEPP]    == true) histo_VVV_CMS_MVALepResBoundingUp  ->Fill(MVAVar[3], theWeight);
-          if(passSystCuts[1][LEPM]    == true) histo_VVV_CMS_MVALepResBoundingDown->Fill(MVAVar[4], theWeight);
-          if(passSystCuts[1][MET]     == true) histo_VVV_CMS_MVAMETResBoundingUp  ->Fill(MVAVar[5], theWeight);;
+	  if(passCuts[1][SIGSEL])	       histo_VVV			  ->Fill(MVAVar, theWeight);
+          if(passCuts[1][SIGSEL])              histo_VVV_CMS_MVALepEffBoundingUp  ->Fill(MVAVar, theWeight*addLepEffUp  /addLepEff);
+          if(passCuts[1][SIGSEL])              histo_VVV_CMS_MVALepEffBoundingDown->Fill(MVAVar, theWeight*addLepEffDown/addLepEff);
+          if(passSystCuts[1][JESUP  ] == true) histo_VVV_CMS_MVAJESBoundingUp     ->Fill(MVAVar, theWeight);
+          if(passSystCuts[1][JESDOWN] == true) histo_VVV_CMS_MVAJESBoundingDown   ->Fill(MVAVar, theWeight);
+          if(passSystCuts[1][LEPP]    == true) histo_VVV_CMS_MVALepResBoundingUp  ->Fill(MVAVar, theWeight);
+          if(passSystCuts[1][LEPM]    == true) histo_VVV_CMS_MVALepResBoundingDown->Fill(MVAVar, theWeight);
+          if(passSystCuts[1][MET]     == true) histo_VVV_CMS_MVAMETResBoundingUp  ->Fill(MVAVar, theWeight);;
         }
 	else if(fDecay == 17 || fDecay == 37){
-	  if(passCuts[1][SIGSEL])	       histo_WZ 			 ->Fill(MVAVar[0], theWeight);
-          if(passCuts[1][SIGSEL])	       histo_WZ_CMS_MVALepEffBoundingUp  ->Fill(MVAVar[0], theWeight*addLepEffUp  /addLepEff);
-          if(passCuts[1][SIGSEL])	       histo_WZ_CMS_MVALepEffBoundingDown->Fill(MVAVar[0], theWeight*addLepEffDown/addLepEff);
-          if(passSystCuts[1][JESUP  ] == true) histo_WZ_CMS_MVAJESBoundingUp     ->Fill(MVAVar[1], theWeight);
-          if(passSystCuts[1][JESDOWN] == true) histo_WZ_CMS_MVAJESBoundingDown   ->Fill(MVAVar[2], theWeight);
-          if(passSystCuts[1][LEPP]    == true) histo_WZ_CMS_MVALepResBoundingUp  ->Fill(MVAVar[3], theWeight);
-          if(passSystCuts[1][LEPM]    == true) histo_WZ_CMS_MVALepResBoundingDown->Fill(MVAVar[4], theWeight);
-          if(passSystCuts[1][MET]     == true) histo_WZ_CMS_MVAMETResBoundingUp  ->Fill(MVAVar[5], theWeight);;
+	  if(passCuts[1][SIGSEL])	       histo_WZ 			 ->Fill(MVAVar, theWeight);
+          if(passCuts[1][SIGSEL])	       histo_WZ_CMS_MVALepEffBoundingUp  ->Fill(MVAVar, theWeight*addLepEffUp  /addLepEff);
+          if(passCuts[1][SIGSEL])	       histo_WZ_CMS_MVALepEffBoundingDown->Fill(MVAVar, theWeight*addLepEffDown/addLepEff);
+          if(passSystCuts[1][JESUP  ] == true) histo_WZ_CMS_MVAJESBoundingUp     ->Fill(MVAVar, theWeight);
+          if(passSystCuts[1][JESDOWN] == true) histo_WZ_CMS_MVAJESBoundingDown   ->Fill(MVAVar, theWeight);
+          if(passSystCuts[1][LEPP]    == true) histo_WZ_CMS_MVALepResBoundingUp  ->Fill(MVAVar, theWeight);
+          if(passSystCuts[1][LEPM]    == true) histo_WZ_CMS_MVALepResBoundingDown->Fill(MVAVar, theWeight);
+          if(passSystCuts[1][MET]     == true) histo_WZ_CMS_MVAMETResBoundingUp  ->Fill(MVAVar, theWeight);;
         }
 	else if(fDecay == 18 || fDecay == 38){
-	  if(passCuts[1][SIGSEL])	       histo_ZZ 			 ->Fill(MVAVar[0], theWeight);
-          if(passCuts[1][SIGSEL])	       histo_ZZ_CMS_MVALepEffBoundingUp  ->Fill(MVAVar[0], theWeight*addLepEffUp  /addLepEff);
-          if(passCuts[1][SIGSEL])	       histo_ZZ_CMS_MVALepEffBoundingDown->Fill(MVAVar[0], theWeight*addLepEffDown/addLepEff);
-          if(passSystCuts[1][JESUP  ] == true) histo_ZZ_CMS_MVAJESBoundingUp     ->Fill(MVAVar[1], theWeight);
-          if(passSystCuts[1][JESDOWN] == true) histo_ZZ_CMS_MVAJESBoundingDown   ->Fill(MVAVar[2], theWeight);
-          if(passSystCuts[1][LEPP]    == true) histo_ZZ_CMS_MVALepResBoundingUp  ->Fill(MVAVar[3], theWeight);
-          if(passSystCuts[1][LEPM]    == true) histo_ZZ_CMS_MVALepResBoundingDown->Fill(MVAVar[4], theWeight);
-          if(passSystCuts[1][MET]     == true) histo_ZZ_CMS_MVAMETResBoundingUp  ->Fill(MVAVar[5], theWeight);;
+	  if(passCuts[1][SIGSEL])	       histo_ZZ 			 ->Fill(MVAVar, theWeight);
+          if(passCuts[1][SIGSEL])	       histo_ZZ_CMS_MVALepEffBoundingUp  ->Fill(MVAVar, theWeight*addLepEffUp  /addLepEff);
+          if(passCuts[1][SIGSEL])	       histo_ZZ_CMS_MVALepEffBoundingDown->Fill(MVAVar, theWeight*addLepEffDown/addLepEff);
+          if(passSystCuts[1][JESUP  ] == true) histo_ZZ_CMS_MVAJESBoundingUp     ->Fill(MVAVar, theWeight);
+          if(passSystCuts[1][JESDOWN] == true) histo_ZZ_CMS_MVAJESBoundingDown   ->Fill(MVAVar, theWeight);
+          if(passSystCuts[1][LEPP]    == true) histo_ZZ_CMS_MVALepResBoundingUp  ->Fill(MVAVar, theWeight);
+          if(passSystCuts[1][LEPM]    == true) histo_ZZ_CMS_MVALepResBoundingDown->Fill(MVAVar, theWeight);
+          if(passSystCuts[1][MET]     == true) histo_ZZ_CMS_MVAMETResBoundingUp  ->Fill(MVAVar, theWeight);;
         }
 	else if(fDecay == 21 || fDecay == 27 || fDecay == 28 ||
 	        fDecay == 29 || fDecay == 30 || fDecay ==  5 ||
 	        fDecay == 13 || fDecay == 20 || fDecay == 10 ||
 		fDecay == 1  || fDecay == 23){
-	  if(passCuts[1][SIGSEL])              histo_EM                          ->Fill(MVAVar[0], theWeight);
+	  if(passCuts[1][SIGSEL])              histo_EM                          ->Fill(MVAVar, theWeight);
         }
         else if(fDecay == 42){
-          if(passCuts[1][SIGSEL]) 	     histo_ZH_hinv                            ->Fill(MVAVar[0], theWeight);
-          if(passCuts[1][SIGSEL]) 	     histo_ZH_hinv_CMS_MVALepEffBoundingUp    ->Fill(MVAVar[0], theWeight*addLepEffUp  /addLepEff);
-          if(passCuts[1][SIGSEL]) 	     histo_ZH_hinv_CMS_MVALepEffBoundingDown  ->Fill(MVAVar[0], theWeight*addLepEffDown/addLepEff);
-          if(passSystCuts[1][JESUP  ] == true) histo_ZH_hinv_CMS_MVAJESBoundingUp     ->Fill(MVAVar[1], theWeight);
-          if(passSystCuts[1][JESDOWN] == true) histo_ZH_hinv_CMS_MVAJESBoundingDown   ->Fill(MVAVar[2], theWeight);
-          if(passSystCuts[1][LEPP]    == true) histo_ZH_hinv_CMS_MVALepResBoundingUp  ->Fill(MVAVar[3], theWeight);
-          if(passSystCuts[1][LEPM]    == true) histo_ZH_hinv_CMS_MVALepResBoundingDown->Fill(MVAVar[4], theWeight);
-          if(passSystCuts[1][MET]     == true) histo_ZH_hinv_CMS_MVAMETResBoundingUp  ->Fill(MVAVar[5], theWeight);;
+          if(passCuts[1][SIGSEL]) 	     histo_ZH_hinv                            ->Fill(MVAVar, theWeight);
+          if(passCuts[1][SIGSEL]) 	     histo_ZH_hinv_CMS_MVALepEffBoundingUp    ->Fill(MVAVar, theWeight*addLepEffUp  /addLepEff);
+          if(passCuts[1][SIGSEL]) 	     histo_ZH_hinv_CMS_MVALepEffBoundingDown  ->Fill(MVAVar, theWeight*addLepEffDown/addLepEff);
+          if(passSystCuts[1][JESUP  ] == true) histo_ZH_hinv_CMS_MVAJESBoundingUp     ->Fill(MVAVar, theWeight);
+          if(passSystCuts[1][JESDOWN] == true) histo_ZH_hinv_CMS_MVAJESBoundingDown   ->Fill(MVAVar, theWeight);
+          if(passSystCuts[1][LEPP]    == true) histo_ZH_hinv_CMS_MVALepResBoundingUp  ->Fill(MVAVar, theWeight);
+          if(passSystCuts[1][LEPM]    == true) histo_ZH_hinv_CMS_MVALepResBoundingDown->Fill(MVAVar, theWeight);
+          if(passSystCuts[1][MET]     == true) histo_ZH_hinv_CMS_MVAMETResBoundingUp  ->Fill(MVAVar, theWeight);;
 	}
 	else {
 	  printf("%d\n",fDecay);assert(0);
@@ -660,40 +726,41 @@ void optimalCutszgh_53x
     if(dataEvent.dstype_ == SmurfTree::data && dataEvent.run_ <  minRun) continue;
     if(dataEvent.dstype_ == SmurfTree::data && dataEvent.run_ >  maxRun) continue;
 
-    LorentzVector lep1(0,0,0,0), lep2(0,0,0,0), gamma(0,0,0,0), gammaf(0,0,0,0), dilep(0,0,0,0), leppho(0,0,0,0);
-    int charge = 0; int lType = 0;
+    LorentzVector lep1(0,0,0,0), lep2(0,0,0,0), gamma(0,0,0,0), gammaf(0,0,0,0), dilep(0,0,0,0), leppho(0,0,0,0), llpho(0,0,0,0);
+    int charge = 0; int lType = 0; int lid1_ = 0; int lid2_ = 0;
     if     ((dataEvent.cuts_ & SmurfTree::Lep1FullSelection) == SmurfTree::Lep1FullSelection) {
       charge += (int)dataEvent.lq1_;
-      if(lep1.pt() == 0) {lep1 = dataEvent.lep1_;}
-      else               {lep2 = dataEvent.lep1_;}
+      if(lep1.pt() == 0) {lep1 = dataEvent.lep1_; lid1_ = abs(dataEvent.lid1_);}
+      else               {lep2 = dataEvent.lep1_; lid2_ = abs(dataEvent.lid1_);}
       if     (abs(dataEvent.lid1_) == 13) lType += 1;
       else if(abs(dataEvent.lid1_) == 11) lType += 10;
     }
-    else if((dataEvent.cuts_ & SmurfTree::Lep1LooseEleV2) == SmurfTree::Lep1LooseEleV2) gamma  = dataEvent.lep1_;
-    else if((dataEvent.cuts_ & SmurfTree::Lep1LooseMuV1)  == SmurfTree::Lep1LooseMuV1)  gammaf = dataEvent.lep1_;
+    else if((dataEvent.cuts_ & SmurfTree::Lep1LooseEleV2) == SmurfTree::Lep1LooseEleV2 && TMath::Abs(dataEvent.lep1_.eta()) < 2.4) gamma  = dataEvent.lep1_;
+    else if((dataEvent.cuts_ & SmurfTree::Lep1LooseMuV1 ) == SmurfTree::Lep1LooseMuV1  && TMath::Abs(dataEvent.lep1_.eta()) < 2.4) gammaf = dataEvent.lep1_;
 
     if     ((dataEvent.cuts_ & SmurfTree::Lep2FullSelection) == SmurfTree::Lep2FullSelection) {
       charge += (int)dataEvent.lq2_;
-      if(lep1.pt() == 0) {lep1 = dataEvent.lep2_;}
-      else               {lep2 = dataEvent.lep2_;}
+      if(lep1.pt() == 0) {lep1 = dataEvent.lep2_; lid1_ = abs(dataEvent.lid2_);}
+      else               {lep2 = dataEvent.lep2_; lid2_ = abs(dataEvent.lid2_);}
       if     (abs(dataEvent.lid2_) == 13) lType += 1;
       else if(abs(dataEvent.lid2_) == 11) lType += 10;
     }
-    else if((dataEvent.cuts_ & SmurfTree::Lep2LooseEleV2) == SmurfTree::Lep2LooseEleV2) gamma  = dataEvent.lep2_;
-    else if((dataEvent.cuts_ & SmurfTree::Lep2LooseMuV1)  == SmurfTree::Lep2LooseMuV1)  gammaf = dataEvent.lep2_;
+    else if((dataEvent.cuts_ & SmurfTree::Lep2LooseEleV2) == SmurfTree::Lep2LooseEleV2 && TMath::Abs(dataEvent.lep2_.eta()) < 2.4) gamma  = dataEvent.lep2_;
+    else if((dataEvent.cuts_ & SmurfTree::Lep2LooseMuV1)  == SmurfTree::Lep2LooseMuV1  && TMath::Abs(dataEvent.lep2_.eta()) < 2.4) gammaf = dataEvent.lep2_;
 
     if     ((dataEvent.cuts_ & SmurfTree::Lep3FullSelection) == SmurfTree::Lep3FullSelection) {
       charge += (int)dataEvent.lq3_;
-      if(lep1.pt() == 0) {lep1 = dataEvent.lep3_;}
-      else               {lep2 = dataEvent.lep3_;}
+      if(lep1.pt() == 0) {lep1 = dataEvent.lep3_; lid1_ = abs(dataEvent.lid3_);}
+      else               {lep2 = dataEvent.lep3_; lid2_ = abs(dataEvent.lid3_);}
       if     (abs(dataEvent.lid3_) == 13) lType += 1;
       else if(abs(dataEvent.lid3_) == 11) lType += 10;
     }
-    else if((dataEvent.cuts_ & SmurfTree::Lep3LooseEleV2) == SmurfTree::Lep3LooseEleV2) gamma  = dataEvent.lep3_;
-    else if((dataEvent.cuts_ & SmurfTree::Lep3LooseMuV1)  == SmurfTree::Lep3LooseMuV1)  gammaf = dataEvent.lep3_;
+    else if((dataEvent.cuts_ & SmurfTree::Lep3LooseEleV2) == SmurfTree::Lep3LooseEleV2 && TMath::Abs(dataEvent.lep3_.eta()) < 2.4) gamma  = dataEvent.lep3_;
+    else if((dataEvent.cuts_ & SmurfTree::Lep3LooseMuV1)  == SmurfTree::Lep3LooseMuV1  && TMath::Abs(dataEvent.lep3_.eta()) < 2.4) gammaf = dataEvent.lep3_;
 
     dilep = lep1+lep2;
     leppho = lep1+gamma;
+    llpho = lep1+lep2+gamma;
     if(gammaf.pt() > 0) leppho = lep1+gammaf;
 
     if     (             lType == 11) lType = 0;
@@ -705,9 +772,12 @@ void optimalCutszgh_53x
     else lType = 2;
 
     if(lType == 2) continue;
+    if(lid2_ == 9) assert(0); // should never happen
 
-    bool passCuts[2][nSelTypes] = {{false, false, false, false, false, false},
-                                   {false, false, false, false, false, false}};
+    bool passCuts[2][nSelTypes] = {{false, false, false, false, false, false, false, false, false},
+                                   {false, false, false, false, false, false, false, false, false}};
+
+    double MT = sqrt(2.0*dilep.pt()*dataEvent.met_*(1.0-cos(DeltaPhi(dilep.phi() ,dataEvent.metPhi_))));
 
     double metNew[2]; metChange(dataEvent.met_,dataEvent.metPhi_,metNew,gamma);
     double theMET = metNew[0]; double theMETPHI = metNew[1]; 
@@ -720,7 +790,7 @@ void optimalCutszgh_53x
     bool passPTFrac        = fabs(theMET-dilep.pt())/dilep.pt() < cutValue[2];
     bool passDPhiLL        = DeltaPhi(lep1.phi() ,lep2.phi()) < cutValue[3];
     bool passPTLL          = dilep.pt() > 60.;
-    bool passLLG           = charge == 0 && lep1.pt() > 20. && lep2.pt() > 20. && gamma.pt() > 20;
+    bool passLLG           = charge == 0 && lep1.pt() > 20. && lep2.pt() > 20. && gamma.pt()  > 20;
     bool passLLGF          = charge == 0 && lep1.pt() > 20. && lep2.pt() > 20. && gammaf.pt() > 20;
     bool passLG            = lep1.pt() > 30. && lep2.pt() <= 0. && gamma.pt() > 20;
     bool passLGF           = lep1.pt() > 30. && lep2.pt() <= 0. && gammaf.pt() > 20;
@@ -734,25 +804,27 @@ void optimalCutszgh_53x
     if(dataEvent.jet4_.Pt()*1.00 > ptJetMin) NjetSyst[0]++;
     //NjetSyst[0] = nJetsType;NjetSyst[1] = nJetsType;NjetSyst[2] = nJetsType;
 
-    if(
-       theMET > metMin && lep1.pt() > 20.) {
+    if(1) {
 
-       if(passLG  && ((fabs(leppho.mass()-91.1876) < 45. && lType == 1) || (leppho.mass() > 100 && lType == 0))) passCuts[lType][ZLGSEL]  = true;
-       if(passLGF && ((fabs(leppho.mass()-91.1876) < 45. && lType == 1) || (leppho.mass() > 100 && lType == 0))) passCuts[lType][ZLGFSEL] = true;
+       if(NjetSyst[0] == nJetsType &&  passBtagVeto && passLG  && ((fabs(leppho.mass()-91.1876) < 15. && lid1_ == 11 && lType == 1) || (leppho.mass() > 100 && lid1_ == 13 && lType == 0)) && TMath::Abs(gamma.Eta()) <= 1.479) passCuts[lType][ZLGBSEL] = true;
+       if(NjetSyst[0] == nJetsType &&  passBtagVeto && passLG  && ((fabs(leppho.mass()-91.1876) < 15. && lid1_ == 11 && lType == 1) || (leppho.mass() > 100 && lid1_ == 13 && lType == 0)) && TMath::Abs(gamma.Eta()) >  1.479) passCuts[lType][ZLGESEL] = true;
+       if(NjetSyst[0] == nJetsType &&  passBtagVeto && passLGF && ((fabs(leppho.mass()-91.1876) < 45. && lType == 1) || (leppho.mass() > 100 && lType == 0))) passCuts[lType][ZLGFSEL] = true;
        if(passLLGF && passZMass) passCuts[lType][ZLLGFSEL] = true;
-       if(NjetSyst[0] >= 1	   && trackSel[2]+trackSel[3] == 0 && passLLG  && !passBtagVeto && !passZMass && passZMassSB								         ) passCuts[lType][WWLOOSESEL]  = true;
-       if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG  &&  passBtagVeto && !passZMass && passZMassLarge && passMET && passPTLL && passDPhiLL && passDPhiZMET && passPTFrac) passCuts[lType][WWSEL]      = true;
-       if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG  && !passBtagVeto &&  passZMass		       && passMET && passPTLL && passDPhiLL && passDPhiZMET && passPTFrac) passCuts[lType][BTAGSEL]     = true;
-       if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG  &&  passBtagVeto &&  passZMass		       && passMET && passPTLL && passDPhiLL && passDPhiZMET && passPTFrac) passCuts[lType][SIGSEL]      = true;
-       if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLGF &&  passBtagVeto &&  passZMass		       && passMET && passPTLL && passDPhiLL && passDPhiZMET && passPTFrac) passCuts[lType][SIGFSEL]     = true;
+       if(NjetSyst[0] >= 1	   && trackSel[2]+trackSel[3] == 0 && passLLG  && !passBtagVeto && !passZMass && passZMassSB								          ) passCuts[lType][WWLOOSESEL]  = true;
+       if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG  &&  passBtagVeto && !passZMass && passZMassLarge && passMET && passPTLL && passDPhiLL && passDPhiZMET && passPTFrac) passCuts[lType][WWSEL]       = true;
+       if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG  && !passBtagVeto &&  passZMass		        && passMET && passPTLL && passDPhiLL && passDPhiZMET && passPTFrac) passCuts[lType][BTAGSEL]     = true;
+       if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG  &&  passBtagVeto &&  passZMass		        && passMET && passPTLL && passDPhiLL && passDPhiZMET && passPTFrac) passCuts[lType][SIGSEL]      = true;
+       if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLGF &&  passBtagVeto &&  passZMass		        && passMET && passPTLL && passDPhiLL && passDPhiZMET && passPTFrac) passCuts[lType][SIGFSEL]     = true;
+
+       if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG  &&  fabs(llpho.mass()-91.1876) < 100.) passCuts[lType][ZLLGSEL]      = true;
 
        // blinded!
        //passCuts[1][SIGSEL] = false;
 
     }
 
-    double MVAVar = sqrt(2.0*dilep.pt()*theMET*(1.0-cos(DeltaPhi(dilep.phi() ,theMETPHI))));
-    MVAVar = TMath::Min(TMath::Max(MVAVar,xbins[0]+0.001),xbins[nBinMVA]-0.001);
+    double MVAVar = 0.5; if(TMath::Abs(gamma.Eta())>1.479) MVAVar = 2.0;
+
     if(passCuts[1][SIGSEL]){
       histo_Data->Fill(MVAVar, 1.0);
     }
@@ -774,7 +846,7 @@ void optimalCutszgh_53x
       else if(thePlot == 5) myVar = dataEvent.jet2_.Pt();
       else if(thePlot == 6) myVar = dataEvent.jet3_.Pt();
       else if(thePlot == 7) myVar = dilep.mass();
-      else if(thePlot == 8) myVar = MVAVar;
+      else if(thePlot == 8) myVar = MT;
       else if(thePlot == 9) myVar = leppho.mass();
       else if(thePlot ==10) myVar = dilep.pt();
       else if(thePlot ==11) myVar = fabs(dilep.mass()-91.1876);
@@ -792,37 +864,14 @@ void optimalCutszgh_53x
       else if(thePlot ==23) myVar = DeltaPhi(gamma.phi(),theMETPHI)*180.0/TMath::Pi();
       else if(thePlot ==24) myVar = DeltaPhi(dilep.Phi() ,dataEvent.metPhi_)*180.0/TMath::Pi();
       else if(thePlot ==25) myVar = DeltaPhi(dilep.Phi() ,gamma.phi())*180.0/TMath::Pi();
+      else if(thePlot ==26) myVar = llpho.mass();
+      else if(thePlot ==27) myVar = TMath::Abs(gamma.Eta());
+      else if(thePlot ==28) myVar = TMath::Min(DeltaR(gamma.Phi(),gamma.Eta(),lep1.Phi(),lep1.Eta()),DeltaR(gamma.Phi(),gamma.Eta(),lep2.Phi(),lep2.Eta()));
+      else if(thePlot ==29) myVar = MVAVar;
+
       histo5->Fill(myVar,1.0);
     } // end making plots
   } // End loop data
-
-  char output[200];
-  sprintf(output,Form("histo_nice%s.root",ECMsb.Data()));	 
-  TFile* outFilePlotsNote = new TFile(output,"recreate");
-  outFilePlotsNote->cd();
-    double oldNorm0 = histo0->GetSumOfWeights();
-    double oldNorm4 = histo4->GetSumOfWeights();
-    for(int i=1; i<=histo0->GetNbinsX(); i++){
-      if(histo0->GetBinContent(i) < 0) histo0->SetBinContent(i,0.0);
-      if(histo4->GetBinContent(i) < 0) histo4->SetBinContent(i,0.0);
-    }
-    if(histo0->GetSumOfWeights() > 0) histo0->Scale(oldNorm0/histo0->GetSumOfWeights());
-    if(histo4->GetSumOfWeights() > 0) histo4->Scale(oldNorm4/histo4->GetSumOfWeights());
-    printf("histo -> s: %8.2f d: %8.2f b: %8.2f | %8.2f %8.2f %8.2f %8.2f %8.2f\n",histos->GetSumOfWeights(),histo5->GetSumOfWeights(),histo0->GetSumOfWeights()+histo1->GetSumOfWeights()+histo2->GetSumOfWeights()+histo3->GetSumOfWeights()+histo4->GetSumOfWeights(),
-    histo0->GetSumOfWeights(),histo1->GetSumOfWeights(),histo2->GetSumOfWeights(),histo3->GetSumOfWeights(),histo4->GetSumOfWeights());
-    double scaleZ = 1.0;
-    if(histo0->GetSumOfWeights() > 0) scaleZ = (histo5->GetSumOfWeights()-(histo1->GetSumOfWeights()+histo2->GetSumOfWeights()+histo3->GetSumOfWeights()+histo4->GetSumOfWeights()))/histo0->GetSumOfWeights();
-    if(scaleZ <= 0) scaleZ = 1.0;
-    printf("scaleZ = %f\n",scaleZ);
-    //histo0->Scale(scaleZ);
-    histos->Write();
-    histo0->Write();
-    histo1->Write();
-    histo2->Write();
-    histo3->Write();
-    histo4->Write();
-    histo5->Write();
-  outFilePlotsNote->Close();
 
   const unsigned int nBkg = 9;
   double nTot[nSelTypes*2]; double nETot[nSelTypes*2];
@@ -964,7 +1013,57 @@ void optimalCutszgh_53x
   printf("EM scale Factor: %5.3f +/- %5.3f\n",scaleFactorEM,EMSystTotal-1.0);
   printf("EM yield: %5.3f +/- %5.3f\n",NFinal[8],sqrt(nSelectedData[SIGSEL])*NemFact_FromMLLSB);
 
-  NFinal[0] = bgdCombined[SIGSEL+nSelTypes][0]; NFinalE[0] = 2.0;
+  //NFinal[0] = bgdCombined[SIGSEL+nSelTypes][0]; NFinalE[0] = 1.5;
+
+  histo_EM->Scale(scaleFactorEM);
+  histo4->Scale(scaleFactorEM);
+
+  char output[200];
+  sprintf(output,Form("histo_nice%s.root",ECMsb.Data()));	 
+  TFile* outFilePlotsNote = new TFile(output,"recreate");
+  outFilePlotsNote->cd();
+    double oldNorm0 = histo0->GetSumOfWeights();
+    double oldNorm4 = histo4->GetSumOfWeights();
+    for(int i=1; i<=histo0->GetNbinsX(); i++){
+      if(histo0->GetBinContent(i) < 0) histo0->SetBinContent(i,0.0);
+      if(histo4->GetBinContent(i) < 0) histo4->SetBinContent(i,0.0);
+    }
+    if(histo0->GetSumOfWeights() > 0) histo0->Scale(oldNorm0/histo0->GetSumOfWeights());
+    if(histo4->GetSumOfWeights() > 0) histo4->Scale(oldNorm4/histo4->GetSumOfWeights());
+    printf("histo -> s: %8.2f d: %8.2f b: %8.2f | %8.2f %8.2f %8.2f %8.2f %8.2f\n",histos->GetSumOfWeights(),histo5->GetSumOfWeights(),histo0->GetSumOfWeights()+histo1->GetSumOfWeights()+histo2->GetSumOfWeights()+histo3->GetSumOfWeights()+histo4->GetSumOfWeights(),
+    histo0->GetSumOfWeights(),histo1->GetSumOfWeights(),histo2->GetSumOfWeights(),histo3->GetSumOfWeights(),histo4->GetSumOfWeights());
+    double scaleZ = 1.0;
+    if(histo0->GetSumOfWeights() > 0) scaleZ = (histo5->GetSumOfWeights()-(histo1->GetSumOfWeights()+histo2->GetSumOfWeights()+histo3->GetSumOfWeights()+histo4->GetSumOfWeights()))/histo0->GetSumOfWeights();
+    if(scaleZ <= 0) scaleZ = 1.0;
+    printf("scaleZ = %f\n",scaleZ);
+    //histo0->Scale(scaleZ);
+    histos->Write();
+    histo0->Write();
+    histo1->Write();
+    histo2->Write();
+    histo3->Write();
+    histo4->Write();
+    histo5->Write();
+  outFilePlotsNote->Close();
+
+  // Estimation of electron->photon and jet->photon rates (a-posteriori)
+  double bck_fakeJetB = bgdCombined[ZLGBSEL][4]+bgdCombined[ZLGBSEL][5]+bgdCombined[ZLGBSEL][6]+bgdCombined[ZLGBSEL][7];
+  double sig_fakeJetB = bgdCombined[ZLGBSEL][0]+bgdCombined[ZLGBSEL][1]+bgdCombined[ZLGBSEL][2]+bgdCombined[ZLGBSEL][3]+bgdCombined[ZLGBSEL][8];
+  double cor_fakeJetB = (nSelectedData[ZLGBSEL]-bck_fakeJetB)/sig_fakeJetB;
+
+  double bck_fakeJetE = bgdCombined[ZLGESEL][4]+bgdCombined[ZLGESEL][5]+bgdCombined[ZLGESEL][6]+bgdCombined[ZLGESEL][7];
+  double sig_fakeJetE = bgdCombined[ZLGESEL][0]+bgdCombined[ZLGESEL][1]+bgdCombined[ZLGESEL][2]+bgdCombined[ZLGESEL][3]+bgdCombined[ZLGESEL][8];
+  double cor_fakeJetE = (nSelectedData[ZLGESEL]-bck_fakeJetE)/sig_fakeJetE;
+
+  double bck_fakeEleB = bgdCombined[ZLGBSEL+nSelTypes][0]+bgdCombined[ZLGBSEL+nSelTypes][1]+bgdCombined[ZLGBSEL+nSelTypes][2]+bgdCombined[ZLGBSEL+nSelTypes][3]+bgdCombined[ZLGBSEL+nSelTypes][8];
+  double sig_fakeEleB = bgdCombined[ZLGBSEL+nSelTypes][4]+bgdCombined[ZLGBSEL+nSelTypes][5]+bgdCombined[ZLGBSEL+nSelTypes][6]+bgdCombined[ZLGBSEL+nSelTypes][7];
+  double cor_fakeEleB = (nSelectedData[ZLGBSEL+nSelTypes]-bck_fakeEleB*cor_fakeJetB)/sig_fakeEleB;
+
+  double bck_fakeEleE = bgdCombined[ZLGESEL+nSelTypes][0]+bgdCombined[ZLGESEL+nSelTypes][1]+bgdCombined[ZLGESEL+nSelTypes][2]+bgdCombined[ZLGESEL+nSelTypes][3]+bgdCombined[ZLGESEL+nSelTypes][8];
+  double sig_fakeEleE = bgdCombined[ZLGESEL+nSelTypes][4]+bgdCombined[ZLGESEL+nSelTypes][5]+bgdCombined[ZLGESEL+nSelTypes][6]+bgdCombined[ZLGESEL+nSelTypes][7];
+  double cor_fakeEleE = (nSelectedData[ZLGESEL+nSelTypes]-bck_fakeEleE*cor_fakeJetE)/sig_fakeEleE;
+
+  printf("cor_fakeJetB: %f cor_fakeJetE: %f cor_fakeEleB: %f cor_fakeEleE: %f\n",cor_fakeJetB,cor_fakeJetE,cor_fakeEleB,cor_fakeEleE); 
 
   double QCDscale_VH = 1.072;
   if(nJetsType == 1) QCDscale_VH = 1.105;
@@ -996,8 +1095,6 @@ void optimalCutszgh_53x
   else if(year == 2011 && nJetsType == 1) syst_btag = 1.027;
   else if(year == 2012 && nJetsType == 1) syst_btag = 1.018;
   else assert(0);
-
-  histo_EM->Scale(scaleFactorEM);
 
   for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++){
     double factorUp = +1.0; double factorDown = -1.0;
@@ -1032,6 +1129,30 @@ void optimalCutszgh_53x
   for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++){
 
     mean = histo_ZH_hinv                        ->GetBinContent(i);
+    up   = histo_ZH_hinv_CMS_MVALepResBoundingUp->GetBinContent(i);
+    diff = TMath::Abs(mean-up);
+    if     (mean-up >0) histo_ZH_hinv_CMS_MVALepResBoundingDown->SetBinContent(i,TMath::Max(mean+diff,0.000001));
+    else		histo_ZH_hinv_CMS_MVALepResBoundingDown->SetBinContent(i,TMath::Max(mean-diff,0.000001));
+
+    mean = histo_VVV			    ->GetBinContent(i);
+    up   = histo_VVV_CMS_MVALepResBoundingUp->GetBinContent(i);
+    diff = TMath::Abs(mean-up);
+    if     (mean-up >0) histo_VVV_CMS_MVALepResBoundingDown->SetBinContent(i,TMath::Max(mean+diff,0.000001));
+    else		histo_VVV_CMS_MVALepResBoundingDown->SetBinContent(i,TMath::Max(mean-diff,0.000001));
+  
+    mean = histo_WZ			   ->GetBinContent(i);
+    up   = histo_WZ_CMS_MVALepResBoundingUp->GetBinContent(i);
+    diff = TMath::Abs(mean-up);
+    if     (mean-up >0) histo_WZ_CMS_MVALepResBoundingDown->SetBinContent(i,TMath::Max(mean+diff,0.000001));
+    else		histo_WZ_CMS_MVALepResBoundingDown->SetBinContent(i,TMath::Max(mean-diff,0.000001));
+  
+    mean = histo_ZZ			   ->GetBinContent(i);
+    up   = histo_ZZ_CMS_MVALepResBoundingUp->GetBinContent(i);
+    diff = TMath::Abs(mean-up);
+    if     (mean-up >0) histo_ZZ_CMS_MVALepResBoundingDown->SetBinContent(i,TMath::Max(mean+diff,0.000001));
+    else		histo_ZZ_CMS_MVALepResBoundingDown->SetBinContent(i,TMath::Max(mean-diff,0.000001));
+
+    mean = histo_ZH_hinv                        ->GetBinContent(i);
     up   = histo_ZH_hinv_CMS_MVAMETResBoundingUp->GetBinContent(i);
     diff = TMath::Abs(mean-up);
     if     (mean-up >0) histo_ZH_hinv_CMS_MVAMETResBoundingDown->SetBinContent(i,TMath::Max(mean+diff,0.000001));
@@ -1062,7 +1183,7 @@ void optimalCutszgh_53x
   //----------------------------------------------------------------------------
   if(showSignalOnly == false){
   char outputLimits[200];
-  sprintf(outputLimits,"zllhinv%2s_%3d_input_%4s.root",finalStateName,mH,ECMsb.Data());
+  sprintf(outputLimits,"zllhinv%2s_%d_input_%4s.root",finalStateName,mH,ECMsb.Data());
   TFile* outFileLimits = new TFile(outputLimits,"recreate");
   outFileLimits->cd();
   histo_Data   ->Write();
@@ -1103,24 +1224,24 @@ void optimalCutszgh_53x
   histo_WZ_CMS_MVALepEffBoundingDown      ->Write(); for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_WZ    ->GetBinContent(i)>0)printf("%5.1f ",histo_WZ_CMS_MVALepEffBoundingDown	->GetBinContent(i)/histo_WZ   ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
   histo_ZZ_CMS_MVALepEffBoundingUp        ->Write(); for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_ZZ    ->GetBinContent(i)>0)printf("%5.1f ",histo_ZZ_CMS_MVALepEffBoundingUp	->GetBinContent(i)/histo_ZZ   ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
   histo_ZZ_CMS_MVALepEffBoundingDown      ->Write(); for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_ZZ    ->GetBinContent(i)>0)printf("%5.1f ",histo_ZZ_CMS_MVALepEffBoundingDown	->GetBinContent(i)/histo_ZZ   ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
-  //printf("uncertainties LetRes\n");
-  histo_ZH_hinv_CMS_MVALepResBoundingUp   ->Write(); //for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_ZH_hinv 	 ->GetBinContent(i)>0)printf("%5.1f ",histo_ZH_hinv_CMS_MVALepResBoundingUp	   ->GetBinContent(i)/histo_ZH_hinv	 ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
-  histo_ZH_hinv_CMS_MVALepResBoundingDown ->Write(); //for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_ZH_hinv 	 ->GetBinContent(i)>0)printf("%5.1f ",histo_ZH_hinv_CMS_MVALepResBoundingDown	->GetBinContent(i)/histo_ZH_hinv   ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
-  histo_VVV_CMS_MVALepResBoundingUp       ->Write(); //for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_VVV  ->GetBinContent(i)>0)printf("%5.1f ",histo_VVV_CMS_MVALepResBoundingUp    ->GetBinContent(i)/histo_VVV  ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
-  histo_VVV_CMS_MVALepResBoundingDown     ->Write(); //for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_VVV  ->GetBinContent(i)>0)printf("%5.1f ",histo_VVV_CMS_MVALepResBoundingDown  ->GetBinContent(i)/histo_VVV  ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
-  histo_WZ_CMS_MVALepResBoundingUp        ->Write(); //for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_WZ    ->GetBinContent(i)>0)printf("%5.1f ",histo_WZ_CMS_MVALepResBoundingUp	->GetBinContent(i)/histo_WZ   ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
-  histo_WZ_CMS_MVALepResBoundingDown      ->Write(); //for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_WZ    ->GetBinContent(i)>0)printf("%5.1f ",histo_WZ_CMS_MVALepResBoundingDown	->GetBinContent(i)/histo_WZ   ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
-  histo_ZZ_CMS_MVALepResBoundingUp        ->Write(); //for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_ZZ    ->GetBinContent(i)>0)printf("%5.1f ",histo_ZZ_CMS_MVALepResBoundingUp	->GetBinContent(i)/histo_ZZ   ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
-  histo_ZZ_CMS_MVALepResBoundingDown      ->Write(); //for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_ZZ    ->GetBinContent(i)>0)printf("%5.1f ",histo_ZZ_CMS_MVALepResBoundingDown	->GetBinContent(i)/histo_ZZ   ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
-  //printf("uncertainties METRes\n");
-  histo_ZH_hinv_CMS_MVAMETResBoundingUp   ->Write(); //for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_ZH_hinv 	 ->GetBinContent(i)>0)printf("%5.1f ",histo_ZH_hinv_CMS_MVAMETResBoundingUp	   ->GetBinContent(i)/histo_ZH_hinv	 ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
-  histo_ZH_hinv_CMS_MVAMETResBoundingDown ->Write(); //for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_ZH_hinv 	 ->GetBinContent(i)>0)printf("%5.1f ",histo_ZH_hinv_CMS_MVAMETResBoundingDown	->GetBinContent(i)/histo_ZH_hinv   ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
-  histo_VVV_CMS_MVAMETResBoundingUp       ->Write(); //for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_VVV  ->GetBinContent(i)>0)printf("%5.1f ",histo_VVV_CMS_MVAMETResBoundingUp    ->GetBinContent(i)/histo_VVV  ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
-  histo_VVV_CMS_MVAMETResBoundingDown     ->Write(); //for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_VVV  ->GetBinContent(i)>0)printf("%5.1f ",histo_VVV_CMS_MVAMETResBoundingDown  ->GetBinContent(i)/histo_VVV  ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
-  histo_WZ_CMS_MVAMETResBoundingUp        ->Write(); //for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_WZ    ->GetBinContent(i)>0)printf("%5.1f ",histo_WZ_CMS_MVAMETResBoundingUp	->GetBinContent(i)/histo_WZ   ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
-  histo_WZ_CMS_MVAMETResBoundingDown      ->Write(); //for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_WZ    ->GetBinContent(i)>0)printf("%5.1f ",histo_WZ_CMS_MVAMETResBoundingDown	->GetBinContent(i)/histo_WZ   ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
-  histo_ZZ_CMS_MVAMETResBoundingUp        ->Write(); //for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_ZZ    ->GetBinContent(i)>0)printf("%5.1f ",histo_ZZ_CMS_MVAMETResBoundingUp	->GetBinContent(i)/histo_ZZ   ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
-  histo_ZZ_CMS_MVAMETResBoundingDown      ->Write(); //for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_ZZ    ->GetBinContent(i)>0)printf("%5.1f ",histo_ZZ_CMS_MVAMETResBoundingDown	->GetBinContent(i)/histo_ZZ   ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
+  printf("uncertainties LetRes\n");
+  histo_ZH_hinv_CMS_MVALepResBoundingUp   ->Write(); for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_ZH_hinv        ->GetBinContent(i)>0)printf("%5.1f ",histo_ZH_hinv_CMS_MVALepResBoundingUp	 ->GetBinContent(i)/histo_ZH_hinv      ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
+  histo_ZH_hinv_CMS_MVALepResBoundingDown ->Write(); for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_ZH_hinv        ->GetBinContent(i)>0)printf("%5.1f ",histo_ZH_hinv_CMS_MVALepResBoundingDown   ->GetBinContent(i)/histo_ZH_hinv   ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
+  histo_VVV_CMS_MVALepResBoundingUp       ->Write(); for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_VVV  ->GetBinContent(i)>0)printf("%5.1f ",histo_VVV_CMS_MVALepResBoundingUp    ->GetBinContent(i)/histo_VVV  ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
+  histo_VVV_CMS_MVALepResBoundingDown     ->Write(); for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_VVV  ->GetBinContent(i)>0)printf("%5.1f ",histo_VVV_CMS_MVALepResBoundingDown  ->GetBinContent(i)/histo_VVV  ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
+  histo_WZ_CMS_MVALepResBoundingUp        ->Write(); for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_WZ    ->GetBinContent(i)>0)printf("%5.1f ",histo_WZ_CMS_MVALepResBoundingUp   ->GetBinContent(i)/histo_WZ   ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
+  histo_WZ_CMS_MVALepResBoundingDown      ->Write(); for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_WZ    ->GetBinContent(i)>0)printf("%5.1f ",histo_WZ_CMS_MVALepResBoundingDown ->GetBinContent(i)/histo_WZ   ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
+  histo_ZZ_CMS_MVALepResBoundingUp        ->Write(); for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_ZZ    ->GetBinContent(i)>0)printf("%5.1f ",histo_ZZ_CMS_MVALepResBoundingUp   ->GetBinContent(i)/histo_ZZ   ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
+  histo_ZZ_CMS_MVALepResBoundingDown      ->Write(); for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_ZZ    ->GetBinContent(i)>0)printf("%5.1f ",histo_ZZ_CMS_MVALepResBoundingDown ->GetBinContent(i)/histo_ZZ   ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
+  printf("uncertainties METRes\n");
+  histo_ZH_hinv_CMS_MVAMETResBoundingUp   ->Write(); for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_ZH_hinv        ->GetBinContent(i)>0)printf("%5.1f ",histo_ZH_hinv_CMS_MVAMETResBoundingUp	 ->GetBinContent(i)/histo_ZH_hinv      ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
+  histo_ZH_hinv_CMS_MVAMETResBoundingDown ->Write(); for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_ZH_hinv        ->GetBinContent(i)>0)printf("%5.1f ",histo_ZH_hinv_CMS_MVAMETResBoundingDown   ->GetBinContent(i)/histo_ZH_hinv   ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
+  histo_VVV_CMS_MVAMETResBoundingUp       ->Write(); for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_VVV  ->GetBinContent(i)>0)printf("%5.1f ",histo_VVV_CMS_MVAMETResBoundingUp    ->GetBinContent(i)/histo_VVV  ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
+  histo_VVV_CMS_MVAMETResBoundingDown     ->Write(); for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_VVV  ->GetBinContent(i)>0)printf("%5.1f ",histo_VVV_CMS_MVAMETResBoundingDown  ->GetBinContent(i)/histo_VVV  ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
+  histo_WZ_CMS_MVAMETResBoundingUp        ->Write(); for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_WZ    ->GetBinContent(i)>0)printf("%5.1f ",histo_WZ_CMS_MVAMETResBoundingUp   ->GetBinContent(i)/histo_WZ   ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
+  histo_WZ_CMS_MVAMETResBoundingDown      ->Write(); for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_WZ    ->GetBinContent(i)>0)printf("%5.1f ",histo_WZ_CMS_MVAMETResBoundingDown ->GetBinContent(i)/histo_WZ   ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
+  histo_ZZ_CMS_MVAMETResBoundingUp        ->Write(); for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_ZZ    ->GetBinContent(i)>0)printf("%5.1f ",histo_ZZ_CMS_MVAMETResBoundingUp   ->GetBinContent(i)/histo_ZZ   ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
+  histo_ZZ_CMS_MVAMETResBoundingDown      ->Write(); for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_ZZ    ->GetBinContent(i)>0)printf("%5.1f ",histo_ZZ_CMS_MVAMETResBoundingDown ->GetBinContent(i)/histo_ZZ   ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
   printf("uncertainties JES\n");
   histo_ZH_hinv_CMS_MVAJESBoundingUp      ->Write(); for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_ZH_hinv 	 ->GetBinContent(i)>0)printf("%5.1f ",histo_ZH_hinv_CMS_MVAJESBoundingUp    ->GetBinContent(i)/histo_ZH_hinv	 ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
   histo_ZH_hinv_CMS_MVAJESBoundingDown    ->Write(); for(int i=1; i<=histo_ZH_hinv->GetNbinsX(); i++) {if(histo_ZH_hinv 	 ->GetBinContent(i)>0)printf("%5.1f ",histo_ZH_hinv_CMS_MVAJESBoundingDown	   ->GetBinContent(i)/histo_ZH_hinv	 ->GetBinContent(i)*100);else printf("100.0 ");} printf("\n");
@@ -1147,7 +1268,7 @@ void optimalCutszgh_53x
   }
 
   char outputLimitsShape[200];
-  sprintf(outputLimitsShape,"histo_limits_zllhinv%2s_mh%3d_shape_%4s.txt",finalStateName,mH,ECMsb.Data());
+  sprintf(outputLimitsShape,"histo_limits_zllhinv%2s_mh%d_shape_%4s.txt",finalStateName,mH,ECMsb.Data());
   ofstream newcardShape;
   newcardShape.open(outputLimitsShape);
   newcardShape << Form("imax 1 number of channels\n");
@@ -1162,17 +1283,18 @@ void optimalCutszgh_53x
   newcardShape << Form("rate %6.3f %6.3f  %6.3f  %6.3f  %6.3f  %6.3f\n",NFinal[nBkg],NFinal[0]+NFinal[4],NFinal[1]+NFinal[5],NFinal[2]+NFinal[6],NFinal[3]+NFinal[7],NFinal[8]);
   newcardShape << Form("lumi_%4s                               lnN  %5.3f   -   %5.3f %5.3f %5.3f   -  \n",ECMsb.Data(),lumiE,lumiE,lumiE,lumiE);		       
   newcardShape << Form("%s                                   shape  1.000   -   1.000 1.000 1.000   -  \n",effName);
-  newcardShape << Form("%s                                     lnN  1.020   -   1.020 1.020 1.020   -  \n",momName);
-  newcardShape << Form("CMS_scale_met                          lnN  1.020   -   1.020 1.020 1.020   -  \n");
+  newcardShape << Form("%s                                   shape  1.000   -   1.000 1.000 1.000   -  \n",momName);
+  newcardShape << Form("CMS_eff_photon                         lnN  1.030   -   1.030 1.030 1.030   -  \n");
+  newcardShape << Form("CMS_scale_met                        shape  1.000   -   1.000 1.000 1.000   -  \n");
   newcardShape << Form("CMS_scale_j                          shape  1.000   -   1.000 1.000 1.000   -  \n");			   
   newcardShape << Form("UEPS			               lnN  1.030   -     -     -     -     -  \n");
   newcardShape << Form("CMS_eff_b                              lnN  %5.3f   -   %5.3f %5.3f %5.3f   -  \n",syst_btag,syst_btag,syst_btag,syst_btag);
   newcardShape << Form("pdf_qqbar                              lnN  %5.3f   -     -   %5.3f %5.3f   -  \n",pdf_qqbar[0],pdf_qqbar[1],pdf_qqbar[2]);
   newcardShape << Form("QCDscale_VH		               lnN  %5.3f   -     -     -     -     -  \n",QCDscale_VH);  
   newcardShape << Form("QCDscale_VV		               lnN    -     -     -   1.107 1.065   -  \n");		  
-  newcardShape << Form("CMS_zllhinv_WZ3l                       lnN    -     -   %5.3f %5.3f %5.3f   -  \n",syst_WZ3l,syst_WZ3l,syst_WZ3l);  	  
+  newcardShape << Form("CMS_zllghinv_3l                        lnN    -     -   %5.3f %5.3f %5.3f   -  \n",syst_WZ3l,syst_WZ3l,syst_WZ3l);  	  
   if(NFinal[0]+NFinal[4] > 0)
-  newcardShape << Form("CMS_zllhinv_ZLL_%4s                    lnN    -   %5.3f   -	-     -     -  \n",ECMsb.Data(),sqrt(NFinalE[0]*NFinalE[0]+NFinalE[4]*NFinalE[4]));		
+  newcardShape << Form("CMS_zllhinv_ZLL_%4s                    lnN    -   %5.3f   -	-     -     -  \n",ECMsb.Data(),1.5);		
   if(NFinal[1]+NFinal[5] > 0)
   newcardShape << Form("QCDscale_VVV		               lnN    -     -   1.500   -     -     -  \n");		  
   if(NFinal[8] > 0)

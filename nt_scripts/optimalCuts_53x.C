@@ -42,7 +42,7 @@ void optimalCuts_53x
  TString signalInputFile = "ntuples_53x/hww125.root",
  TString dataInputFile   = "ntuples_53x/data_skim6.root",
  bool fillInfoNote = true,
- double mhAna = 16,
+ double mhAna = 4,
  int period = 3
  //,double VarAux0 = 0.0, double VarAux1 = 0.0, int VarAux2 = 0
  )
@@ -497,7 +497,7 @@ void optimalCuts_53x
        //((charge == 0 && VarAux2 == 0) || (charge != 0 && VarAux2 == 1)) &&
          bgdEvent.lep1_.Pt() > 20. &&
          bgdEvent.lep2_.Pt() > 20. &&
-	 int((bgdEvent.jet1McId_%1000-bgdEvent.jet1McId_%100)/100) == 0 &&
+	 //int((bgdEvent.jet1McId_%1000-bgdEvent.jet1McId_%100)/100) == 0 &&
          Njet3 == nJetsType &&
        //((abs(bgdEvent.lep1_.Eta())>=VarAux0&&abs(bgdEvent.lep1_.Eta())<VarAux0+0.5&&abs(bgdEvent.lep2_.Eta())>=VarAux1&&abs(bgdEvent.lep2_.Eta())<VarAux1+0.5)||
        // (abs(bgdEvent.lep1_.Eta())>=VarAux1&&abs(bgdEvent.lep1_.Eta())<VarAux1+0.5&&abs(bgdEvent.lep2_.Eta())>=VarAux0&&abs(bgdEvent.lep2_.Eta())<VarAux0+0.5)) &&
@@ -1624,7 +1624,7 @@ void optimalCuts_53x
        //((charge == 0 && VarAux2 == 0) || (charge != 0 && VarAux2 == 1)) &&
          dataEvent.lep1_.Pt() > 20. &&
          dataEvent.lep2_.Pt() > 20. &&
-	 int((dataEvent.jet1McId_%1000-dataEvent.jet1McId_%100)/100) == 0 &&
+	 //int((dataEvent.jet1McId_%1000-dataEvent.jet1McId_%100)/100) == 0 &&
          Njet3 == nJetsType &&
        //((abs(dataEvent.lep1_.Eta())>=VarAux0&&abs(dataEvent.lep1_.Eta())<VarAux0+0.5&&abs(dataEvent.lep2_.Eta())>=VarAux1&&abs(dataEvent.lep2_.Eta())<VarAux1+0.5)||
        // (abs(dataEvent.lep1_.Eta())>=VarAux1&&abs(dataEvent.lep1_.Eta())<VarAux1+0.5&&abs(dataEvent.lep2_.Eta())>=VarAux0&&abs(dataEvent.lep2_.Eta())<VarAux0+0.5)) &&

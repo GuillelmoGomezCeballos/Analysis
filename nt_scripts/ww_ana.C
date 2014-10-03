@@ -226,10 +226,10 @@ void ww_ana
   double xminPlot   = 0.0;
   double xmaxPlot   = 200.0;
 
-  if     (thePlot >=  8 && thePlot <=  8) {nBinPlot = 50;  xminPlot =   0.0; xmaxPlot = 400.0;}
+  if     (thePlot >=  8 && thePlot <=  8) {nBinPlot =100;  xminPlot =   0.0; xmaxPlot = 400.0;}
   else if(thePlot >= 12 && thePlot <= 12) {nBinPlot =200;  xminPlot =   0.0; xmaxPlot = 200.0;}
   else if(thePlot >= 13 && thePlot <= 13) {nBinPlot =100;  xminPlot =   0.0; xmaxPlot = 200.0;}
-  else if(thePlot >=  7 && thePlot <=  7) {nBinPlot = 40; xminPlot =    0.0; xmaxPlot = 400.0;} // mll
+  else if(thePlot >=  7 && thePlot <=  7) {nBinPlot =100; xminPlot =    0.0; xmaxPlot = 400.0;} // mll
   else if(thePlot >=  0 && thePlot <= 14) {}
   else if(thePlot >= 15 && thePlot <= 16) {nBinPlot = 100; xminPlot = 0.0; xmaxPlot = 1.0;}
   else if(thePlot >= 17 && thePlot <= 17) {nBinPlot =  8; xminPlot = -0.5; xmaxPlot =  7.5;}
@@ -474,6 +474,7 @@ void ww_ana
   }
 
   unsigned int patternTopVeto = SmurfTree::TopVeto;
+  double genLevelNorm[4] = {0.,0.,0.,0.};
 
   float dymvaMET=0.;float dymvaJESU=0;float dymvaJESD=0;
   bgdEvent.tree_->SetBranchAddress("dymvaMET", &dymvaMET );
@@ -485,6 +486,24 @@ void ww_ana
     if (evt%100000 == 0 && verboseLevel > 0)
       printf("--- reading event %5d of %5d\n",evt,nBgd);
     bgdEvent.tree_->GetEntry(evt);
+
+    // generator level selection
+    bool minGenCuts = !(((bgdEvent.cuts_ & SmurfTree::Lep1FullSelection) == SmurfTree::Lep1FullSelection && (bgdEvent.cuts_ & SmurfTree::Lep2FullSelection) != SmurfTree::Lep2FullSelection) ||
+                        ((bgdEvent.cuts_ & SmurfTree::Lep1FullSelection) != SmurfTree::Lep1FullSelection && (bgdEvent.cuts_ & SmurfTree::Lep2FullSelection) == SmurfTree::Lep2FullSelection) ||
+			((bgdEvent.cuts_ & SmurfTree::Lep1FullSelection) == SmurfTree::Lep1FullSelection && (bgdEvent.cuts_ & SmurfTree::Lep2FullSelection) == SmurfTree::Lep2FullSelection && (bgdEvent.cuts_ & SmurfTree::Lep3FullSelection) != SmurfTree::Lep3FullSelection && bgdEvent.lid3_ != 0));
+    bool genLevelSel = false;
+    if(minGenCuts == true) {
+      genLevelNorm[0]++;
+      int nGenJets = 0;
+      if(bgdEvent.genjet1_.Pt() > 30 && TMath::Abs(bgdEvent.genjet1_.Eta()) < 5.0) nGenJets++;
+      if(bgdEvent.genjet2_.Pt() > 30 && TMath::Abs(bgdEvent.genjet2_.Eta()) < 5.0) nGenJets++;
+      if(bgdEvent.genjet2_.Pt() > 30 && TMath::Abs(bgdEvent.genjet3_.Eta()) < 5.0) nGenJets++;
+
+      if(nGenJets == 0) {
+        genLevelNorm[1]++;
+	genLevelSel = true;
+      }
+    }
 
     if(bgdEvent.lep1_.Pt() < 1.0) continue;
 
@@ -861,12 +880,17 @@ void ww_ana
       if(useWeightEWKCorr == true && bgdEvent.dstype_ == SmurfTree::qqwwPWG) theWeight = theWeight * weightEWKCorr(bgdEvent.higgsPt_,3);
 
       if(useWeightNNLOCorr == true && (bgdEvent.dstype_ == SmurfTree::qqww||bgdEvent.dstype_ == SmurfTree::qqwwPWG)) theWeight = theWeight * weightNNLOCorr(fhDRatioNNLO,bgdEvent.jet3McId_,0);
+      if(useWeightNNLOCorr == true && (bgdEvent.dstype_ == SmurfTree::qqww||bgdEvent.dstype_ == SmurfTree::qqwwPWG||
+                                       bgdEvent.dstype_ == SmurfTree::qqww2j||bgdEvent.dstype_ == SmurfTree::ggww)) theWeight = theWeight * weightNLOToNNLOCorr(period);
 
       //if(bgdEvent.dstype_ == SmurfTree::qqww  )  theWeight = theWeight * weightJetPt(0,bgdEvent.jet3McId_,bgdEvent.jet4McId_);
       //if(bgdEvent.dstype_ == SmurfTree::qqww2j)  theWeight = theWeight * weightJetPt(0,bgdEvent.jet3McId_,bgdEvent.jet4McId_);
       //if(bgdEvent.dstype_ == SmurfTree::qqwwPWG) theWeight = theWeight * weightJetPt(0,bgdEvent.jet3McId_,bgdEvent.jet4McId_);
 
-      if(passCuts[1][WWSEL]){ // begin making plots
+      if(minGenCuts == true && passCuts[1][WWSEL] && genLevelSel == false) genLevelNorm[2]++;
+      if(minGenCuts == true && passCuts[1][WWSEL] && genLevelSel == true)  genLevelNorm[3]++;
+ 
+       if(passCuts[1][WWSEL]){ // begin making plots
 	double myVar = theMET;
 	if     (thePlot == 1) myVar = bgdEvent.lep1_.Pt();
 	else if(thePlot == 2) myVar = bgdEvent.lep2_.Pt();
@@ -874,7 +898,7 @@ void ww_ana
 	else if(thePlot == 4) myVar = bgdEvent.jet1_.Pt();
 	else if(thePlot == 5) myVar = bgdEvent.jet2_.Pt();
 	else if(thePlot == 6) myVar = bgdEvent.jet3_.Pt();
-	else if(thePlot == 7) myVar = TMath::Min(bgdEvent.dilep_.M(),399.999);
+	else if(thePlot == 7) myVar = bgdEvent.dilep_.M();
 	else if(thePlot == 8) myVar = bgdEvent.mt_;
 	else if(thePlot == 9) myVar = bgdEvent.mt1_;
 	else if(thePlot ==10) myVar = bgdEvent.mt2_;
@@ -1535,7 +1559,7 @@ void ww_ana
 	else if(thePlot == 4) myVar = sigEvent.jet1_.Pt();
 	else if(thePlot == 5) myVar = sigEvent.jet2_.Pt();
 	else if(thePlot == 6) myVar = sigEvent.jet3_.Pt();
-	else if(thePlot == 7) myVar = TMath::Min(sigEvent.dilep_.M(),399.999);
+	else if(thePlot == 7) myVar = sigEvent.dilep_.M();
 	else if(thePlot == 8) myVar = sigEvent.mt_;
 	else if(thePlot == 9) myVar = sigEvent.mt1_;
 	else if(thePlot ==10) myVar = sigEvent.mt2_;
@@ -1691,7 +1715,7 @@ void ww_ana
 	else if(thePlot == 4) myVar = dataEvent.jet1_.Pt();
 	else if(thePlot == 5) myVar = dataEvent.jet2_.Pt();
 	else if(thePlot == 6) myVar = dataEvent.jet3_.Pt();
-	else if(thePlot == 7) myVar = TMath::Min(dataEvent.dilep_.M(),399.999);
+	else if(thePlot == 7) myVar = dataEvent.dilep_.M();
 	else if(thePlot == 8) myVar = dataEvent.mt_;
 	else if(thePlot == 9) myVar = dataEvent.mt1_;
 	else if(thePlot ==10) myVar = dataEvent.mt2_;
@@ -1753,6 +1777,8 @@ void ww_ana
     } // if passCuts
   } // End loop data
 
+  printf("gen_eff: %f / %f = %f | rec_eff: %f / %f = %f\n",genLevelNorm[1],genLevelNorm[0],genLevelNorm[1]/genLevelNorm[0],
+                                                           genLevelNorm[2],genLevelNorm[3],genLevelNorm[2]/genLevelNorm[3]);
   char output[200];
   sprintf(output,Form("histo_nice%s.root",ECMsb.Data()));	 
   TFile* outFilePlotsNote = new TFile(output,"recreate");
