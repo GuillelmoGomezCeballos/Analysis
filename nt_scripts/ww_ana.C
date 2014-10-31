@@ -235,7 +235,7 @@ void ww_ana
   else if(thePlot >= 17 && thePlot <= 17) {nBinPlot =  8; xminPlot = -0.5; xmaxPlot =  7.5;}
   else if(thePlot >= 18 && thePlot <= 18) {nBinPlot = 40; xminPlot = -0.5; xmaxPlot = 39.5;}
   else if(thePlot >= 19 && thePlot <= 19) {nBinPlot = 20; xminPlot = 0.0; xmaxPlot = 2000.0;} // mlljj
-  else if(thePlot >= 20 && thePlot <= 24) {nBinPlot = 18; xminPlot = 0.0; xmaxPlot = 180.0;}
+  else if(thePlot >= 20 && thePlot <= 24) {nBinPlot = 90; xminPlot = 0.0; xmaxPlot = 180.0;}
   else if(thePlot >= 25 && thePlot <= 25) {nBinPlot = 40; xminPlot = 0.0; xmaxPlot = 2.0;}
   else if(thePlot >= 26 && thePlot <= 26) {nBinPlot = 200;  xminPlot =  -1.0; xmaxPlot = 1.0;}
   else if(thePlot >= 27 && thePlot <= 28) {nBinPlot = 100;  xminPlot =   0.0; xmaxPlot = 5.0;}
@@ -495,11 +495,19 @@ void ww_ana
     if(minGenCuts == true) {
       genLevelNorm[0]++;
       int nGenJets = 0;
-      if(bgdEvent.genjet1_.Pt() > 30 && TMath::Abs(bgdEvent.genjet1_.Eta()) < 5.0) nGenJets++;
-      if(bgdEvent.genjet2_.Pt() > 30 && TMath::Abs(bgdEvent.genjet2_.Eta()) < 5.0) nGenJets++;
-      if(bgdEvent.genjet2_.Pt() > 30 && TMath::Abs(bgdEvent.genjet3_.Eta()) < 5.0) nGenJets++;
+      if(bgdEvent.genjet1_.Pt() > 30 && TMath::Abs(bgdEvent.genjet1_.Eta()) < 4.7) nGenJets++;
+      if(bgdEvent.genjet2_.Pt() > 30 && TMath::Abs(bgdEvent.genjet2_.Eta()) < 4.7) nGenJets++;
+      if(bgdEvent.genjet2_.Pt() > 30 && TMath::Abs(bgdEvent.genjet3_.Eta()) < 4.7) nGenJets++;
 
-      if(nGenJets == 0) {
+      double etaCut[2] = {2.5, 2.5};
+      if(TMath::Abs(bgdEvent.genlep1McId_) == 11) etaCut[0] = 2.4;
+      if(TMath::Abs(bgdEvent.genlep2McId_) == 11) etaCut[1] = 2.4;
+
+      if(nGenJets == 0 &&
+         TMath::Abs(bgdEvent.genlep1McId_) != TMath::Abs(bgdEvent.genlep2McId_) &&
+         bgdEvent.genlep1_.Pt() > 20 && TMath::Abs(bgdEvent.genlep1_.Eta()) < etaCut[0] && 
+         bgdEvent.genlep2_.Pt() > 20 && TMath::Abs(bgdEvent.genlep2_.Eta()) < etaCut[1]
+        ) {
         genLevelNorm[1]++;
 	genLevelSel = true;
       }
@@ -892,18 +900,18 @@ void ww_ana
  
        if(passCuts[1][WWSEL]){ // begin making plots
 	double myVar = theMET;
-	if     (thePlot == 1) myVar = bgdEvent.lep1_.Pt();
-	else if(thePlot == 2) myVar = bgdEvent.lep2_.Pt();
-	else if(thePlot == 3) myVar = bgdEvent.lep3_.Pt();
-	else if(thePlot == 4) myVar = bgdEvent.jet1_.Pt();
-	else if(thePlot == 5) myVar = bgdEvent.jet2_.Pt();
-	else if(thePlot == 6) myVar = bgdEvent.jet3_.Pt();
-	else if(thePlot == 7) myVar = bgdEvent.dilep_.M();
-	else if(thePlot == 8) myVar = bgdEvent.mt_;
+	if     (thePlot == 1) myVar = TMath::Min(bgdEvent.lep1_.Pt(),199.999);
+	else if(thePlot == 2) myVar = TMath::Min(bgdEvent.lep2_.Pt(),199.999);
+	else if(thePlot == 3) myVar = TMath::Min(bgdEvent.lep3_.Pt(),199.999);
+	else if(thePlot == 4) myVar = TMath::Min(bgdEvent.jet1_.Pt(),199.999);
+	else if(thePlot == 5) myVar = TMath::Min(bgdEvent.jet2_.Pt(),199.999);
+	else if(thePlot == 6) myVar = TMath::Min(bgdEvent.jet3_.Pt(),199.999);
+	else if(thePlot == 7) myVar = TMath::Min(bgdEvent.dilep_.M(),399.999);
+	else if(thePlot == 8) myVar = TMath::Min(bgdEvent.mt_,(float)399.999);
 	else if(thePlot == 9) myVar = bgdEvent.mt1_;
 	else if(thePlot ==10) myVar = bgdEvent.mt2_;
 	else if(thePlot ==12) myVar = usedMet;
-	else if(thePlot ==13) myVar = bgdEvent.dilep_.Pt();
+	else if(thePlot ==13) myVar = TMath::Min(bgdEvent.dilep_.Pt(),199.999);
 	else if(thePlot ==14) myVar = fabs(bgdEvent.dilep_.M()-91.1876);
 	else if(thePlot ==15) myVar = fabs(theMET-bgdEvent.dilep_.Pt())/bgdEvent.dilep_.Pt();
 	else if(thePlot ==16) myVar = bgdEvent.lep2_.Pt()/bgdEvent.lep1_.Pt();
@@ -1553,18 +1561,18 @@ void ww_ana
 
       if(passCuts[1][WWSEL]){ // begin making plots
 	double myVar = theMET;
-	if     (thePlot == 1) myVar = sigEvent.lep1_.Pt();
-	else if(thePlot == 2) myVar = sigEvent.lep2_.Pt();
-	else if(thePlot == 3) myVar = sigEvent.lep3_.Pt();
-	else if(thePlot == 4) myVar = sigEvent.jet1_.Pt();
-	else if(thePlot == 5) myVar = sigEvent.jet2_.Pt();
-	else if(thePlot == 6) myVar = sigEvent.jet3_.Pt();
-	else if(thePlot == 7) myVar = sigEvent.dilep_.M();
-	else if(thePlot == 8) myVar = sigEvent.mt_;
+	if     (thePlot == 1) myVar = TMath::Min(sigEvent.lep1_.Pt(),199.999);
+	else if(thePlot == 2) myVar = TMath::Min(sigEvent.lep2_.Pt(),199.999);
+	else if(thePlot == 3) myVar = TMath::Min(sigEvent.lep3_.Pt(),199.999);
+	else if(thePlot == 4) myVar = TMath::Min(sigEvent.jet1_.Pt(),199.999);
+	else if(thePlot == 5) myVar = TMath::Min(sigEvent.jet2_.Pt(),199.999);
+	else if(thePlot == 6) myVar = TMath::Min(sigEvent.jet3_.Pt(),199.999);
+	else if(thePlot == 7) myVar = TMath::Min(sigEvent.dilep_.M(),399.999);
+	else if(thePlot == 8) myVar = TMath::Min(sigEvent.mt_,(float)399.999);
 	else if(thePlot == 9) myVar = sigEvent.mt1_;
 	else if(thePlot ==10) myVar = sigEvent.mt2_;
 	else if(thePlot ==12) myVar = usedMet;
-	else if(thePlot ==13) myVar = sigEvent.dilep_.Pt();
+	else if(thePlot ==13) myVar = TMath::Min(sigEvent.dilep_.Pt(),199.999);
 	else if(thePlot ==14) myVar = fabs(sigEvent.dilep_.M()-91.1876);
 	else if(thePlot ==15) myVar = fabs(theMET-sigEvent.dilep_.Pt())/sigEvent.dilep_.Pt();
 	else if(thePlot ==16) myVar = sigEvent.lep2_.Pt()/sigEvent.lep1_.Pt();
@@ -1709,18 +1717,18 @@ void ww_ana
 
       if(passCuts[1][WWSEL]){ // begin making plots
 	double myVar = theMET;
-	if     (thePlot == 1) myVar = dataEvent.lep1_.Pt();
-	else if(thePlot == 2) myVar = dataEvent.lep2_.Pt();
-	else if(thePlot == 3) myVar = dataEvent.lep3_.Pt();
-	else if(thePlot == 4) myVar = dataEvent.jet1_.Pt();
-	else if(thePlot == 5) myVar = dataEvent.jet2_.Pt();
-	else if(thePlot == 6) myVar = dataEvent.jet3_.Pt();
-	else if(thePlot == 7) myVar = dataEvent.dilep_.M();
-	else if(thePlot == 8) myVar = dataEvent.mt_;
+	if     (thePlot == 1) myVar = TMath::Min(dataEvent.lep1_.Pt(),199.999);
+	else if(thePlot == 2) myVar = TMath::Min(dataEvent.lep2_.Pt(),199.999);
+	else if(thePlot == 3) myVar = TMath::Min(dataEvent.lep3_.Pt(),199.999);
+	else if(thePlot == 4) myVar = TMath::Min(dataEvent.jet1_.Pt(),199.999);
+	else if(thePlot == 5) myVar = TMath::Min(dataEvent.jet2_.Pt(),199.999);
+	else if(thePlot == 6) myVar = TMath::Min(dataEvent.jet3_.Pt(),199.999);
+	else if(thePlot == 7) myVar = TMath::Min(dataEvent.dilep_.M(),399.999);
+	else if(thePlot == 8) myVar = TMath::Min(dataEvent.mt_,(float)399.999);
 	else if(thePlot == 9) myVar = dataEvent.mt1_;
 	else if(thePlot ==10) myVar = dataEvent.mt2_;
 	else if(thePlot ==12) myVar = usedMet;
-	else if(thePlot ==13) myVar = dataEvent.dilep_.Pt();
+	else if(thePlot ==13) myVar = TMath::Min(dataEvent.dilep_.Pt(),199.999);
 	else if(thePlot ==14) myVar = fabs(dataEvent.dilep_.M()-91.1876);
 	else if(thePlot ==15) myVar = fabs(theMET-dataEvent.dilep_.Pt())/dataEvent.dilep_.Pt();
 	else if(thePlot ==16) myVar = dataEvent.lep2_.Pt()/dataEvent.lep1_.Pt();
@@ -1750,7 +1758,6 @@ void ww_ana
 	else if(thePlot ==52) myVar = dataEvent.trackMet_*sin(dataEvent.trackMetPhi_);
 	else if(thePlot ==53) myVar = DeltaPhi(dataEvent.jet3_.Phi(),dataEvent.jet4_.Phi())*180.0/TMath::Pi();
 	else if(thePlot ==55) myVar = dataEvent.dPhiDiLepMET_*180.0/TMath::Pi();
-	else if(thePlot ==57) myVar = TMath::Min(0.0,4.999);
       	histo5->Fill(myVar,1.0);
       } // end making plots
 

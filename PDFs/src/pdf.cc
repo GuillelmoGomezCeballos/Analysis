@@ -5,13 +5,15 @@
 #include "TMath.h"
 #include "TFile.h"
 #include "LHAPDF/LHAPDF.h"
-#include "/home/ceballos/releases/CMSSW_5_3_20/src/Smurf/Core/SmurfTree.h"
-#include "/home/ceballos/releases/CMSSW_5_3_20/src/Smurf/Analysis/HWWlvlv/factors.h"
-#include "/home/ceballos/releases/CMSSW_5_3_20/src/Analysis/nt_scripts/trilepton.h"
+#include "/home/ceballos/releases/CMSSW_5_3_14/src/Smurf/Core/SmurfTree.h"
+#include "/home/ceballos/releases/CMSSW_5_3_14/src/Smurf/Analysis/HWWlvlv/factors.h"
+#include "/home/ceballos/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/trilepton.h"
 #include "Analysis/PDFs/interface/pdf.h"
 
 using namespace mithep;
 ClassImp(pdf)
+
+void metChange(double met, double metPhi, double metNew[2], LorentzVector gamma);
 
 // 1 ==> WW selection
 // 2 ==> Full WH->3l selection
@@ -20,6 +22,7 @@ ClassImp(pdf)
 // 5 ==> ZZ->llnn selection
 // 6 ==> Full ZH->3l+2jets selection
 // 7 ==> WW same-sign
+// 8 ==> Z(ll)H(MET+gamma)
 
 pdf::pdf(std::string iName,int iPDF,std::string iPDFName, int nsel, unsigned int nJetsType) { 
   std::cout << "====> " << iPDFName << std::endl;
@@ -41,10 +44,11 @@ pdf::pdf(std::string iName,int iPDF,std::string iPDFName, int nsel, unsigned int
   unsigned int patternTopVeto = SmurfTree::TopVeto;
 
   SmurfTree bgdEvent;
-  bgdEvent.LoadTree(iName.c_str(),0);
+  if(nsel != 8) bgdEvent.LoadTree(iName.c_str(),0);
+  else          bgdEvent.LoadTree(iName.c_str(),3);
   bgdEvent.InitTree(0);
 
-  if(nsel <= 0 || nsel >= 8) assert(0);
+  if(nsel <= 0 || nsel >= 9) assert(0);
 
   for(int i0 = 0; i0 < bgdEvent.tree_->GetEntries(); i0++) {
     if(i0 % 1000000 == 0) std::cout << "=== Processed ===> " << i0 << std::endl;
@@ -206,6 +210,63 @@ pdf::pdf(std::string iName,int iPDF,std::string iPDFName, int nsel, unsigned int
        preselCuts == true && bgdEvent.dilep_.M() > 15.0 && qDisAgree == 0 &&
        passBtagVeto && passVBFSel == true && passMass  == true &&  pass3rLVeto;
     }
+    else if(nsel == 8) {
+
+      LorentzVector lep1(0,0,0,0), lep2(0,0,0,0), gamma(0,0,0,0), gammaf(0,0,0,0), dilep(0,0,0,0), leppho(0,0,0,0), llpho(0,0,0,0);
+      int charge = 0; int lType = 0;
+      if     ((bgdEvent.cuts_ & SmurfTree::Lep1FullSelection) == SmurfTree::Lep1FullSelection) {
+	charge += (int)bgdEvent.lq1_;
+	if(lep1.pt() == 0) {lep1 = bgdEvent.lep1_;}
+	else               {lep2 = bgdEvent.lep1_;}
+	if     (abs(bgdEvent.lid1_) == 13) lType += 1;
+	else if(abs(bgdEvent.lid1_) == 11) lType += 10;
+      }
+      else if((bgdEvent.cuts_ & SmurfTree::Lep1LooseEleV2) == SmurfTree::Lep1LooseEleV2 && TMath::Abs(bgdEvent.lep1_.eta()) < 2.4) {gamma  = bgdEvent.lep1_;}
+      else if((bgdEvent.cuts_ & SmurfTree::Lep1LooseMuV1)  == SmurfTree::Lep1LooseMuV1  && TMath::Abs(bgdEvent.lep1_.eta()) < 2.4) {gammaf = bgdEvent.lep1_;}
+
+      if     ((bgdEvent.cuts_ & SmurfTree::Lep2FullSelection) == SmurfTree::Lep2FullSelection) {
+	charge += (int)bgdEvent.lq2_;
+	if(lep1.pt() == 0) {lep1 = bgdEvent.lep2_;}
+	else               {lep2 = bgdEvent.lep2_;}
+	if     (abs(bgdEvent.lid2_) == 13) lType += 1;
+	else if(abs(bgdEvent.lid2_) == 11) lType += 10;
+      }
+      else if((bgdEvent.cuts_ & SmurfTree::Lep2LooseEleV2) == SmurfTree::Lep2LooseEleV2 && TMath::Abs(bgdEvent.lep2_.eta()) < 2.4) {gamma  = bgdEvent.lep2_;}
+      else if((bgdEvent.cuts_ & SmurfTree::Lep2LooseMuV1)  == SmurfTree::Lep2LooseMuV1  && TMath::Abs(bgdEvent.lep2_.eta()) < 2.4) {gammaf = bgdEvent.lep2_;}
+
+      if     ((bgdEvent.cuts_ & SmurfTree::Lep3FullSelection) == SmurfTree::Lep3FullSelection) {
+	charge += (int)bgdEvent.lq3_;
+	if(lep1.pt() == 0) {lep1 = bgdEvent.lep3_;}
+	else               {lep2 = bgdEvent.lep3_;}
+	if     (abs(bgdEvent.lid3_) == 13) lType += 1;
+	else if(abs(bgdEvent.lid3_) == 11) lType += 10;
+      }
+      else if((bgdEvent.cuts_ & SmurfTree::Lep3LooseEleV2) == SmurfTree::Lep3LooseEleV2 && TMath::Abs(bgdEvent.lep3_.eta()) < 2.4) {gamma  = bgdEvent.lep3_;}
+      else if((bgdEvent.cuts_ & SmurfTree::Lep3LooseMuV1)  == SmurfTree::Lep3LooseMuV1  && TMath::Abs(bgdEvent.lep3_.eta()) < 2.4) {gammaf = bgdEvent.lep3_;}
+
+      dilep = lep1+lep2;
+      leppho = lep1+gamma;
+      llpho = lep1+lep2+gamma;
+
+      if(gamma.pt() > 0 && gammaf.pt() > 0) assert(0);
+      if(gammaf.pt() > 0) pass = false;
+      else                pass = true;
+
+      if(pass == true) {
+	double metNew[2]; metChange(bgdEvent.met_,bgdEvent.metPhi_,metNew,gamma);
+        double theMET = metNew[0]; double theMETPHI = metNew[1]; 
+	bool passBtagVeto = (bgdEvent.cuts_ & patternTopVeto) == patternTopVeto;
+	bool passZMass    = fabs(dilep.mass()-91.1876) < 15.;
+	bool passMET      = bgdEvent.met_ > 60;
+	bool passDPhiZMET = DeltaPhi(dilep.phi() ,theMETPHI) > 2.7;
+	bool passPTFrac   = fabs(theMET-dilep.pt())/dilep.pt() < 0.5;
+	bool passDPhiLL   = DeltaPhi(lep1.phi() ,lep2.phi()) < 2.25;
+	bool passPTLL     = dilep.pt() > 60;
+	bool passLLG      = charge == 0 && lep1.pt() > 20. && lep2.pt() > 20.	  && gamma.pt() > 20;
+	pass = bgdEvent.njets_ == nJetsType && passLLG && passBtagVeto && passZMass && passMET && passPTLL && passDPhiLL && passDPhiZMET && passPTFrac;
+      }
+
+    }
 
     if(pass == false) continue;
 
@@ -216,5 +277,15 @@ pdf::pdf(std::string iName,int iPDF,std::string iPDFName, int nsel, unsigned int
   std::cout << std::setprecision(25) << sumRECO/sumGEN << " " << std::setprecision(25) << sumRECO << std::endl;
   oFile     << std::setprecision(25) << sumRECO/sumGEN << " " << std::setprecision(25) << sumRECO << std::endl;
   oFile.close();
+
+}
+
+void metChange(double met, double metPhi, double metNew[2], LorentzVector gamma){
+
+double metx = met * cos(metPhi) + gamma.px();
+double mety = met * sin(metPhi) + gamma.py();
+
+metNew[0] = sqrt(metx*metx+mety*mety);
+metNew[1] = atan2(mety,metx);
 
 }

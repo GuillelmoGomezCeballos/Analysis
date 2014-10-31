@@ -34,3 +34,7 @@
 
 ./runPDF.sh 14 0; rm -rf wwsssel_wwss;     mkdir wwsssel_wwss;      mv pdf_*txt  wwsssel_wwss/;
 ./runPDF.sh 15 0; rm -rf wwsssel_wz3l;     mkdir wwsssel_wz3l;      mv pdf_*txt  wwsssel_wz3l/;
+
+./runPDF.sh 16 0; rm -rf zhmetgsel0j_zz4l;mkdir zhmetgsel0j_zz4l;   mv pdf_*txt  zhmetgsel0j_zz4l/;
+./runPDF.sh 17 0; rm -rf zhmetgsel0j_wz3l;mkdir zhmetgsel0j_wz3l;   mv pdf_*txt  zhmetgsel0j_wz3l/;
+./runPDF.sh 18 0; rm -rf zhmetgsel0j_zh;  mkdir zhmetgsel0j_zh;	    mv pdf_*txt  zhmetgsel0j_zh/;
