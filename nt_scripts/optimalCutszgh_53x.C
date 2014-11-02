@@ -27,7 +27,7 @@ SmurfTree systEvent;
 const unsigned int nSelTypes = 8;
 const unsigned int nSelTypesSyst = 7;
 const unsigned int ZLGBinTypes = 20;
-const bool showSignalOnly = true;
+const bool showSignalOnly = false;
 bool showSyst = true;
 
 enum selType {ZLGSEL=0, ZLGFSEL, ZLLGSEL, ZLLGFSEL, WWSEL, BTAGSEL, SIGSEL, SIGFSEL};
@@ -40,19 +40,19 @@ TString selTypeNameSyst[nSelTypesSyst*2] = {"JESUP-EM", "JESDOWN-EM", "LEPP-EM",
 void optimalCutszgh_53x
 (
  int     mH  	 = 95,
- int thePlot = 29,
- TString bgdInputFile    = "ntuples_53x/lgammachi95_old.root",
- TString dataInputFile   = "ntuples_53x/data_llg_old.root",
+ int thePlot = 0,
+ TString bgdInputFile    = "ntuples_53x/lgammachi95.root",
+ TString dataInputFile   = "ntuples_53x/data_llg.root",
  int period = 3,
  int lSel = 2, 
  int nJetsType = 0
- ,double var0 = 70, double var1 = 2.7, double var2 = 0.50, double var3 = 2.25
+ ,double var0 = 60, double var1 = 2.7, double var2 = 0.50, double var3 = 2.25
  )
 {
   double lumi = 1.0;
   
   //                    MET,   DPhiZMET, PTFrac, dPhi
-  double cutValue[4] = {70.0,  2.7,     0.50,    2.25};
+  double cutValue[4] = {60.0,  2.7,     0.50,    2.25};
   cutValue[0] = var0; cutValue[1] = var1; cutValue[2] = var2; cutValue[3] = var3;
   double ptJetMin = 30.0;
 
@@ -60,10 +60,12 @@ void optimalCutszgh_53x
 
   if(showSignalOnly == true) showSyst = false;
 
-    double sfJetPho [ZLGBinTypes] = {0.8457,1.0093,0.9595,2.2628,1.7739,1.2765,1.3427,1.5297,6.4300,2.7130,1.7033,1.9188,2.7002,6.5017,2.3297,2.3782,1.5498,1.8814,5.5804,0.8890};
-  //double sfJetPhoE[ZLGBinTypes] = {0.0883,0.0756,0.0944,0.0462,0.0803,0.1076,0.1178,0.1146,0.0340,0.1051,0.1392,0.1445,0.1299,0.0498,0.1640,0.1607,0.1957,0.2332,0.0865,0.2391};
-    double sfLepPho [ZLGBinTypes] = {1.4535,1.3217,1.4381,1.2994,1.2834,1.6036,1.5194,1.4816,1.1814,1.1930,1.6946,1.6042,1.5806,1.1967,1.2814,1.7947,1.7634,1.7703,1.4256,1.6324};
-  //double sfLepPhoE[ZLGBinTypes] = {0.0231,0.0263,0.0214,0.0204,0.0162,0.0092,0.0090,0.0094,0.0118,0.0083,0.0057,0.0061,0.0073,0.0078,0.0073,0.0138,0.0131,0.0154,0.0177,0.0144};
+  double sfZg = 1.30;
+
+  double sfJetPho [ZLGBinTypes] = {0.8299,0.9902,0.9938,2.2385,1.4395,1.2668,1.2947,1.4397,7.1112,2.0606,1.6692,2.2977,2.6063,8.5469,2.5972,2.2386,1.3957,1.7788,5.4528,1.4368};
+  //double sfJetPhoE[ZLGBinTypes] = {0.0916,0.0786,0.0945,0.0486,0.1176,0.1107,0.1270,0.1277,0.0334,0.1616,0.1474,0.1279,0.1351,0.0435,0.2005,0.1752,0.2268,0.2556,0.0936,0.3172};
+  double sfLepPho [ZLGBinTypes] = {1.5506,1.4229,1.2408,1.2460,1.0489,1.5933,1.5426,1.3031,1.0098,0.9117,1.5135,1.5249,1.3557,1.1246,0.9632,1.5900,1.7737,1.6877,1.4219,1.4432};
+  //double sfLepPhoE[ZLGBinTypes] = {0.0275,0.0340,0.0403,0.0442,0.0441,0.0140,0.0144,0.0202,0.0540,0.0254,0.0109,0.0129,0.0194,0.0238,0.0236,0.0322,0.0282,0.0392,0.0755,0.0418};
   //double sfJetPho [ZLGBinTypes] = {1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000};
   double sfJetPhoE[ZLGBinTypes] = {0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000};
   //double sfLepPho [ZLGBinTypes] = {1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000};
@@ -134,7 +136,7 @@ void optimalCutszgh_53x
 
   int nBinPlot      = 200;
   double xminPlot   = 0.0;
-  double xmaxPlot   = 400.0;
+  double xmaxPlot   = 200.0;
 
   if     (thePlot >=  8 && thePlot <=  8) {nBinPlot = 18;  xminPlot =   0.0; xmaxPlot = 900.0;}
   else if(thePlot >=  9 && thePlot <=  9) {nBinPlot = 160; xminPlot = 0.0; xmaxPlot = 160.0;}
@@ -546,9 +548,9 @@ void optimalCutszgh_53x
        if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLGSystM  &&  passBtagVeto &&  passZMassSystM	       && passMET        && passPTLLSystM && passDPhiLL && passDPhiZMET        && passPTFracSystM  ) passSystCuts[lType][LEPM]    = true;
        if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG       &&  passBtagVeto &&  passZMass             && passMETSystMET && passPTLL      && passDPhiLL && passDPhiZMETSystMET && passPTFracSystMET) passSystCuts[lType][MET]     = true;
 
-       if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG  &&  fabs(llpho.mass()-91.1876) < 100.) passCuts[lType][ZLLGSEL] = true;
+       if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG && passPTLL) passCuts[lType][ZLLGSEL] = true;
 
-       if(fDecay == 9 && (lidPho == 8 || lidPho == 22)) passCuts[lType][ZLLGSEL] = false;
+       //if(fDecay == 9 && (lidPho == 8 || lidPho == 22)) passCuts[lType][ZLLGSEL] = false;
 	 
       //if(isRealLepton == false &&
       //   (bgdEvent.dstype_ == SmurfTree::ttbar  || bgdEvent.dstype_ == SmurfTree::tw   || bgdEvent.dstype_ == SmurfTree::dyee || bgdEvent.dstype_ == SmurfTree::dymm ||
@@ -619,6 +621,9 @@ void optimalCutszgh_53x
         if(fDecay == 11 || fDecay == 17 || fDecay == 18 || fDecay == 9 || fDecay == 3) {
 	  add = add*sfJetPho[ZLGBin]; weightSystVV = sfJetPhoE[ZLGBin];
 	}
+        if(fDecay == 19) {
+	  add = add*sfZg;
+	}
 
 	theWeight = bgdEvent.scale1fb_*lumi*add*puWeight*trigEff*addLepEff;
       }
@@ -661,16 +666,16 @@ void optimalCutszgh_53x
 	else if(thePlot ==28) myVar = TMath::Min(DeltaR(gamma.Phi(),gamma.Eta(),lep1.Phi(),lep1.Eta()),DeltaR(gamma.Phi(),gamma.Eta(),lep2.Phi(),lep2.Eta()));
 	else if(thePlot ==29) myVar = MVAVar;
 
-      	if     (fDecay == 9 || fDecay == 19){
+      	if     (fDecay == 9 || fDecay == 19 || fDecay == 39){
       	  histo0->Fill(myVar,theWeight);
       	}
-      	else if(fDecay == 11 || fDecay == 17 || fDecay == 18){
+      	else if(fDecay == 11 || fDecay == 31){
       	  histo1->Fill(myVar,theWeight);
       	}
-      	else if(fDecay == 31 || fDecay == 37 || fDecay == 38){
+      	else if(fDecay == 17 || fDecay == 37){
       	  histo2->Fill(myVar,theWeight);
       	}
-      	else if(fDecay == 39){
+      	else if(fDecay == 18 || fDecay == 38){
       	  histo3->Fill(myVar,theWeight);
       	}
       	else if(fDecay == 21 || fDecay == 27 || fDecay == 28 ||
@@ -923,10 +928,10 @@ void optimalCutszgh_53x
 
        if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG       &&  passBtagVeto &&  passZMass             && passMET        && passPTLL      && passDPhiLL && passDPhiZMET        && passPTFrac       ) passCuts[lType][SIGSEL]      = true;
 
-       if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG  &&  fabs(llpho.mass()-91.1876) < 100.) passCuts[lType][ZLLGSEL] = true;
+       if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG && passPTLL) passCuts[lType][ZLLGSEL] = true;
 
        // blinded!
-       passCuts[1][SIGSEL] = false;
+       //passCuts[1][SIGSEL] = false;
 
     }
 
@@ -1219,6 +1224,7 @@ void optimalCutszgh_53x
 			    1.0+sqrt(bgdCombinedE[SIGSEL+nSelTypes][9])/bgdCombined[SIGSEL+nSelTypes][9],
 		            1.0+sqrt(nSigECut[SIGSEL+nSelTypes])/nSigCut[SIGSEL+nSelTypes]};
 
+  // WW+ttbar estimation
   double kEoverM  = 0.88;
   double NemFact_FromMLLSB = (kEoverM+1.0/kEoverM)*0.5;
   if     (lSel == 0)  NemFact_FromMLLSB = (        1.0/kEoverM)*0.5;
@@ -1226,10 +1232,10 @@ void optimalCutszgh_53x
 
   if(showSignalOnly == false) printf("NemFact_FromMLLSB = %f\n",NemFact_FromMLLSB);
 
-  // There uncertainties: closure test, different between default and alternative method, and data statistics
   double EMSystTotal = 1.0; double EMSyst[1] = {0.0};
-  EMSyst[0] = bgdCombined[SIGSEL+nSelTypes][8]/bgdCombined[SIGSEL][8]/NemFact_FromMLLSB;
-  if(EMSyst[0] < 1.0) EMSyst[0] = 1/EMSyst[0]; EMSyst[0] = EMSyst[0] - 1.0;
+  // closure test not considered, overkill
+  //EMSyst[0] = bgdCombined[SIGSEL+nSelTypes][8]/bgdCombined[SIGSEL][8]/NemFact_FromMLLSB;
+  //if(EMSyst[0] < 1.0) EMSyst[0] = 1/EMSyst[0]; EMSyst[0] = EMSyst[0] - 1.0;
 
   // At least one data event is required
   if(nSelectedData[SIGSEL] == 0) nSelectedData[SIGSEL] = 1;
@@ -1255,7 +1261,13 @@ void optimalCutszgh_53x
   if(showSignalOnly == false) printf("EM scale Factor: %7.5f +/- %7.5f\n",scaleFactorEM,EMSystTotal-1.0);
   if(showSignalOnly == false) printf("EM yield: %7.5f +/- %7.5f\n",NFinal[8],sqrt(nSelectedData[SIGSEL])*NemFact_FromMLLSB);
 
-  //NFinal[0] = bgdCombined[SIGSEL+nSelTypes][0]; NFinalE[0] = 1.5;
+  // Zg estimation
+  double Zgbkg = bgdCombined[ZLLGSEL+nSelTypes][0]+bgdCombined[ZLLGSEL+nSelTypes][1]+bgdCombined[ZLLGSEL+nSelTypes][2]+bgdCombined[ZLLGSEL+nSelTypes][3]+
+                 bgdCombined[ZLLGSEL+nSelTypes][4]+bgdCombined[ZLLGSEL+nSelTypes][5]+bgdCombined[ZLLGSEL+nSelTypes][6]+bgdCombined[ZLLGSEL+nSelTypes][8];
+  double ZgEstimation = (nSelectedData[ZLLGSEL+nSelTypes]-Zgbkg)/bgdCombined[ZLLGSEL+nSelTypes][9];
+  if(showSignalOnly == false) {
+    printf("Zg estimation: (%d - %f)/%f = %f\n",(int)nSelectedData[ZLLGSEL+nSelTypes],Zgbkg,bgdCombined[ZLLGSEL+nSelTypes][9],ZgEstimation);
+  }
 
   histo_EM->Scale(scaleFactorEM);
   histo4->Scale(scaleFactorEM);
@@ -1671,15 +1683,17 @@ void optimalCutszgh_53x
     newcardShape << Form("CMS_zllhinv_EMSyst_%4s                 lnN	-     -     -	  -     -   %7.5f\n",ECMsb.Data(),NFinalE[8]);	       
     //if(histo_EM->GetBinContent(nb) > 0 && nSelectedData[SIGSEL] > 0)
     //newcardShape << Form("CMS_zllhinv_EMStat_%4s_Bin%d       gmN  %d    -     -     -	  -     -   %7.5f\n",ECMsb.Data(),nb-1,(int)nSelectedData[SIGSEL],histo_EM->GetBinContent(nb)/nSelectedData[SIGSEL]);	       
-    if(histo_ZH_hinv->GetBinContent(nb) > 0) newcardShape << Form("CMS_zllhinv%s_MVAZHStatBounding_%s_Bin%d	  lnN    %7.5f -      -    -    -    -  \n",finalStateName,ECMsb.Data(),nb-1,1.0+histo_ZH_hinv->GetBinError(nb) / histo_ZH_hinv->GetBinContent(nb));
+    // Gaussian stat
+    if(histo_ZH_hinv->GetBinContent(nb)   > 0) newcardShape << Form("CMS_zllhinv%s_MVAZHStatBounding_%s_Bin%d	  lnN    %7.5f -      -    -    -    -  \n",finalStateName,ECMsb.Data(),nb-1,1.0+histo_ZH_hinv->GetBinError(nb) / histo_ZH_hinv->GetBinContent(nb));
     //if(histo_Zjets->GetBinContent(nb)	  > 0) newcardShape << Form("CMS_zllhinv%s_MVAZjetsStatBounding_%s_Bin%d  lnN      -  %7.5f   -    -    -    -  \n",finalStateName,ECMsb.Data(),nb-1,1.0+histo_Zjets->GetBinError(nb)   / histo_Zjets->GetBinContent(nb)  );
-    //if(histo_VVV->GetBinContent(nb)	  > 0) newcardShape << Form("CMS_zllhinv%s_MVAVVVStatBounding_%s_Bin%d    lnN      -	-  %7.5f   -    -    -  \n",finalStateName,ECMsb.Data(),nb-1,1.0+histo_VVV->GetBinError(nb)     / histo_VVV->GetBinContent(nb)	 );
+    if(histo_VVV->GetBinContent(nb)	  > 0) newcardShape << Form("CMS_zllhinv%s_MVAVVVStatBounding_%s_Bin%d    lnN      -	-  %7.5f   -    -    -  \n",finalStateName,ECMsb.Data(),nb-1,1.0+histo_VVV->GetBinError(nb)     / histo_VVV->GetBinContent(nb)	 );
     if(histo_WZ->GetBinContent(nb)	  > 0) newcardShape << Form("CMS_zllhinv%s_MVAWZStatBounding_%s_Bin%d	  lnN      -	-     -  %7.5f  -    -  \n",finalStateName,ECMsb.Data(),nb-1,1.0+histo_WZ->GetBinError(nb)      / histo_WZ->GetBinContent(nb)	 );
     if(histo_ZZ->GetBinContent(nb)	  > 0) newcardShape << Form("CMS_zllhinv%s_MVAZZStatBounding_%s_Bin%d	  lnN      -	-     -    -  %7.5f  -  \n",finalStateName,ECMsb.Data(),nb-1,1.0+histo_ZZ->GetBinError(nb)      / histo_ZZ->GetBinContent(nb)	 );
     //if(histo_EM->GetBinContent(nb)	  > 0) newcardShape << Form("CMS_zllhinv%s_MVAEMStatBounding_%s_Bin%d	  lnN      -	-     -    -    -  %7.5f\n",finalStateName,ECMsb.Data(),nb-1,1.0+histo_EM->GetBinError(nb)      / histo_EM->GetBinContent(nb)	 );
+    // Poisson stat
     //if(histo_ZH_hinv->GetBinContent(nb)   > 0) newcardShape << Form("CMS_zllhinv%s_MVAZHStatBounding_%s_Bin%d	  gmN %d  %7.5f -     -	   -    -    -  \n",finalStateName,ECMsb.Data(),nb-1,(int)histo_ZH_hinv_NoW->GetBinContent(nb),histo_ZH_hinv->GetBinContent(nb)/ histo_ZH_hinv_NoW->GetBinContent(nb));
     if(histo_Zjets->GetBinContent(nb)	  > 0) newcardShape << Form("CMS_zllhinv%s_MVAZjetsStatBounding_%s_Bin%d  gmN %d    -  %7.5f  -    -	-    -  \n",finalStateName,ECMsb.Data(),nb-1,(int)histo_Zjets_NoW->GetBinContent(nb)  ,histo_Zjets->GetBinContent(nb)  / histo_Zjets_NoW->GetBinContent(nb)  );
-    if(histo_VVV->GetBinContent(nb)	  > 0) newcardShape << Form("CMS_zllhinv%s_MVAVVVStatBounding_%s_Bin%d    gmN %d    -	 -  %7.5f  -	-    -  \n",finalStateName,ECMsb.Data(),nb-1,(int)histo_VVV_NoW->GetBinContent(nb)	 ,histo_VVV->GetBinContent(nb)    / histo_VVV_NoW->GetBinContent(nb)	);
+    //if(histo_VVV->GetBinContent(nb)	  > 0) newcardShape << Form("CMS_zllhinv%s_MVAVVVStatBounding_%s_Bin%d    gmN %d    -	 -  %7.5f  -	-    -  \n",finalStateName,ECMsb.Data(),nb-1,(int)histo_VVV_NoW->GetBinContent(nb)	 ,histo_VVV->GetBinContent(nb)    / histo_VVV_NoW->GetBinContent(nb)	);
     //if(histo_WZ->GetBinContent(nb)	  > 0) newcardShape << Form("CMS_zllhinv%s_MVAWZStatBounding_%s_Bin%d	  gmN %d    -	 -    -  %7.5f  -    -  \n",finalStateName,ECMsb.Data(),nb-1,(int)histo_WZ_NoW->GetBinContent(nb)	 ,histo_WZ->GetBinContent(nb)	  / histo_WZ_NoW->GetBinContent(nb)	);
     //if(histo_ZZ->GetBinContent(nb)	  > 0) newcardShape << Form("CMS_zllhinv%s_MVAZZStatBounding_%s_Bin%d	  gmN %d    -	 -    -    -  %7.5f  -  \n",finalStateName,ECMsb.Data(),nb-1,(int)histo_ZZ_NoW->GetBinContent(nb)	 ,histo_ZZ->GetBinContent(nb)	  / histo_ZZ_NoW->GetBinContent(nb)	);
     if(histo_EM->GetBinContent(nb)	  > 0) newcardShape << Form("CMS_zllhinv%s_MVAEMStatBounding_%s_Bin%d	  gmN %d    -	 -    -    -	-  %7.5f\n",finalStateName,ECMsb.Data(),nb-1,(int)histo_EM_NoW->GetBinContent(nb)	 ,histo_EM->GetBinContent(nb)	  / histo_EM_NoW->GetBinContent(nb)	);
