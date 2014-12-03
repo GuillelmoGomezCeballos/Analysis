@@ -644,7 +644,7 @@ void optimalCutszgh_53x
 	double myVar = bgdEvent.met_; // var0
 	if     (thePlot == 1) myVar = lep1.pt();
 	else if(thePlot == 2) myVar = lep2.pt();
-        else if(thePlot == 3) myVar = TMath::Max(gamma.pt(),gammaf.pt());
+        else if(thePlot == 3) myVar = TMath::Min(TMath::Max(gamma.pt(),gammaf.pt()),199.999);
 	else if(thePlot == 4) myVar = bgdEvent.jet1_.Pt();
 	else if(thePlot == 5) myVar = bgdEvent.jet2_.Pt();
 	else if(thePlot == 6) myVar = TMath::Min(theMET,199.999);
@@ -1005,7 +1005,7 @@ void optimalCutszgh_53x
       double myVar = dataEvent.met_; // var0
       if     (thePlot == 1) myVar = lep1.pt();
       else if(thePlot == 2) myVar = lep2.pt();
-      else if(thePlot == 3) myVar = TMath::Max(gamma.pt(),gammaf.pt());
+      else if(thePlot == 3) myVar = TMath::Min(TMath::Max(gamma.pt(),gammaf.pt()),199.999);
       else if(thePlot == 4) myVar = dataEvent.jet1_.Pt();
       else if(thePlot == 5) myVar = dataEvent.jet2_.Pt();
       else if(thePlot == 6) myVar = TMath::Min(theMET,199.999);
