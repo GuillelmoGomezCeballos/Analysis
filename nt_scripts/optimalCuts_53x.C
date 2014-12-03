@@ -196,7 +196,7 @@ void optimalCuts_53x
   double xminPlot   = 0.0;
   double xmaxPlot   = 200.0;
 
-  if     (thePlot >=  7 && thePlot <=  7) {nBinPlot = 200; xminPlot =  0.0; xmaxPlot = 200.0;}
+  if     (thePlot >=  7 && thePlot <=  7) {nBinPlot =  60; xminPlot = 76.0; xmaxPlot = 106.0;}
   else if(thePlot >=  8 && thePlot <=  8) {nBinPlot =  30; xminPlot = 60.0; xmaxPlot = 280.0;}
   else if(thePlot >= 13 && thePlot <= 13) {nBinPlot = 100; xminPlot =  0.0; xmaxPlot = 500.0;}
   else if(thePlot >=  0 && thePlot <= 14) {}
@@ -493,7 +493,7 @@ void optimalCuts_53x
       bool passBtagVeto = (bgdEvent.cuts_ & patternTopVeto) == patternTopVeto;
       if(
         (bgdEvent.cuts_ & SmurfTree::ExtraLeptonVeto) == SmurfTree::ExtraLeptonVeto &&
-        passBtagVeto &&
+       //passBtagVeto &&
        //((charge == 0 && VarAux2 == 0) || (charge != 0 && VarAux2 == 1)) &&
          bgdEvent.lep1_.Pt() > 20. &&
          bgdEvent.lep2_.Pt() > 20. &&
@@ -1620,7 +1620,7 @@ void optimalCuts_53x
       bool passBtagVeto = (dataEvent.cuts_ & patternTopVeto) == patternTopVeto;
       if(
         (dataEvent.cuts_ & SmurfTree::ExtraLeptonVeto) == SmurfTree::ExtraLeptonVeto &&
-        passBtagVeto &&
+       //passBtagVeto &&
        //((charge == 0 && VarAux2 == 0) || (charge != 0 && VarAux2 == 1)) &&
          dataEvent.lep1_.Pt() > 20. &&
          dataEvent.lep2_.Pt() > 20. &&

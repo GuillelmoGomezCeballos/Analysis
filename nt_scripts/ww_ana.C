@@ -495,18 +495,21 @@ void ww_ana
     if(minGenCuts == true) {
       genLevelNorm[0]++;
       int nGenJets = 0;
-      if(bgdEvent.genjet1_.Pt() > 30 && TMath::Abs(bgdEvent.genjet1_.Eta()) < 4.7) nGenJets++;
-      if(bgdEvent.genjet2_.Pt() > 30 && TMath::Abs(bgdEvent.genjet2_.Eta()) < 4.7) nGenJets++;
-      if(bgdEvent.genjet2_.Pt() > 30 && TMath::Abs(bgdEvent.genjet3_.Eta()) < 4.7) nGenJets++;
+      //if(bgdEvent.genjet1_.Pt() > 30 && TMath::Abs(bgdEvent.genjet1_.Eta()) < 4.7) nGenJets++;
+      //if(bgdEvent.genjet2_.Pt() > 30 && TMath::Abs(bgdEvent.genjet2_.Eta()) < 4.7) nGenJets++;
+      //if(bgdEvent.genjet2_.Pt() > 30 && TMath::Abs(bgdEvent.genjet3_.Eta()) < 4.7) nGenJets++;
+      if(bgdEvent.genjet1_.Pt() > 30 && TMath::Abs(bgdEvent.genjet1_.Eta()) < 5.0) nGenJets++;
+      if(bgdEvent.genjet2_.Pt() > 30 && TMath::Abs(bgdEvent.genjet2_.Eta()) < 5.0) nGenJets++;
+      if(bgdEvent.genjet2_.Pt() > 30 && TMath::Abs(bgdEvent.genjet3_.Eta()) < 5.0) nGenJets++;
 
-      double etaCut[2] = {2.5, 2.5};
-      if(TMath::Abs(bgdEvent.genlep1McId_) == 11) etaCut[0] = 2.4;
-      if(TMath::Abs(bgdEvent.genlep2McId_) == 11) etaCut[1] = 2.4;
+      //double etaCut[2] = {2.5, 2.5};
+      //if(TMath::Abs(bgdEvent.genlep1McId_) == 11) etaCut[0] = 2.4;
+      //if(TMath::Abs(bgdEvent.genlep2McId_) == 11) etaCut[1] = 2.4;
 
-      if(nGenJets == 0 &&
-         TMath::Abs(bgdEvent.genlep1McId_) != TMath::Abs(bgdEvent.genlep2McId_) &&
-         bgdEvent.genlep1_.Pt() > 20 && TMath::Abs(bgdEvent.genlep1_.Eta()) < etaCut[0] && 
-         bgdEvent.genlep2_.Pt() > 20 && TMath::Abs(bgdEvent.genlep2_.Eta()) < etaCut[1]
+      if(nGenJets == 0
+         //&& TMath::Abs(bgdEvent.genlep1McId_) != TMath::Abs(bgdEvent.genlep2McId_) &&
+         //bgdEvent.genlep1_.Pt() > 20 && TMath::Abs(bgdEvent.genlep1_.Eta()) < etaCut[0] && 
+         //bgdEvent.genlep2_.Pt() > 20 && TMath::Abs(bgdEvent.genlep2_.Eta()) < etaCut[1]
         ) {
         genLevelNorm[1]++;
 	genLevelSel = true;

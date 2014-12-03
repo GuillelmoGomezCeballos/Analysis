@@ -19,7 +19,7 @@
 #include "TSystem.h"
 #include "TLorentzVector.h"
 
-void metChange(double met, double metPhi, double metNew[2], LorentzVector gamma);
+void metChange(double met, double metPhi, double metNew[2], LorentzVector gamma, LorentzVector lep1, LorentzVector lep2, int option = 0);
 
 const int verboseLevel =   1;
 bool UseDyttDataDriven = false; // if true, then remove em events in dyll MC
@@ -41,7 +41,7 @@ void optimalCutszgh_53x
 (
  int     mH  	 = 95,
  int thePlot = 0,
- TString bgdInputFile    = "ntuples_53x/lgammachi95.root",
+ TString bgdInputFile    = "ntuples_53x/lgamma125chi95.root",
  TString dataInputFile   = "ntuples_53x/data_llg.root",
  int period = 3,
  int lSel = 2, 
@@ -60,12 +60,12 @@ void optimalCutszgh_53x
 
   if(showSignalOnly == true) showSyst = false;
 
-  double sfZg = 1.30;
+  double sfZg = 1.3;
 
-  double sfJetPho [ZLGBinTypes] = {0.8299,0.9902,0.9938,2.2385,1.4395,1.2668,1.2947,1.4397,7.1112,2.0606,1.6692,2.2977,2.6063,8.5469,2.5972,2.2386,1.3957,1.7788,5.4528,1.4368};
-  //double sfJetPhoE[ZLGBinTypes] = {0.0916,0.0786,0.0945,0.0486,0.1176,0.1107,0.1270,0.1277,0.0334,0.1616,0.1474,0.1279,0.1351,0.0435,0.2005,0.1752,0.2268,0.2556,0.0936,0.3172};
-  double sfLepPho [ZLGBinTypes] = {1.5506,1.4229,1.2408,1.2460,1.0489,1.5933,1.5426,1.3031,1.0098,0.9117,1.5135,1.5249,1.3557,1.1246,0.9632,1.5900,1.7737,1.6877,1.4219,1.4432};
-  //double sfLepPhoE[ZLGBinTypes] = {0.0275,0.0340,0.0403,0.0442,0.0441,0.0140,0.0144,0.0202,0.0540,0.0254,0.0109,0.0129,0.0194,0.0238,0.0236,0.0322,0.0282,0.0392,0.0755,0.0418};
+  double sfJetPho [ZLGBinTypes] = {0.8498,0.9931,0.9778,1.0115,1.4390,1.2644,1.2925,1.4401,1.9657,2.0524,1.6692,2.2977,2.6063,3.0952,2.5972,2.2386,1.3957,1.7788,1.8482,1.8409};
+  //double sfJetPhoE[ZLGBinTypes] = {0.0880,0.0784,0.0963,0.1238,0.1176,0.1109,0.1273,0.1277,0.1326,0.1624,0.1474,0.1279,0.1351,0.1264,0.2005,0.1752,0.2268,0.2556,0.2911,0.4377};
+  double sfLepPho [ZLGBinTypes] = {1.5454,1.4255,1.2453,1.1228,1.0489,1.5933,1.5427,1.3029,1.0735,0.9117,1.5135,1.5249,1.3557,1.1179,0.9632,1.5900,1.7737,1.6877,1.4659,1.4432};
+  //double sfLepPhoE[ZLGBinTypes] = {0.0277,0.0339,0.0398,0.0395,0.0441,0.0140,0.0144,0.0202,0.0253,0.0254,0.0109,0.0129,0.0194,0.0208,0.0236,0.0322,0.0282,0.0392,0.0453,0.0418};
   //double sfJetPho [ZLGBinTypes] = {1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000};
   double sfJetPhoE[ZLGBinTypes] = {0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000,0.3000};
   //double sfLepPho [ZLGBinTypes] = {1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000};
@@ -139,6 +139,7 @@ void optimalCutszgh_53x
   double xmaxPlot   = 200.0;
 
   if     (thePlot >=  8 && thePlot <=  8) {nBinPlot = 18;  xminPlot =   0.0; xmaxPlot = 900.0;}
+  //else if(thePlot >=  9 && thePlot <=  9) {nBinPlot = 60; xminPlot = 76.1876; xmaxPlot = 106.1876;}
   else if(thePlot >=  9 && thePlot <=  9) {nBinPlot = 160; xminPlot = 0.0; xmaxPlot = 160.0;}
   else if(thePlot >= 12 && thePlot <= 13) {nBinPlot = 100; xminPlot = 0.0; xmaxPlot = 1.0;}
   else if(thePlot >= 14 && thePlot <= 14) {nBinPlot =  8; xminPlot = -0.5; xmaxPlot =  7.5;}
@@ -146,6 +147,7 @@ void optimalCutszgh_53x
   else if(thePlot == 16 || thePlot == 27) {nBinPlot = 50; xminPlot =  0.0; xmaxPlot = 2.5;}
   else if(thePlot >= 17 && thePlot <= 25) {nBinPlot = 18; xminPlot = 0.0; xmaxPlot = 180.0;}
   else if(thePlot ==  7 || thePlot == 26) {nBinPlot = 200; xminPlot = 0.0; xmaxPlot = 200.0;}
+  else if(thePlot >= 27 && thePlot <= 27) {nBinPlot = 50; xminPlot = 0.0; xmaxPlot = 2.5;}
   else if(thePlot >= 28 && thePlot <= 28) {nBinPlot = 60; xminPlot = 0.0; xmaxPlot = 6.0;}
 
   const int nBinMVA = 2;
@@ -164,6 +166,8 @@ void optimalCutszgh_53x
   TH1D* histo3 = (TH1D*) histos->Clone("histo3");
   TH1D* histo4 = (TH1D*) histos->Clone("histo4");
   TH1D* histo5 = (TH1D*) histos->Clone("histo5");
+  TH1D* histo6 = (TH1D*) histos->Clone("histo6");
+  TH1D* histo7 = (TH1D*) histos->Clone("histo7");
   histos->Scale(0.0);
   histo0->Scale(0.0);
   histo1->Scale(0.0);
@@ -171,6 +175,8 @@ void optimalCutszgh_53x
   histo3->Scale(0.0);
   histo4->Scale(0.0);
   histo5->Scale(0.0);
+  histo6->Scale(0.0);
+  histo7->Scale(0.0);
 
   TH1D *histo_Data   = (TH1D*) histoMVA->Clone("histo_Data");
   TH1D *histo_ZH_hinv= (TH1D*) histoMVA->Clone("histo_ZH_hinv"); TH1D *histo_ZH_hinv_NoW= (TH1D*) histoMVA->Clone("histo_ZH_hinv_NoW");
@@ -456,10 +462,10 @@ void optimalCutszgh_53x
 			  bgdEvent.njets_, bgdEvent.jet1_, bgdEvent.jet2_,
 			  year, 2, outputVarMET);
 
-    double metNew[2]; metChange(bgdEvent.met_,bgdEvent.metPhi_,metNew,gamma);
+    double metNew[2]; metChange(bgdEvent.met_,bgdEvent.metPhi_,metNew,gamma,lep1,lep2,0);
     double theMET = metNew[0]; double theMETPHI = metNew[1]; 
 
-    double metNewSyst[2]; metChange(outputVarMET[4],outputVarMET[5],metNewSyst,gamma);
+    double metNewSyst[2]; metChange(outputVarMET[4],outputVarMET[5],metNewSyst,gamma,lep1,lep2,0);
 
     bool passBtagVeto      = (bgdEvent.cuts_ & patternTopVeto) == patternTopVeto;
 
@@ -533,8 +539,8 @@ void optimalCutszgh_53x
 
     if(!isBck) {
 
-       if(NjetSyst[0] == nJetsType &&  passBtagVeto && passLG  && ((fabs(leppho.mass()-91.1876) < 15. && lid1_ == 11 && lType == 1) || (leppho.mass() < 120 && lid1_ == 13 && lType == 0))) passCuts[lType][ZLGSEL] = true;
-       if(NjetSyst[0] == nJetsType &&  passBtagVeto && passLGF && ((fabs(leppho.mass()-91.1876) < 15. && lid1_ == 11 && lType == 1) || (leppho.mass() < 120 && lid1_ == 13 && lType == 0))) passCuts[lType][ZLGFSEL]= true;
+       if(NjetSyst[0] == nJetsType &&  passBtagVeto && passLG  && ((fabs(leppho.mass()-91.1876) < 15. && lid1_ == 11 && lType == 1) || (leppho.mass() > 10 && leppho.mass() < 120 && lid1_ == 13 && lType == 0))) passCuts[lType][ZLGSEL] = true;
+       if(NjetSyst[0] == nJetsType &&  passBtagVeto && passLGF && ((fabs(leppho.mass()-91.1876) < 15. && lid1_ == 11 && lType == 1) || (leppho.mass() > 10 && leppho.mass() < 120 && lid1_ == 13 && lType == 0))) passCuts[lType][ZLGFSEL]= true;
 
        if(passLLGF && passZMass) passCuts[lType][ZLLGFSEL] = true;
        if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG  &&  passBtagVeto && !passZMass && passZMassLarge && passMET && passPTLL && passDPhiLL && passDPhiZMET && passPTFrac) passCuts[lType][WWSEL]   = true;
@@ -641,7 +647,7 @@ void optimalCutszgh_53x
         else if(thePlot == 3) myVar = TMath::Max(gamma.pt(),gammaf.pt());
 	else if(thePlot == 4) myVar = bgdEvent.jet1_.Pt();
 	else if(thePlot == 5) myVar = bgdEvent.jet2_.Pt();
-	else if(thePlot == 6) myVar = bgdEvent.jet3_.Pt();
+	else if(thePlot == 6) myVar = TMath::Min(theMET,199.999);
 	else if(thePlot == 7) myVar = dilep.mass();
 	else if(thePlot == 8) myVar = MT;
 	else if(thePlot == 9) myVar = leppho.mass();
@@ -666,24 +672,30 @@ void optimalCutszgh_53x
 	else if(thePlot ==28) myVar = TMath::Min(DeltaR(gamma.Phi(),gamma.Eta(),lep1.Phi(),lep1.Eta()),DeltaR(gamma.Phi(),gamma.Eta(),lep2.Phi(),lep2.Eta()));
 	else if(thePlot ==29) myVar = MVAVar;
 
-      	if     (fDecay == 9 || fDecay == 19 || fDecay == 39){
+      	if     (fDecay == 9){
       	  histo0->Fill(myVar,theWeight);
       	}
-      	else if(fDecay == 11 || fDecay == 31){
+      	else if(fDecay == 19){
       	  histo1->Fill(myVar,theWeight);
       	}
-      	else if(fDecay == 17 || fDecay == 37){
+      	else if(fDecay == 39){
       	  histo2->Fill(myVar,theWeight);
       	}
-      	else if(fDecay == 18 || fDecay == 38){
+      	else if(fDecay == 11 || fDecay == 31){
       	  histo3->Fill(myVar,theWeight);
+      	}
+      	else if(fDecay == 17 || fDecay == 37){
+      	  histo4->Fill(myVar,theWeight);
+      	}
+      	else if(fDecay == 18 || fDecay == 38){
+      	  histo5->Fill(myVar,theWeight);
       	}
       	else if(fDecay == 21 || fDecay == 27 || fDecay == 28 ||
 	        fDecay ==  1 || fDecay ==  3 || fDecay == 23 || 
                 fDecay == 29 || fDecay == 30 || fDecay ==  5 ||
 	        fDecay == 13 || fDecay == 20 || fDecay == 10 ||
 		fDecay ==  3){
-      	  histo4->Fill(myVar,theWeight);
+      	  histo6->Fill(myVar,theWeight);
       	}
       	else if(fDecay == 42){
 	  histos->Fill(myVar,theWeight);
@@ -892,7 +904,7 @@ void optimalCutszgh_53x
 
     double MT = sqrt(2.0*dilep.pt()*dataEvent.met_*(1.0-cos(DeltaPhi(dilep.phi() ,dataEvent.metPhi_))));
 
-    double metNew[2]; metChange(dataEvent.met_,dataEvent.metPhi_,metNew,gamma);
+    double metNew[2]; metChange(dataEvent.met_,dataEvent.metPhi_,metNew,gamma,lep1,lep2,0);
     double theMET = metNew[0]; double theMETPHI = metNew[1]; 
     bool passBtagVeto      = (dataEvent.cuts_ & patternTopVeto) == patternTopVeto;
     bool passZMass         = fabs(dilep.mass()-91.1876) < 15.;
@@ -918,8 +930,8 @@ void optimalCutszgh_53x
 
     if(1) {
 
-       if(NjetSyst[0] == nJetsType &&  passBtagVeto && passLG  && ((fabs(leppho.mass()-91.1876) < 15. && lid1_ == 11 && lType == 1) || (leppho.mass() < 120 && lid1_ == 13 && lType == 0))) passCuts[lType][ZLGSEL] = true;
-       if(NjetSyst[0] == nJetsType &&  passBtagVeto && passLGF && ((fabs(leppho.mass()-91.1876) < 15. && lid1_ == 11 && lType == 1) || (leppho.mass() < 120 && lid1_ == 13 && lType == 0))) passCuts[lType][ZLGFSEL]= true;
+       if(NjetSyst[0] == nJetsType &&  passBtagVeto && passLG  && ((fabs(leppho.mass()-91.1876) < 15. && lid1_ == 11 && lType == 1) || (leppho.mass() > 10 && leppho.mass() < 120 && lid1_ == 13 && lType == 0))) passCuts[lType][ZLGSEL] = true;
+       if(NjetSyst[0] == nJetsType &&  passBtagVeto && passLGF && ((fabs(leppho.mass()-91.1876) < 15. && lid1_ == 11 && lType == 1) || (leppho.mass() > 10 && leppho.mass() < 120 && lid1_ == 13 && lType == 0))) passCuts[lType][ZLGFSEL]= true;
 
        if(passLLGF && passZMass) passCuts[lType][ZLLGFSEL] = true;
        if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG  &&  passBtagVeto && !passZMass && passZMassLarge && passMET && passPTLL && passDPhiLL && passDPhiZMET && passPTFrac) passCuts[lType][WWSEL]   = true;
@@ -996,7 +1008,7 @@ void optimalCutszgh_53x
       else if(thePlot == 3) myVar = TMath::Max(gamma.pt(),gammaf.pt());
       else if(thePlot == 4) myVar = dataEvent.jet1_.Pt();
       else if(thePlot == 5) myVar = dataEvent.jet2_.Pt();
-      else if(thePlot == 6) myVar = dataEvent.jet3_.Pt();
+      else if(thePlot == 6) myVar = TMath::Min(theMET,199.999);
       else if(thePlot == 7) myVar = dilep.mass();
       else if(thePlot == 8) myVar = MT;
       else if(thePlot == 9) myVar = leppho.mass();
@@ -1021,7 +1033,7 @@ void optimalCutszgh_53x
       else if(thePlot ==28) myVar = TMath::Min(DeltaR(gamma.Phi(),gamma.Eta(),lep1.Phi(),lep1.Eta()),DeltaR(gamma.Phi(),gamma.Eta(),lep2.Phi(),lep2.Eta()));
       else if(thePlot ==29) myVar = MVAVar;
 
-      histo5->Fill(myVar,1.0);
+      histo7->Fill(myVar,1.0);
     } // end making plots
   } // End loop data
 
@@ -1270,27 +1282,14 @@ void optimalCutszgh_53x
   }
 
   histo_EM->Scale(scaleFactorEM);
-  histo4->Scale(scaleFactorEM);
+  histo6->Scale(scaleFactorEM);
 
   char output[200];
   sprintf(output,Form("histo_nice%s.root",ECMsb.Data()));	 
   TFile* outFilePlotsNote = new TFile(output,"recreate");
   outFilePlotsNote->cd();
-    double oldNorm0 = histo0->GetSumOfWeights();
-    double oldNorm4 = histo4->GetSumOfWeights();
-    for(int i=1; i<=histo0->GetNbinsX(); i++){
-      if(histo0->GetBinContent(i) < 0) histo0->SetBinContent(i,0.0);
-      if(histo4->GetBinContent(i) < 0) histo4->SetBinContent(i,0.0);
-    }
-    if(histo0->GetSumOfWeights() > 0) histo0->Scale(oldNorm0/histo0->GetSumOfWeights());
-    if(histo4->GetSumOfWeights() > 0) histo4->Scale(oldNorm4/histo4->GetSumOfWeights());
-    if(showSignalOnly == false) printf("histo -> s: %8.2f d: %8.2f b: %8.2f | %8.2f %8.2f %8.2f %8.2f %8.2f\n",histos->GetSumOfWeights(),histo5->GetSumOfWeights(),histo0->GetSumOfWeights()+histo1->GetSumOfWeights()+histo2->GetSumOfWeights()+histo3->GetSumOfWeights()+histo4->GetSumOfWeights(),
-    histo0->GetSumOfWeights(),histo1->GetSumOfWeights(),histo2->GetSumOfWeights(),histo3->GetSumOfWeights(),histo4->GetSumOfWeights());
-    double scaleZ = 1.0;
-    if(histo0->GetSumOfWeights() > 0) scaleZ = (histo5->GetSumOfWeights()-(histo1->GetSumOfWeights()+histo2->GetSumOfWeights()+histo3->GetSumOfWeights()+histo4->GetSumOfWeights()))/histo0->GetSumOfWeights();
-    if(scaleZ <= 0) scaleZ = 1.0;
-    if(showSignalOnly == false) printf("scaleZ = %f\n",scaleZ);
-    //histo0->Scale(scaleZ);
+    if(showSignalOnly == false) printf("histo -> s: %8.2f d: %8.2f b: %8.2f | %8.2f %8.2f %8.2f %8.2f %8.2f %8.2f %8.2f\n",histos->GetSumOfWeights(),histo7->GetSumOfWeights(),
+    histo0->GetSumOfWeights()+histo1->GetSumOfWeights()+histo2->GetSumOfWeights()+histo3->GetSumOfWeights()+histo4->GetSumOfWeights()+histo5->GetSumOfWeights()+histo6->GetSumOfWeights(),histo0->GetSumOfWeights(),histo1->GetSumOfWeights(),histo2->GetSumOfWeights(),histo3->GetSumOfWeights(),histo4->GetSumOfWeights(),histo5->GetSumOfWeights(),histo6->GetSumOfWeights());
     histos->Write();
     histo0->Write();
     histo1->Write();
@@ -1298,6 +1297,8 @@ void optimalCutszgh_53x
     histo3->Write();
     histo4->Write();
     histo5->Write();
+    histo6->Write();
+    histo7->Write();
   outFilePlotsNote->Close();
 
   if(showSignalOnly == false) {
@@ -1703,10 +1704,23 @@ void optimalCutszgh_53x
   return;
 }
 
-void metChange(double met, double metPhi, double metNew[2], LorentzVector gamma){
+void metChange(double met, double metPhi, double metNew[2], LorentzVector gamma, LorentzVector lep1, LorentzVector lep2, int option){
 
-double metx = met * cos(metPhi) + gamma.px();
-double mety = met * sin(metPhi) + gamma.py();
+double metx = 0.0;
+double mety = 0.0;
+
+if     (option == 0){
+  metx = met * cos(metPhi) + gamma.px();
+  mety = met * sin(metPhi) + gamma.py();
+} 
+else if(option == 1){
+  metx = met * cos(metPhi) + gamma.px() + lep1.px() + lep2.px();
+  mety = met * sin(metPhi) + gamma.py() + lep1.py() + lep2.py();
+} 
+else if(option == 2){
+  metx = met * cos(metPhi) + lep1.px() + lep2.px();
+  mety = met * sin(metPhi) + lep1.py() + lep2.py();
+} 
 
 metNew[0] = sqrt(metx*metx+mety*mety);
 metNew[1] = atan2(mety,metx);
