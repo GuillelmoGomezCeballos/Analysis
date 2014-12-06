@@ -1790,7 +1790,7 @@ void ww_ana
   printf("gen_eff: %f / %f = %f | rec_eff: %f / %f = %f\n",genLevelNorm[1],genLevelNorm[0],genLevelNorm[1]/genLevelNorm[0],
                                                            genLevelNorm[2],genLevelNorm[3],genLevelNorm[2]/genLevelNorm[3]);
   char output[200];
-  sprintf(output,Form("histo_nice%s.root",ECMsb.Data()));	 
+  sprintf(output,Form("histo_nice%s_%dj_%s.root",ECMsb.Data(),nJetsType,finalStateName));	 
   TFile* outFilePlotsNote = new TFile(output,"recreate");
   outFilePlotsNote->cd();
     double nOldH[6] = {histo0->GetSumOfWeights(),histo1->GetSumOfWeights(),histo2->GetSumOfWeights(),histo3->GetSumOfWeights(),histo4->GetSumOfWeights(),histos->GetSumOfWeights()};
@@ -2587,24 +2587,24 @@ void ww_ana
 }
 
 Double_t DYBkgScaleFactor(Int_t jetBin) {
-  Double_t DYBkgScaleFactorWWPreselection[3] = { 5.05311, 3.84797, 2.18044  };
+  Double_t DYBkgScaleFactorWWPreselection[3] = { 5.10987, 3.84051, 2.17943  };
   return DYBkgScaleFactorWWPreselection[jetBin];
 }
 
 Double_t DYBkgScaleFactorKappa(Int_t jetBin) {
-  Double_t DYBkgScaleFactorWWPreselectionKappa[3] = { 1.31548, 1.31969, 1.3022  };
+  Double_t DYBkgScaleFactorWWPreselectionKappa[3] = { 1.3153, 1.31987, 1.30221  };
   return DYBkgScaleFactorWWPreselectionKappa[jetBin];
 }
 
 Double_t TopBkgScaleFactor(Int_t jetBin) {
   assert(jetBin >=0 && jetBin <= 2);
-  Double_t TopBkgScaleFactor[3] = {  1.11623, 1.0799, 1.15335  };
+  Double_t TopBkgScaleFactor[3] = {  1.14828, 1.08972, 1.23461  };
   return TopBkgScaleFactor[jetBin];
 }
 
 Double_t TopBkgScaleFactorKappa(Int_t jetBin) {
   assert(jetBin >=0 && jetBin <= 2);
-  Double_t TopBkgScaleFactorKappa[3] = { 1.12232, 1.0307, 1.02679   };
+  Double_t TopBkgScaleFactorKappa[3] = { 1.11829, 1.03064, 1.02648   };
   return TopBkgScaleFactorKappa[jetBin];
 }
 

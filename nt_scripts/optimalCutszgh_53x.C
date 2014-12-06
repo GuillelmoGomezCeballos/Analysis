@@ -1285,7 +1285,7 @@ void optimalCutszgh_53x
   histo6->Scale(scaleFactorEM);
 
   char output[200];
-  sprintf(output,Form("histo_nice%s.root",ECMsb.Data()));	 
+  sprintf(output,Form("histo_nice%s_%dj.root",ECMsb.Data(),nJetsType));	 
   TFile* outFilePlotsNote = new TFile(output,"recreate");
   outFilePlotsNote->cd();
     if(showSignalOnly == false) printf("histo -> s: %8.2f d: %8.2f b: %8.2f | %8.2f %8.2f %8.2f %8.2f %8.2f %8.2f %8.2f\n",histos->GetSumOfWeights(),histo7->GetSumOfWeights(),
