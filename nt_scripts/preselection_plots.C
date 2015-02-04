@@ -217,22 +217,6 @@ void preselection_plots
     if(bgdEvent.njets_ >= 2) dPhiDiLepJetCut = DeltaPhi((bgdEvent.jet1_+bgdEvent.jet2_).Phi(),bgdEvent.dilep_.Phi())*180.0/TMath::Pi() < 165. ||
                                                          bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me;
     float pCHSMet = 0.0; float pNHSMet = 0.0; float pMet3 = bgdEvent.pmet_; float met3 = bgdEvent.met_;
-    if(thePlot == 18 || thePlot == 19 || thePlot == 20 || thePlot == 21 || thePlot == 22){
-      float deltaPhiCHS = TMath::Min(DeltaPhi(bgdEvent.lep1_.Phi(),bgdEvent.CHSMetPhi_),
-                                     DeltaPhi(bgdEvent.lep2_.Phi(),bgdEvent.CHSMetPhi_));
-      pCHSMet = bgdEvent.CHSMet_;
-      if(deltaPhiCHS < TMath::Pi()/2) pCHSMet = pCHSMet * sin(deltaPhiCHS);
-      
-      float deltaPhiNHS = TMath::Min(DeltaPhi(bgdEvent.lep1_.Phi(),bgdEvent.NHSMetPhi_),
-                                     DeltaPhi(bgdEvent.lep2_.Phi(),bgdEvent.NHSMetPhi_));
-      pNHSMet = bgdEvent.NHSMet_;
-      if(deltaPhiNHS < TMath::Pi()/2) pNHSMet = pNHSMet * sin(deltaPhiNHS);
-      
-      pMet3 = TMath::Min(pMet3,pCHSMet);
-      pMet3 = TMath::Min(pMet3,pNHSMet);
-      met3  = TMath::Min(met3,bgdEvent.CHSMet_);
-      met3  = TMath::Min(met3,bgdEvent.NHSMet_);
-    }
 
     if(channel == 0){ // MET selection
       if(

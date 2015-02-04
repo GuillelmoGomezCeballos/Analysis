@@ -6,7 +6,7 @@
 #include "TMath.h"
 #include "TFile.h"
 #include "LHAPDF/LHAPDF.h"
-#include "/afs/cern.ch/user/c/ceballos/releases/CMSSW_5_3_14/src/Smurf/Core/SmurfTree.h"
+#include "/home/ceballos/releases/CMSSW_5_3_20/src/Smurf/Core/SmurfTree.h"
 #include "Analysis/PDFs/interface/pdfFiller.h"
 
 using namespace mithep;

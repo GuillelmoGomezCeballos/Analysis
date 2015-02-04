@@ -64,7 +64,8 @@ void optimalCuts_53x
   if(WWXSSel == true) ptLepMin = 20.;
 
   SmurfTree bgdEvent;
-  bgdEvent.LoadTree(bgdInputFile,-1);
+  if(thePlot != 63 && thePlot != 64) bgdEvent.LoadTree(bgdInputFile,-1);
+  else                               bgdEvent.LoadTree(bgdInputFile,0);
   bgdEvent.InitTree(0);
 
   SmurfTree sigEvent;
@@ -195,8 +196,9 @@ void optimalCuts_53x
   double xminPlot   = 0.0;
   double xmaxPlot   = 200.0;
 
-  if     (thePlot >=  8 && thePlot <=  8) {nBinPlot = 220; xminPlot = 60.0; xmaxPlot = 280.0;}
-  else if(thePlot >= 13 && thePlot <= 13) {nBinPlot = 100; xminPlot = 0.0; xmaxPlot = 500.0;}
+  if     (thePlot >=  7 && thePlot <=  7) {nBinPlot =  60; xminPlot = 76.0; xmaxPlot = 106.0;}
+  else if(thePlot >=  8 && thePlot <=  8) {nBinPlot =  30; xminPlot = 60.0; xmaxPlot = 280.0;}
+  else if(thePlot >= 13 && thePlot <= 13) {nBinPlot = 100; xminPlot =  0.0; xmaxPlot = 500.0;}
   else if(thePlot >=  0 && thePlot <= 14) {}
   else if(thePlot >= 15 && thePlot <= 16) {nBinPlot = 200; xminPlot = 0.0; xmaxPlot = 1.0;}
   else if(thePlot >= 17 && thePlot <= 17) {nBinPlot =  8; xminPlot = -0.5; xmaxPlot =  7.5;}
@@ -232,6 +234,7 @@ void optimalCuts_53x
   else if(thePlot >= 60 && thePlot <= 60) {nBinPlot = 40; xminPlot = 0.0; xmaxPlot = 4.0;}
   else if(thePlot >= 61 && thePlot <= 61) {nBinPlot = 180; xminPlot =  0.0; xmaxPlot =  180.0;}
   else if(thePlot >= 62 && thePlot <= 62) {nBinPlot = 72; xminPlot = -1.0; xmaxPlot =  1.0;}
+  else if(thePlot >= 63 && thePlot <= 64) {nBinPlot = 400; xminPlot = 0.0; xmaxPlot =  400.0;}
   nBin = nBinPlot;
 
   double nSigCut[6]  = {0,0,0,0,0,0};
@@ -304,6 +307,12 @@ void optimalCuts_53x
     if (i%100000 == 0 && verboseLevel > 0)
       printf("--- reading event %5d of %5d\n",i,nBgd);
     bgdEvent.tree_->GetEntry(i);
+    
+    if(thePlot == 63 || thePlot == 64){
+      //if     (thePlot == 63) histo0->Fill(TMath::Min((bgdEvent.genlep1_+bgdEvent.genlep2_+bgdEvent.genmet_).Pt(),399.999),1.0);
+      //else if(thePlot == 64) histo0->Fill(TMath::Min((bgdEvent.genPart1_+bgdEvent.genPart2_+bgdEvent.genPart3_+bgdEvent.genPart4_).Pt(),399.999),1.0);
+      continue;
+    }
 
     if(!(((bgdEvent.cuts_ & SmurfTree::Lep1FullSelection) == SmurfTree::Lep1FullSelection && (bgdEvent.cuts_ & SmurfTree::Lep2FullSelection) != SmurfTree::Lep2FullSelection) ||
          ((bgdEvent.cuts_ & SmurfTree::Lep1FullSelection) != SmurfTree::Lep1FullSelection && (bgdEvent.cuts_ & SmurfTree::Lep2FullSelection) == SmurfTree::Lep2FullSelection) ||
@@ -484,11 +493,11 @@ void optimalCuts_53x
       bool passBtagVeto = (bgdEvent.cuts_ & patternTopVeto) == patternTopVeto;
       if(
         (bgdEvent.cuts_ & SmurfTree::ExtraLeptonVeto) == SmurfTree::ExtraLeptonVeto &&
-        passBtagVeto &&
+       //passBtagVeto &&
        //((charge == 0 && VarAux2 == 0) || (charge != 0 && VarAux2 == 1)) &&
          bgdEvent.lep1_.Pt() > 20. &&
          bgdEvent.lep2_.Pt() > 20. &&
-	 int((bgdEvent.jet1McId_%1000-bgdEvent.jet1McId_%100)/100) == 0 &&
+	 //int((bgdEvent.jet1McId_%1000-bgdEvent.jet1McId_%100)/100) == 0 &&
          Njet3 == nJetsType &&
        //((abs(bgdEvent.lep1_.Eta())>=VarAux0&&abs(bgdEvent.lep1_.Eta())<VarAux0+0.5&&abs(bgdEvent.lep2_.Eta())>=VarAux1&&abs(bgdEvent.lep2_.Eta())<VarAux1+0.5)||
        // (abs(bgdEvent.lep1_.Eta())>=VarAux1&&abs(bgdEvent.lep1_.Eta())<VarAux1+0.5&&abs(bgdEvent.lep2_.Eta())>=VarAux0&&abs(bgdEvent.lep2_.Eta())<VarAux0+0.5)) &&
@@ -501,24 +510,28 @@ void optimalCuts_53x
 	if(fDecay == 9) isSignalDecay = true;
       }
     } // Z selection
-    if(channel == 5){ // Hem selection
+    if(channel == 5){ // bbmm selection
+      int nb = 0;
+      if(bgdEvent.jet1_.Pt() > 30 && bgdEvent.jet1ProbBtag_ > 0.783) nb++;
+      if(bgdEvent.jet2_.Pt() > 30 && bgdEvent.jet2ProbBtag_ > 0.783) nb++;
+      if(bgdEvent.jet3_.Pt() > 30 && bgdEvent.jet3ProbBtag_ > 0.783) nb++;
+      if(bgdEvent.jet4_.Pt() > 30 && bgdEvent.jet4ProbBtag_ > 0.783) nb++;
       if(
-	  bgdEvent.dilep_.M() > 20 && bgdEvent.dilep_.M() < 200 && 
+	  bgdEvent.dilep_.M() > 12 && bgdEvent.dilep_.M() < 70 && 
          (bgdEvent.cuts_ & SmurfTree::ExtraLeptonVeto) == SmurfTree::ExtraLeptonVeto &&
           charge == 0 &&
-          Njet3 == nJetsType && (nJetsType != 2 || ((bgdEvent.jet1_+bgdEvent.jet2_).M() > 500 && TMath::Abs(bgdEvent.jet1_.Eta()-bgdEvent.jet2_.Eta()) > 3.5)) &&
-          bgdEvent.lep1_.Pt() > 35. &&
-          bgdEvent.lep2_.Pt() > 35. &&
-         (bgdEvent.cuts_ & patternTopVeto) == patternTopVeto &&
-	  bgdEvent.mt_ < 50 &&
+          bgdEvent.njets_ < 2 &&
+          bgdEvent.lep1_.Pt() > 25. &&
+          bgdEvent.lep2_.Pt() > 25. &&
+	  DeltaR(bgdEvent.lep1_.Phi(),bgdEvent.lep1_.Eta(),bgdEvent.lep2_.Phi(),bgdEvent.lep2_.Eta()) < 1.1 &&
+          nb >= 1 &&
 	 (bgdEvent.type_ == lDecay || lDecay == 4 || (lDecay == 5 && (bgdEvent.type_ == SmurfTree::mm || bgdEvent.type_ == SmurfTree::ee)) || (lDecay == 6 && (bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me))) &&
 	 1 == 1
 	){
 	//
 	passCuts = true;
-	if(fDecay == 5 || fDecay == 13) isSignalDecay = true;
       }
-    } // Hem selection
+    } // bbmm selection
 
     if(channel==15||channel==16 ||channel==17||channel==18){ // HHbbww selection
       bool passBtag[3] = {false,false,false};
@@ -812,7 +825,7 @@ void optimalCuts_53x
 	  if(bgdEvent.dstype_ == SmurfTree::tw)    add = add*TopMCScaleFactor_VHqqll(nJetsType);
 	}
 */
-	if((channel == 29 || channel == 30 || channel == 31 || (channel >= 100 && channel <= 800) || channel == 5) &&
+	if((channel == 29 || channel == 30 || channel == 31 || (channel >= 100 && channel <= 800)) &&
 	   (channel != 128)){
   	  if(fDecay == 9 && (bgdEvent.type_ == SmurfTree::mm || bgdEvent.type_ == SmurfTree::ee)) {
   	    if(bgdEvent.njets_ == 0) add=add*DYBkgScaleFactor(0,0);
@@ -1144,24 +1157,6 @@ void optimalCuts_53x
 	passCuts = true;
       }
     } // WW selection
-
-    if(channel == 5){ // Hem selection
-      if(
-	  sigEvent.dilep_.M() > 20 && sigEvent.dilep_.M() < 200 && 
-         (sigEvent.cuts_ & SmurfTree::ExtraLeptonVeto) == SmurfTree::ExtraLeptonVeto &&
-          charge == 0 &&
-          Njet3 == nJetsType && (nJetsType != 2 || ((sigEvent.jet1_+sigEvent.jet2_).M() > 500 && TMath::Abs(sigEvent.jet1_.Eta()-sigEvent.jet2_.Eta()) > 3.5)) &&
-          sigEvent.lep1_.Pt() > 35. &&
-          sigEvent.lep2_.Pt() > 35. &&
-         (sigEvent.cuts_ & patternTopVeto) == patternTopVeto &&
-	  sigEvent.mt_ < 50 &&
-	 (sigEvent.type_ == lDecay || lDecay == 4 || (lDecay == 5 && (sigEvent.type_ == SmurfTree::mm || sigEvent.type_ == SmurfTree::ee)) || (lDecay == 6 && (sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me))) &&
-	 1 == 1
-	){
-	//
-	passCuts = true;
-      }
-    } // Hem selection
 
     if(channel==15||channel==16 ||channel==17||channel==18){ // HHbbww selection
       bool passBtag[3] = {false,false,false};
@@ -1625,11 +1620,11 @@ void optimalCuts_53x
       bool passBtagVeto = (dataEvent.cuts_ & patternTopVeto) == patternTopVeto;
       if(
         (dataEvent.cuts_ & SmurfTree::ExtraLeptonVeto) == SmurfTree::ExtraLeptonVeto &&
-        passBtagVeto &&
+       //passBtagVeto &&
        //((charge == 0 && VarAux2 == 0) || (charge != 0 && VarAux2 == 1)) &&
          dataEvent.lep1_.Pt() > 20. &&
          dataEvent.lep2_.Pt() > 20. &&
-	 int((dataEvent.jet1McId_%1000-dataEvent.jet1McId_%100)/100) == 0 &&
+	 //int((dataEvent.jet1McId_%1000-dataEvent.jet1McId_%100)/100) == 0 &&
          Njet3 == nJetsType &&
        //((abs(dataEvent.lep1_.Eta())>=VarAux0&&abs(dataEvent.lep1_.Eta())<VarAux0+0.5&&abs(dataEvent.lep2_.Eta())>=VarAux1&&abs(dataEvent.lep2_.Eta())<VarAux1+0.5)||
        // (abs(dataEvent.lep1_.Eta())>=VarAux1&&abs(dataEvent.lep1_.Eta())<VarAux1+0.5&&abs(dataEvent.lep2_.Eta())>=VarAux0&&abs(dataEvent.lep2_.Eta())<VarAux0+0.5)) &&
@@ -1642,23 +1637,28 @@ void optimalCuts_53x
       }
     } // Z selection
 
-    if(channel == 5){ // Hem selection
+    if(channel == 5){ // bbmm selection
+      int nb = 0;
+      if(dataEvent.jet1_.Pt() > 30 && dataEvent.jet1ProbBtag_ > 0.783) nb++;
+      if(dataEvent.jet2_.Pt() > 30 && dataEvent.jet2ProbBtag_ > 0.783) nb++;
+      if(dataEvent.jet3_.Pt() > 30 && dataEvent.jet3ProbBtag_ > 0.783) nb++;
+      if(dataEvent.jet4_.Pt() > 30 && dataEvent.jet4ProbBtag_ > 0.783) nb++;
       if(
-	  dataEvent.dilep_.M() > 20 && dataEvent.dilep_.M() < 200 && 
+	  dataEvent.dilep_.M() > 12 && dataEvent.dilep_.M() < 70 && 
          (dataEvent.cuts_ & SmurfTree::ExtraLeptonVeto) == SmurfTree::ExtraLeptonVeto &&
           charge == 0 &&
-          Njet3 == nJetsType && (nJetsType != 2 || ((dataEvent.jet1_+dataEvent.jet2_).M() > 500 && TMath::Abs(dataEvent.jet1_.Eta()-dataEvent.jet2_.Eta()) > 3.5)) &&
-          dataEvent.lep1_.Pt() > 35. &&
-          dataEvent.lep2_.Pt() > 35. &&
-         (dataEvent.cuts_ & patternTopVeto) == patternTopVeto &&
-	  dataEvent.mt_ < 50 &&
+          dataEvent.njets_ < 2 &&
+          dataEvent.lep1_.Pt() > 25. &&
+          dataEvent.lep2_.Pt() > 25. &&
+	  DeltaR(dataEvent.lep1_.Phi(),dataEvent.lep1_.Eta(),dataEvent.lep2_.Phi(),dataEvent.lep2_.Eta()) < 1.1 &&
+          nb >= 1 &&
 	 (dataEvent.type_ == lDecay || lDecay == 4 || (lDecay == 5 && (dataEvent.type_ == SmurfTree::mm || dataEvent.type_ == SmurfTree::ee)) || (lDecay == 6 && (dataEvent.type_ == SmurfTree::em || dataEvent.type_ == SmurfTree::me))) &&
 	 1 == 1
 	){
 	//
 	passCuts = true;
       }
-    } // Hem selection
+    } // bbmm selection
 
     if(channel==15||channel==16 ||channel==17||channel==18){ // HHbbww selection
       bool passBtag[3] = {false,false,false};

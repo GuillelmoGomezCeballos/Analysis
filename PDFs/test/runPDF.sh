@@ -64,6 +64,16 @@ else if ($1 == '15'  ) then
   setenv dirB /home/ceballos/condor/old_53x/histo_s12-wz3ln-v7a_all_noskim.root;
   setenv NSEL 7
 
+else if ($1 == '16'  ) then
+  setenv dirB /home/ceballos/condor/old_53x/histo_s12-zz4l-v7a_all_noskim.root;
+  setenv NSEL 8;
+else if ($1 == '17'  ) then
+  setenv dirB /home/ceballos/condor/old_53x/histo_s12-wz3ln-v7a_all_noskim.root;
+  setenv NSEL 8;
+else if ($1 == '18'  ) then
+  setenv dirB /home/ceballos/condor/old_53x/histo_s12-h95invg-zh-v7c_all_noskim.root;
+  setenv NSEL 8
+
 else if ($1 != '0'  ) then
   exit;
 endif

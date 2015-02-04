@@ -278,20 +278,6 @@ void FwdJetEvtSelMod::Process()
 	  dilepton.AddDaughter(leptons->At(0));
 	  dilepton.AddDaughter(leptons->At(1));
 
-	  int pairType = -1;
-	  if (leptons->At(0)->ObjType() == kMuon && leptons->At(1)->ObjType() == kMuon )
-	    pairType = 0;
-	  else if(leptons->At(0)->ObjType() == kElectron && leptons->At(1)->ObjType() == kElectron)
-	    pairType = 1;
-	  else if((leptons->At(0)->ObjType() == kElectron && leptons->At(1)->ObjType() == kMuon) || 
-    		  (leptons->At(0)->ObjType() == kMuon && leptons->At(1)->ObjType() == kElectron))
-	    pairType = 2;
-	  else {
-	    cout << "Hey, this is not possible, leptonTypes: "
-        	 << leptons->At(0)->ObjType() << " - " 
-    		 << leptons->At(1)->ObjType() << endl;
-	  }
-
 	  // Charge of the leptons should be opposite
 	  if (dilepton.Charge() == 0 && dilepton.Mass() > 12 &&
               leptons->At(0)->Pt() > 20 && leptons->At(0)->Pt() > 10){
