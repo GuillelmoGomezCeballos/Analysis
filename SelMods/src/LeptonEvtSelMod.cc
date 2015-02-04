@@ -56,11 +56,49 @@ void LeptonEvtSelMod::Process()
   // Process entries of the tree. For this module, we just load the branches and  
   fNEventsProcessed++;
 
+  TParameter<Double_t> *NNLOWeight = GetObjThisEvt<TParameter<Double_t> >("NNLOWeight");
+
+  // BEGIN photon study
+  MCParticleOArr *GenPhotons = GetObjThisEvt<MCParticleOArr>(ModNames::gkMCPhotonsName);
+  PhotonOArr *CleanPhotons = GetObjThisEvt<PhotonOArr>("CleanPhotons");
+
+  for (UInt_t j=0; j<GenPhotons->GetEntries(); ++j) {
+    MCParticle *gen = GenPhotons->At(j);
+    if(gen->AbsEta() > 2.5) continue;
+    if(gen->Pt() < 20.0) continue;
+
+    double Mag = 0.0;
+    if(gen->DistinctMother()) {
+      Mag = sqrt(gen->DistinctMother()->DecayVertex().x()*gen->DistinctMother()->DecayVertex().x()+
+                 gen->DistinctMother()->DecayVertex().y()*gen->DistinctMother()->DecayVertex().y()+
+                 gen->DistinctMother()->DecayVertex().z()*gen->DistinctMother()->DecayVertex().z());
+    }
+    hDPhotonEffMC[0]->Fill(TMath::Min(gen->Pt(),199.999),NNLOWeight->GetVal());
+    hDPhotonEffMC[1]->Fill(gen->AbsEta(),NNLOWeight->GetVal());
+    if(gen->AbsEta() < 1.45) hDPhotonEffMC[2]->Fill(TMath::Min(Mag,999.999),NNLOWeight->GetVal());
+    else                     hDPhotonEffMC[3]->Fill(TMath::Min(Mag,999.999),NNLOWeight->GetVal());
+
+    bool isRecoPhoton = kFALSE;
+    for (UInt_t i=0; i<CleanPhotons->GetEntries(); ++i) {
+      Photon *ph = CleanPhotons->At(i);
+      if(MathUtils::DeltaR(gen->Phi(), gen->Eta(), ph->Phi(), ph->Eta()) < 0.1){
+        isRecoPhoton = kTRUE;
+        break;
+      }
+    }
+    if(isRecoPhoton == kTRUE){
+      hDPhotonEffMC[4]->Fill(TMath::Min(gen->Pt(),199.999),NNLOWeight->GetVal());
+      hDPhotonEffMC[5]->Fill(gen->AbsEta(),NNLOWeight->GetVal());
+      if(gen->AbsEta() < 1.45) hDPhotonEffMC[6]->Fill(TMath::Min(Mag,999.999),NNLOWeight->GetVal());
+      else                     hDPhotonEffMC[7]->Fill(TMath::Min(Mag,999.999),NNLOWeight->GetVal());
+    }
+  }
+  // END photon study
+
   //Get Generator Level information for matching
   MCParticleOArr *GenLeptons       = GetObjThisEvt<MCParticleOArr>(fMCLeptonsName);
   ElectronOArr *CleanElectrons     = GetObjThisEvt<ElectronOArr>(ModNames::gkCleanElectronsName);
   MuonOArr  *CleanMuons            = GetObjThisEvt<MuonOArr>(ModNames::gkCleanMuonsName);
-  TParameter<Double_t> *NNLOWeight = GetObjThisEvt<TParameter<Double_t> >("NNLOWeight");
   MCParticleOArr *GenTaus          = GetObjThisEvt<MCParticleOArr>(ModNames::gkMCTausName);
   ParticleOArr *leptonsFakeable    = GetObjThisEvt<ParticleOArr>("MergedLeptonsFakeable");
   MetOArr *CleanMet	           = GetObjThisEvt<MetOArr>(fMetName);
@@ -848,6 +886,20 @@ void LeptonEvtSelMod::SlaveBegin()
   		    muonidiso_weightfiles,RhoUtilities::CMS_RHO_RHOKT6PFJETS);
 
   char sb[200];
+  // G MC
+  sprintf(sb,"hDPhotonEffMC_%d",0);  hDPhotonEffMC[0]  = new TH1D(sb,sb,200,0,200);
+  sprintf(sb,"hDPhotonEffMC_%d",1);  hDPhotonEffMC[1]  = new TH1D(sb,sb,100,0,2.5);
+  sprintf(sb,"hDPhotonEffMC_%d",2);  hDPhotonEffMC[2]  = new TH1D(sb,sb,1000,0,1000);
+  sprintf(sb,"hDPhotonEffMC_%d",3);  hDPhotonEffMC[3]  = new TH1D(sb,sb,1000,0,1000);
+  sprintf(sb,"hDPhotonEffMC_%d",4);  hDPhotonEffMC[4]  = new TH1D(sb,sb,200,0,200);
+  sprintf(sb,"hDPhotonEffMC_%d",5);  hDPhotonEffMC[5]  = new TH1D(sb,sb,100,0,2.5);
+  sprintf(sb,"hDPhotonEffMC_%d",6);  hDPhotonEffMC[6]  = new TH1D(sb,sb,1000,0,1000);
+  sprintf(sb,"hDPhotonEffMC_%d",7);  hDPhotonEffMC[7]  = new TH1D(sb,sb,1000,0,1000);
+
+  // Isolation
+  for(int i=0; i<8; i++){
+    AddOutput(hDPhotonEffMC[i]);
+  }
 
   // Isolation
   for(int i=0; i<80; i++){

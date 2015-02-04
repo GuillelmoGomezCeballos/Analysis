@@ -73,6 +73,7 @@ namespace mithep
       MuonTools        *fMuonTools;
       MuonIDMVA        *fMuonIDMVA;
 
+      TH1D         *hDPhotonEffMC[10];
       TH1D         *hDLepSel[300];
       TH2D         *hDLepSel2D[10];
       Double_t      fCuts[6][8];

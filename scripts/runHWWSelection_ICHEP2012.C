@@ -47,6 +47,7 @@
 #include "MitAna/DataTree/interface/PFMetCol.h"
 #include "MitAna/PhysicsMod/interface/RunLumiSelectionMod.h"
 #include "MitPhysics/Mods/interface/GoodPVFilterMod.h"
+#include "MitPhysics/Mods/interface/PhotonMvaMod.h"
 #endif
 
 //--------------------------------------------------------------------------------------------------
@@ -295,7 +296,7 @@ void runHWWSelection(const char *catalogDir   = "~/scratch0/catalog",
     fDecay = 2120;
   }
   else if(nsel == 58){
-    fDecay = 2125; isSaveAll = true;
+    fDecay = 2125;
   }
   else if(nsel == 59){
     fDecay = 2130;
@@ -588,6 +589,36 @@ void runHWWSelection(const char *catalogDir   = "~/scratch0/catalog",
     files[0]   = "/castor/cern.ch/user/a/arapyan/Bambu/029c/DoublyChargedHiggsToWWToLL_M-800_TuneZ2_8TeV-madgraph/*.root";
     fDecay = 125;
   }
+  else if(nsel == 275){
+    myRootFile = "histo_wpwp_8_tev_qed_4_qcd_0_no_higgs_long_madspin_v3";
+    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/8_tev/wpwp_8_tev_qed_4_qcd_0_no_higgs_long_madspin_v3/*.root";
+    fDecay = 34;
+    addLheWeights = true; isSaveAll = true;
+  }
+  else if(nsel == 276){
+    myRootFile = "histo_wpwp_8_tev_qed_4_qcd_0_long_madspin_v3";
+    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/8_tev/wpwp_8_tev_qed_4_qcd_0_long_madspin_v3/*.root";
+    fDecay = 34;
+    addLheWeights = true; isSaveAll = true;
+  }
+  else if(nsel == 277){
+    myRootFile = "histo_wpwp_14_tev_qed_4_qcd_0_long_madspin_v3";
+    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/14_tev/wpwp_14_tev_qed_4_qcd_0_long_madspin_v3/*.root";
+    fDecay = 34;
+    addLheWeights = true; isSaveAll = true;
+  }
+  else if(nsel == 278){
+    myRootFile = "histo_wpwp_14_tev_qed_4_qcd_0_no_higgs_long_madspin_v3";
+    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/14_tev/wpwp_14_tev_qed_4_qcd_0_no_higgs_long_madspin_v3/*.root";
+    fDecay = 34;
+    addLheWeights = true; isSaveAll = true;
+  }
+  else if(nsel == 279){
+    myRootFile = "histo_wpwp_14_tev_qed_4_qcd_0_tran_madspin_v3";
+    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/14_tev/wpwp_14_tev_qed_4_qcd_0_tran_madspin_v3/*.root";
+    fDecay = 34;
+    addLheWeights = true; isSaveAll = true;
+  }
   else if(nsel == 280){
     myRootFile = "histo_wwss_qed_4_qcd_99_ls0ls1";
     files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_4_qcd_99_ls0ls1_v4_unmerged/*.root";
@@ -631,8 +662,8 @@ void runHWWSelection(const char *catalogDir   = "~/scratch0/catalog",
     addLheWeights = true; isSaveAll = true;
   }
   else if(nsel == 287){
-    myRootFile = "histo_qed_5_qcd_0_wz_lt012";
-    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/qed_5_qcd_0_wz_lt1_1p25_unmerged/*.root";
+    myRootFile = "histo_wpwp_13_tev_qed_4_qcd_0";
+    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/wpwp_13_tev_qed_4_qcd_0_v3/*.root";
     fDecay = 34;
     addLheWeights = true; isSaveAll = true;
   }
@@ -643,8 +674,8 @@ void runHWWSelection(const char *catalogDir   = "~/scratch0/catalog",
     addLheWeights = true; isSaveAll = true;
   }
   else if(nsel == 289){
-    myRootFile = "histo_qed_5_qcd_0_wz_ls0ls1";
-    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU//*.root";
+    myRootFile = "histo_wpwp_8_tev_qed_4_qcd_99_atlas";
+    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/wpwp_8_tev_qed_4_qcd_99_atlas/*.root";
     fDecay = 34;
     addLheWeights = true; isSaveAll = true;
   }
@@ -691,10 +722,15 @@ void runHWWSelection(const char *catalogDir   = "~/scratch0/catalog",
     addLheWeights = true;
   }
   else if(nsel == 297){
-    myRootFile = "histo_wzgamma_qed_5_qcd_0_lt1_1p25";
-    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/wzgamma_qed_5_qcd_0_lt1_1p25_unmerged/*.root";
-    fDecay = 27;
+    myRootFile = "histo_qed_4_qcd_99_ls_lm_lt_14tev";
+    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/14_tev/qed_4_qcd_99_ls_lm_lt_v5/*.root";
+    fDecay = 34;
     addLheWeights = true;
+  }
+  else if(nsel == 298){
+    myRootFile = "histo_ttbar_sl_8tev";
+    files[0]   = "root://eoscms//eos/cms/store/user/anlevin/data/BAMBU/ttbar_8_tev_enriched_v1_unmerged/*.root";
+    fDecay = 5;
   }
   else if(nsel == 299){
     myRootFile = "histo_ww_new";
@@ -1180,14 +1216,73 @@ void runHWWSelection(const char *catalogDir   = "~/scratch0/catalog",
   electronID1->SetNExpectedHitsInnerCut(0);
   electronID1->SetRhoType(theRhoType);
 
+  PhotonMvaMod *photreg = new PhotonMvaMod;
+  photreg->SetRegressionVersion(3);
+  photreg->SetRegressionWeights(string(getenv("CMSSW_BASE")+string("/src/MitPhysics/data/gbrv3ph_52x.root")));
+  photreg->SetOutputName("GoodPhotonsRegr");
+  photreg->SetApplyShowerRescaling(kTRUE);
+  photreg->SetMinNumPhotons(0);
+  photreg->SetIsData(isData);
+
   PhotonIDMod *photonIDMod1 = new PhotonIDMod;
-  photonIDMod1->SetIDType("BaseLineCiC");
-  photonIDMod1->SetIsoType("MITPUCorrected");
-  photonIDMod1->SetApplyPixelSeed(kFALSE);
-  photonIDMod1->SetApplyElectronVetoConvRecovery(kTRUE);
-  photonIDMod1->SetApplyConversionId(kTRUE);
-  photonIDMod1->SetApplyFiduciality(kFALSE);
-  photonIDMod1->SetPtMin(10.0);
+  photonIDMod1->SetPtMin(17.0);
+  photonIDMod1->SetOutputName("GoodPhotons");
+  photonIDMod1->SetIDType("MITMVAId");
+  photonIDMod1->SetBdtCutBarrel(0.02);
+  photonIDMod1->SetBdtCutEndcap(0.1);
+  photonIDMod1->SetIdMVAType("2013FinalIdMVA_8TeV");
+  photonIDMod1->SetApplyFiduciality(kTRUE);
+  photonIDMod1->SetIsData(isData);
+  photonIDMod1->SetAbsEtaMax(2.5);
+  photonIDMod1->SetPhotonsFromBranch(kFALSE);
+  photonIDMod1->SetInputName(photreg->GetOutputName());
+  photonIDMod1->SetApplyElectronVeto(kFALSE);
+  photonIDMod1->SetApplyPixelSeed(kTRUE);
+
+  PhotonIDMod *photonIDMod2 = new PhotonIDMod;
+  photonIDMod2->SetPtMin(17.0);
+  photonIDMod2->SetOutputName("FakeablePhotons");
+  photonIDMod2->SetIDType("TrivialSelection");
+  photonIDMod2->SetBdtCutBarrel(-1.0);
+  photonIDMod2->SetBdtCutEndcap(-1.0);
+  photonIDMod2->SetIdMVAType("2013FinalIdMVA_8TeV");
+  photonIDMod2->SetApplyFiduciality(kTRUE);
+  photonIDMod2->SetIsData(isData);
+  photonIDMod2->SetAbsEtaMax(2.5);
+  photonIDMod2->SetPhotonsFromBranch(kFALSE);
+  photonIDMod2->SetInputName(photreg->GetOutputName());
+  photonIDMod2->SetApplyElectronVeto(kFALSE);
+  photonIDMod2->SetApplyPixelSeed(kTRUE);
+
+  PhotonIDMod *photonIDMod1_tap = new PhotonIDMod;
+  photonIDMod1_tap->SetPtMin(17.0);
+  photonIDMod1_tap->SetOutputName("GoodPhotonsTAP");
+  photonIDMod1_tap->SetIDType("MITMVAId");
+  photonIDMod1_tap->SetBdtCutBarrel(0.02);
+  photonIDMod1_tap->SetBdtCutEndcap(0.1);
+  photonIDMod1_tap->SetIdMVAType("2013FinalIdMVA_8TeV");
+  photonIDMod1_tap->SetApplyFiduciality(kTRUE);
+  photonIDMod1_tap->SetIsData(isData);
+  photonIDMod1_tap->SetAbsEtaMax(2.5);
+  photonIDMod1_tap->SetPhotonsFromBranch(kFALSE);
+  photonIDMod1_tap->SetInputName(photreg->GetOutputName());
+  photonIDMod1_tap->SetApplyElectronVeto(kFALSE);
+  photonIDMod1_tap->SetApplyPixelSeed(kFALSE);
+
+  PhotonIDMod *photonIDMod2_tap = new PhotonIDMod;
+  photonIDMod2_tap->SetPtMin(17.0);
+  photonIDMod2_tap->SetOutputName("FakeablePhotonsTAP");
+  photonIDMod2_tap->SetIDType("TrivialSelection");
+  photonIDMod2_tap->SetBdtCutBarrel(-1.0);
+  photonIDMod2_tap->SetBdtCutEndcap(-1.0);
+  photonIDMod2_tap->SetIdMVAType("2013FinalIdMVA_8TeV");
+  photonIDMod2_tap->SetApplyFiduciality(kTRUE);
+  photonIDMod2_tap->SetIsData(isData);
+  photonIDMod2_tap->SetAbsEtaMax(2.5);
+  photonIDMod2_tap->SetPhotonsFromBranch(kFALSE);
+  photonIDMod2_tap->SetInputName(photreg->GetOutputName());
+  photonIDMod2_tap->SetApplyElectronVeto(kFALSE);
+  photonIDMod2_tap->SetApplyPixelSeed(kFALSE);
 
   PFTauIDMod *pftauIDMod1 = new PFTauIDMod;
   pftauIDMod1->SetPFTausName("HPSTaus");
@@ -1230,8 +1325,15 @@ void runHWWSelection(const char *catalogDir   = "~/scratch0/catalog",
   jetCorr1_ntuple->SetRhoType(theRhoType);
 
   ElectronCleaningMod *electronCleaning1 = new ElectronCleaningMod;
-  PhotonCleaningMod *photonCleaningMod1 = new PhotonCleaningMod;
   PFTauCleaningMod *pftauCleaningMod1 = new PFTauCleaningMod;
+
+  PhotonCleaningMod *photonCleaningMod1 = new PhotonCleaningMod;
+  photonCleaningMod1->SetGoodPhotonsName (photonIDMod1->GetOutputName());
+  photonCleaningMod1->SetCleanPhotonsName("CleanPhotons");
+
+  PhotonCleaningMod *photonCleaningMod2 = new PhotonCleaningMod;
+  photonCleaningMod2->SetGoodPhotonsName (photonIDMod2->GetOutputName());
+  photonCleaningMod2->SetCleanPhotonsName("CleanFakeablePhotons");
 
   MergeLeptonsMod *merger1 = new MergeLeptonsMod;
   merger1->SetMuonsName(muonID1->GetOutputName());
@@ -1368,6 +1470,8 @@ void runHWWSelection(const char *catalogDir   = "~/scratch0/catalog",
   HwwMakeNtupleMod0->SetMuonFakeName("CleanMuonsFakeable");
   HwwMakeNtupleMod0->SetElectronFakeName("CleanElectronsFakeable");
   HwwMakeNtupleMod0->SetLeptonFakeName("MergedLeptonsFakeable");
+  HwwMakeNtupleMod0->SetPhotonName(photonCleaningMod1->GetOutputName());
+  HwwMakeNtupleMod0->SetPhotonFakeName(photonCleaningMod2->GetOutputName());
   HwwMakeNtupleMod0->SetIntRadius(fIntRadius);
   HwwMakeNtupleMod0->SetIs42x(is2011Corr);
   HwwMakeNtupleMod0->SetMVAElVersion(1);
@@ -1394,6 +1498,8 @@ void runHWWSelection(const char *catalogDir   = "~/scratch0/catalog",
   HwwMakeNtupleMod1->SetMuonFakeName("CleanMuonsFakeable");
   HwwMakeNtupleMod1->SetElectronFakeName("CleanElectronsFakeable");
   HwwMakeNtupleMod1->SetLeptonFakeName("MergedLeptonsFakeable");
+  HwwMakeNtupleMod1->SetPhotonName(photonCleaningMod1->GetOutputName());
+  HwwMakeNtupleMod1->SetPhotonFakeName(photonCleaningMod2->GetOutputName());
   HwwMakeNtupleMod1->SetIntRadius(fIntRadius);
   HwwMakeNtupleMod1->SetIs42x(is2011Corr);
   HwwMakeNtupleMod1->SetMVAElVersion(1);
@@ -1420,6 +1526,8 @@ void runHWWSelection(const char *catalogDir   = "~/scratch0/catalog",
   HwwMakeNtupleMod2->SetMuonFakeName("CleanMuonsFakeable");
   HwwMakeNtupleMod2->SetElectronFakeName("CleanElectronsFakeable");
   HwwMakeNtupleMod2->SetLeptonFakeName("MergedLeptonsFakeable");
+  HwwMakeNtupleMod2->SetPhotonName(photonCleaningMod1->GetOutputName());
+  HwwMakeNtupleMod2->SetPhotonFakeName(photonCleaningMod2->GetOutputName());
   HwwMakeNtupleMod2->SetIntRadius(fIntRadius);
   HwwMakeNtupleMod2->SetIs42x(is2011Corr);
   HwwMakeNtupleMod2->SetMVAElVersion(1);
@@ -1446,6 +1554,8 @@ void runHWWSelection(const char *catalogDir   = "~/scratch0/catalog",
   HwwMakeNtupleMod3->SetMuonFakeName("CleanMuonsFakeable");
   HwwMakeNtupleMod3->SetElectronFakeName("CleanElectronsFakeable");
   HwwMakeNtupleMod3->SetLeptonFakeName("MergedLeptonsFakeable");
+  HwwMakeNtupleMod3->SetPhotonName(photonCleaningMod1->GetOutputName());
+  HwwMakeNtupleMod3->SetPhotonFakeName(photonCleaningMod2->GetOutputName());
   HwwMakeNtupleMod3->SetIntRadius(fIntRadius);
   HwwMakeNtupleMod3->SetIs42x(is2011Corr);
   HwwMakeNtupleMod3->SetMVAElVersion(1);
@@ -1472,6 +1582,8 @@ void runHWWSelection(const char *catalogDir   = "~/scratch0/catalog",
   HwwMakeNtupleMod4->SetMuonFakeName("CleanMuonsFakeable");
   HwwMakeNtupleMod4->SetElectronFakeName("CleanElectronsFakeable");
   HwwMakeNtupleMod4->SetLeptonFakeName("MergedLeptonsFakeable");
+  HwwMakeNtupleMod4->SetPhotonName(photonCleaningMod1->GetOutputName());
+  HwwMakeNtupleMod4->SetPhotonFakeName(photonCleaningMod2->GetOutputName());
   HwwMakeNtupleMod4->SetIntRadius(fIntRadius);
   HwwMakeNtupleMod4->SetIs42x(is2011Corr);
   HwwMakeNtupleMod4->SetMVAElVersion(1);
@@ -1480,6 +1592,34 @@ void runHWWSelection(const char *catalogDir   = "~/scratch0/catalog",
   HwwMakeNtupleMod4->SetFillPhotonTemplate(kTRUE);
   HwwMakeNtupleMod4->SetPFTauName(pftauCleaningMod1->GetOutputName());
   HwwMakeNtupleMod4->SetAddLheWeights(addLheWeights);
+
+  TString rootFileHwwMake5 = TString(theOutputDir);
+  rootFileHwwMake5 += TString(myRootFile);
+  rootFileHwwMake5 += TString("_smurf5_") + TString(fileset);
+  rootFileHwwMake5 += TString("_") + TString("noskim");
+  rootFileHwwMake5 += TString(".root");
+  HwwMakeNtupleMod *HwwMakeNtupleMod5 = new HwwMakeNtupleMod;
+  HwwMakeNtupleMod5->SetCleanJetsNoPtCutName("CleanJetsNoPtCut_ntuple");
+  HwwMakeNtupleMod5->SetJetScaleSyst(0.0);
+  HwwMakeNtupleMod5->SetPtJetCut(ptJetCut);
+  HwwMakeNtupleMod5->SetEtaJetCut(etaJetCut);
+  HwwMakeNtupleMod5->SetProcessID(fDecay);
+  HwwMakeNtupleMod5->SetIsData(isData);
+  HwwMakeNtupleMod5->SetFakeRatePredictionType(4);
+  HwwMakeNtupleMod5->SetFillNtupleType(5);
+  HwwMakeNtupleMod5->SetOutputName(rootFileHwwMake5);
+  HwwMakeNtupleMod5->SetMuonFakeName("CleanMuonsFakeable");
+  HwwMakeNtupleMod5->SetElectronFakeName("CleanElectronsFakeable");
+  HwwMakeNtupleMod5->SetLeptonFakeName("MergedLeptonsFakeable");
+  HwwMakeNtupleMod5->SetPhotonName(photonIDMod1_tap->GetOutputName());
+  HwwMakeNtupleMod5->SetPhotonFakeName(photonIDMod2_tap->GetOutputName());
+  HwwMakeNtupleMod5->SetIntRadius(fIntRadius);
+  HwwMakeNtupleMod5->SetIs42x(is2011Corr);
+  HwwMakeNtupleMod5->SetMVAElVersion(1);
+  HwwMakeNtupleMod5->SetMVAMuVersion(1);
+  HwwMakeNtupleMod5->SetCorrectedJetsName(jetCorr1_ntuple->GetOutputName());
+  HwwMakeNtupleMod5->SetPFTauName(pftauCleaningMod1->GetOutputName());
+  HwwMakeNtupleMod5->SetAddLheWeights(addLheWeights);
 
   // Lepton ID with no D0
   MuonIDMod *muonID2 = new MuonIDMod;
@@ -1700,13 +1840,18 @@ void runHWWSelection(const char *catalogDir   = "~/scratch0/catalog",
   electronCleaningBS->Add(mergerBS);
   mergerBS->Add(muonID1);
   muonID1->Add(electronID1);
-  electronID1->Add(photonIDMod1);
-  photonIDMod1->Add(pftauIDMod1);
+  electronID1->Add(photreg);
+  photreg->Add(photonIDMod1);
+  photonIDMod1->Add(photonIDMod2);
+  photonIDMod2->Add(photonIDMod1_tap);
+  photonIDMod1_tap->Add(photonIDMod2_tap);
+  photonIDMod2_tap->Add(pftauIDMod1);
   pftauIDMod1->Add(pubJet1);
   pubJet1->Add(jetCorr1_ntuple);
   jetCorr1_ntuple->Add(electronCleaning1);
   electronCleaning1->Add(photonCleaningMod1);
-  photonCleaningMod1->Add(pftauCleaningMod1);
+  photonCleaningMod1->Add(photonCleaningMod2);
+  photonCleaningMod2->Add(pftauCleaningMod1);
   pftauCleaningMod1->Add(theJetID2_ntuple);
   theJetID2_ntuple->Add(theJetCleaning2_ntuple);
   theJetCleaning2_ntuple->Add(merger1);
@@ -1755,9 +1900,10 @@ void runHWWSelection(const char *catalogDir   = "~/scratch0/catalog",
     HwwMakeNtupleMod0->Add(HwwMakeNtupleMod1);
     HwwMakeNtupleMod1->Add(HwwMakeNtupleMod2);
     HwwMakeNtupleMod2->Add(HwwMakeNtupleMod3);
+    HwwMakeNtupleMod3->Add(HwwMakeNtupleMod5);
     if(isPhotonMCSel == true){
        cout << "isPhotonMCSel is true" << endl;
-      HwwMakeNtupleMod3->Add(HwwMakeNtupleMod4);
+      HwwMakeNtupleMod5->Add(HwwMakeNtupleMod4);
     }
   }
 
