@@ -47,7 +47,7 @@ void ww_ana
 (
  int thePlot = 9,
  int lSel = 4,
- unsigned int nJetsType = 0,
+ unsigned int nJetsType = 0,double ptJetMin = 30.0,
  int whichGen = 0, // 0 (powheg), 1 (madgraph), 2 (mcatnlo)
  TString bgdInputFile    = "ntuples_53x/backgroundD_skim6.root",
  TString signalInputFile = "ntuples_53x/hww125.root",
@@ -58,7 +58,7 @@ void ww_ana
 {
   double events_0Jet[4] = {0.0, 0.0, 0.0, 0.0}; // qqWW, Higgs, Top, Top
   double lumi = 1.0;
-  double ptJetMin = 30.0; double ptLLMin = 30.0; double metMin = 20.0; double ptLMin = 20.0;
+  /*double ptJetMin = 30.0;*/double ptLLMin = 30.0; double metMin = 20.0; double ptLMin = 20.0;
   double useFullStatTemplates = true;
 
   bool fCheckProblem = false;
@@ -216,7 +216,7 @@ void ww_ana
   if     (lSel == 0) {sprintf(finalStateName,"mm");}
   else if(lSel == 1) {sprintf(finalStateName,"me");}
   else if(lSel == 2) {sprintf(finalStateName,"em");}
-  else if(lSel == 3) {sprintf(finalStateName,"mm");}
+  else if(lSel == 3) {sprintf(finalStateName,"ee");}
   else if(lSel == 4) {sprintf(finalStateName,"ll");}
   else if(lSel == 5) {sprintf(finalStateName,"sf");}
   else if(lSel == 6) {sprintf(finalStateName,"of");}
@@ -487,20 +487,22 @@ void ww_ana
       printf("--- reading event %5d of %5d\n",evt,nBgd);
     bgdEvent.tree_->GetEntry(evt);
 
+    double theWeightNNLOCorr = 1;
+    if(useWeightNNLOCorr == true && (bgdEvent.dstype_ == SmurfTree::qqww||bgdEvent.dstype_ == SmurfTree::qqwwPWG)) theWeightNNLOCorr = weightNNLOCorr(fhDRatioNNLO,bgdEvent.jet3McId_,0);
     // generator level selection
     bool minGenCuts = !(((bgdEvent.cuts_ & SmurfTree::Lep1FullSelection) == SmurfTree::Lep1FullSelection && (bgdEvent.cuts_ & SmurfTree::Lep2FullSelection) != SmurfTree::Lep2FullSelection) ||
                         ((bgdEvent.cuts_ & SmurfTree::Lep1FullSelection) != SmurfTree::Lep1FullSelection && (bgdEvent.cuts_ & SmurfTree::Lep2FullSelection) == SmurfTree::Lep2FullSelection) ||
 			((bgdEvent.cuts_ & SmurfTree::Lep1FullSelection) == SmurfTree::Lep1FullSelection && (bgdEvent.cuts_ & SmurfTree::Lep2FullSelection) == SmurfTree::Lep2FullSelection && (bgdEvent.cuts_ & SmurfTree::Lep3FullSelection) != SmurfTree::Lep3FullSelection && bgdEvent.lid3_ != 0));
     bool genLevelSel = false;
     if(minGenCuts == true) {
-      genLevelNorm[0]++;
+      genLevelNorm[0] = genLevelNorm[0] + theWeightNNLOCorr;
       int nGenJets = 0;
-      //if(bgdEvent.genjet1_.Pt() > 30 && TMath::Abs(bgdEvent.genjet1_.Eta()) < 4.7) nGenJets++;
-      //if(bgdEvent.genjet2_.Pt() > 30 && TMath::Abs(bgdEvent.genjet2_.Eta()) < 4.7) nGenJets++;
-      //if(bgdEvent.genjet2_.Pt() > 30 && TMath::Abs(bgdEvent.genjet3_.Eta()) < 4.7) nGenJets++;
-      if(bgdEvent.genjet1_.Pt() > 30 && TMath::Abs(bgdEvent.genjet1_.Eta()) < 5.0) nGenJets++;
-      if(bgdEvent.genjet2_.Pt() > 30 && TMath::Abs(bgdEvent.genjet2_.Eta()) < 5.0) nGenJets++;
-      if(bgdEvent.genjet2_.Pt() > 30 && TMath::Abs(bgdEvent.genjet3_.Eta()) < 5.0) nGenJets++;
+      //if(bgdEvent.genjet1_.Pt() > ptJetMin && TMath::Abs(bgdEvent.genjet1_.Eta()) < 4.7) nGenJets++;
+      //if(bgdEvent.genjet2_.Pt() > ptJetMin && TMath::Abs(bgdEvent.genjet2_.Eta()) < 4.7) nGenJets++;
+      //if(bgdEvent.genjet2_.Pt() > ptJetMin && TMath::Abs(bgdEvent.genjet3_.Eta()) < 4.7) nGenJets++;
+      if(bgdEvent.genjet1_.Pt() > ptJetMin && TMath::Abs(bgdEvent.genjet1_.Eta()) < 5.0) nGenJets++;
+      if(bgdEvent.genjet2_.Pt() > ptJetMin && TMath::Abs(bgdEvent.genjet2_.Eta()) < 5.0) nGenJets++;
+      if(bgdEvent.genjet2_.Pt() > ptJetMin && TMath::Abs(bgdEvent.genjet3_.Eta()) < 5.0) nGenJets++;
 
       //double etaCut[2] = {2.5, 2.5};
       //if(TMath::Abs(bgdEvent.genlep1McId_) == 11) etaCut[0] = 2.4;
@@ -511,7 +513,7 @@ void ww_ana
          //bgdEvent.genlep1_.Pt() > 20 && TMath::Abs(bgdEvent.genlep1_.Eta()) < etaCut[0] && 
          //bgdEvent.genlep2_.Pt() > 20 && TMath::Abs(bgdEvent.genlep2_.Eta()) < etaCut[1]
         ) {
-        genLevelNorm[1]++;
+        genLevelNorm[1] = genLevelNorm[1] + theWeightNNLOCorr;
 	genLevelSel = true;
       }
     }
@@ -582,29 +584,43 @@ void ww_ana
     int lType = 0;
     if     (bgdEvent.lq1_ * bgdEvent.lq2_ < 0) lType = 1;
 
+    unsigned int NjetSyst[3] = {0, 0, 0};
+    if(bgdEvent.jet1_.Pt()*1.00 > ptJetMin) NjetSyst[0]++;
+    if(bgdEvent.jet2_.Pt()*1.00 > ptJetMin) NjetSyst[0]++;
+    if(bgdEvent.jet3_.Pt()*1.00 > ptJetMin) NjetSyst[0]++;
+    if(bgdEvent.jet4_.Pt()*1.00 > ptJetMin) NjetSyst[0]++;
+    if(bgdEvent.jet1_.Pt()*1.05 > ptJetMin) NjetSyst[1]++;
+    if(bgdEvent.jet2_.Pt()*1.05 > ptJetMin) NjetSyst[1]++;
+    if(bgdEvent.jet3_.Pt()*1.05 > ptJetMin) NjetSyst[1]++;
+    if(bgdEvent.jet4_.Pt()*1.05 > ptJetMin) NjetSyst[1]++;
+    if(bgdEvent.jet1_.Pt()*0.95 > ptJetMin) NjetSyst[2]++;
+    if(bgdEvent.jet2_.Pt()*0.95 > ptJetMin) NjetSyst[2]++;
+    if(bgdEvent.jet3_.Pt()*0.95 > ptJetMin) NjetSyst[2]++;
+    if(bgdEvent.jet4_.Pt()*0.95 > ptJetMin) NjetSyst[2]++;
+
     double usedMet = TMath::Min(bgdEvent.pmet_,bgdEvent.pTrackMet_);
     bool   passMET = usedMet > metMin;
     if(useDYMVA == false){
-      if     (bgdEvent.njets_ == 0) passMET = passMET && (usedMet > 45. || bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me);
-      else if(bgdEvent.njets_ == 1) passMET = passMET && (usedMet > 45. || bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me);
-      else                          passMET = passMET && (bgdEvent.met_ > 45.0 || bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me);
+      if     (NjetSyst[0] == 0) passMET = passMET && (usedMet > 45. || bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me);
+      else if(NjetSyst[0] == 1) passMET = passMET && (usedMet > 45. || bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me);
+      else                      passMET = passMET && (bgdEvent.met_ > 45.0 || bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me);
     } else {
-      if     (bgdEvent.njets_ == 0) passMET = passMET && (bgdEvent.dymva_ >  0.88 || bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me);
-      else if(bgdEvent.njets_ == 1) passMET = passMET && (bgdEvent.dymva_ >  0.84 || bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me);
-      else                          passMET = passMET && (bgdEvent.met_   >  45.0 || bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me);
+      if     (NjetSyst[0] == 0) passMET = passMET && (bgdEvent.dymva_ >  0.88 || bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me);
+      else if(NjetSyst[0] == 1) passMET = passMET && (bgdEvent.dymva_ >  0.84 || bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me);
+      else                      passMET = passMET && (bgdEvent.met_   >  45.0 || bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me);
     }
     bool dPhiDiLepJetCut = true;
     if(useDYMVA == false){
-      if(bgdEvent.njets_ <= 1) dPhiDiLepJetCut = bgdEvent.jet1_.Pt() <= 15. || bgdEvent.dPhiDiLepJet1_*180.0/TMath::Pi() < 165. || 
-      	                                         bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me;
-      else                     dPhiDiLepJetCut = DeltaPhi((bgdEvent.jet1_+bgdEvent.jet2_).Phi(),bgdEvent.dilep_.Phi())*180.0/TMath::Pi() < 165. || 
-    	                                         bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me;
+      if(NjetSyst[0] <= 1) dPhiDiLepJetCut = bgdEvent.jet1_.Pt() <= 15. || bgdEvent.dPhiDiLepJet1_*180.0/TMath::Pi() < 165. || 
+      	                                     bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me;
+      else                 dPhiDiLepJetCut = DeltaPhi((bgdEvent.jet1_+bgdEvent.jet2_).Phi(),bgdEvent.dilep_.Phi())*180.0/TMath::Pi() < 165. || 
+    	                   		     bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me;
     }
-    if(bgdEvent.njets_ >= 2) dPhiDiLepJetCut = DeltaPhi((bgdEvent.jet1_+bgdEvent.jet2_).Phi(),bgdEvent.dilep_.Phi())*180.0/TMath::Pi() < 165. ||
-                                                         bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me;
+    if(NjetSyst[0] >= 2) dPhiDiLepJetCut = DeltaPhi((bgdEvent.jet1_+bgdEvent.jet2_).Phi(),bgdEvent.dilep_.Phi())*180.0/TMath::Pi() < 165. ||
+                                                     bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me;
 
     double ptLLCut = ptLLMin; if(bgdEvent.type_ == SmurfTree::ee || bgdEvent.type_ == SmurfTree::mm) ptLLCut = 45;
-    bool passNjets         = bgdEvent.njets_ == nJetsType; if(nJetsType == 3) passNjets = bgdEvent.njets_ <= 1;
+    bool passNjets         = NjetSyst[0] == nJetsType; if(nJetsType == 3) passNjets = NjetSyst[0] <= 1;
     bool preselCuts        = bgdEvent.lep1_.Pt() > ptLMin && bgdEvent.lep2_.Pt() > ptLMin && bgdEvent.dilep_.Pt() > ptLLCut;
     bool passBtagVeto      = (bgdEvent.cuts_ & patternTopVeto) == patternTopVeto;
     bool pass3rLVeto       = (bgdEvent.cuts_ & SmurfTree::ExtraLeptonVeto) == SmurfTree::ExtraLeptonVeto;
@@ -616,37 +632,37 @@ void ww_ana
     makeSystematicEffects(bgdEvent.lid1_, bgdEvent.lid2_, bgdEvent.lep1_, bgdEvent.lep2_, bgdEvent.dilep_, 
                          bgdEvent.mt_, theMET, theMETPHI, 
                          bgdEvent.trackMet_, bgdEvent.trackMetPhi_, 
-			 bgdEvent.njets_, bgdEvent.jet1_, bgdEvent.jet2_,
+			 NjetSyst[0], bgdEvent.jet1_, bgdEvent.jet2_,
 			 year, 0, outputVarLepP);
     double outputVarLepM[15];
     makeSystematicEffects(bgdEvent.lid1_, bgdEvent.lid2_, bgdEvent.lep1_, bgdEvent.lep2_, bgdEvent.dilep_, 
                          bgdEvent.mt_, theMET, theMETPHI, 
                          bgdEvent.trackMet_, bgdEvent.trackMetPhi_, 
-			 bgdEvent.njets_, bgdEvent.jet1_, bgdEvent.jet2_,
+			 NjetSyst[0], bgdEvent.jet1_, bgdEvent.jet2_,
 			 year, 1, outputVarLepM);
     double outputVarMET[15];
     makeSystematicEffects(bgdEvent.lid1_, bgdEvent.lid2_, bgdEvent.lep1_, bgdEvent.lep2_, bgdEvent.dilep_, 
                          bgdEvent.mt_, theMET, theMETPHI, 
                          bgdEvent.trackMet_, bgdEvent.trackMetPhi_, 
-			 bgdEvent.njets_, bgdEvent.jet1_, bgdEvent.jet2_,
+			 NjetSyst[0], bgdEvent.jet1_, bgdEvent.jet2_,
 			 year, 2, outputVarMET);
     double outputVar[15];
     makeSystematicEffects(bgdEvent.lid1_, bgdEvent.lid2_, bgdEvent.lep1_, bgdEvent.lep2_, bgdEvent.dilep_, 
                          bgdEvent.mt_, theMET, theMETPHI, 
                          bgdEvent.trackMet_, bgdEvent.trackMetPhi_, 
-			 bgdEvent.njets_, bgdEvent.jet1_, bgdEvent.jet2_,
+			 NjetSyst[0], bgdEvent.jet1_, bgdEvent.jet2_,
 			 year, 3, outputVar);
     double outputVarJESP[15];
     makeSystematicEffects(bgdEvent.lid1_, bgdEvent.lid2_, bgdEvent.lep1_, bgdEvent.lep2_, bgdEvent.dilep_, 
                          bgdEvent.mt_, theMET, theMETPHI, 
                          bgdEvent.trackMet_, bgdEvent.trackMetPhi_, 
-			 bgdEvent.njets_, bgdEvent.jet1_, bgdEvent.jet2_,
+			 NjetSyst[0], bgdEvent.jet1_, bgdEvent.jet2_,
 			 year, 4, outputVarJESP);
     double outputVarJESM[15];
     makeSystematicEffects(bgdEvent.lid1_, bgdEvent.lid2_, bgdEvent.lep1_, bgdEvent.lep2_, bgdEvent.dilep_, 
                          bgdEvent.mt_, theMET, theMETPHI, 
                          bgdEvent.trackMet_, bgdEvent.trackMetPhi_, 
-			 bgdEvent.njets_, bgdEvent.jet1_, bgdEvent.jet2_,
+			 NjetSyst[0], bgdEvent.jet1_, bgdEvent.jet2_,
 			 year, 5, outputVarJESM);
     double MVAVar[6] = {outputVar[13],outputVarJESP[13],outputVarJESM[13],outputVarLepP[13],outputVarLepM[13],outputVarMET[13]};
     for(int nv=0; nv<6; nv++) MVAVar[nv] = TMath::Min(TMath::Max(MVAVar[nv],xbins[0]+0.001),xbins[nBinMVA]-0.001);
@@ -660,43 +676,33 @@ void ww_ana
         	      leptonEfficiency(bgdEvent.lep2_.Pt(), bgdEvent.lep2_.Eta(), fhDEffMu, fhDEffEl, bgdEvent.lid2_,-1);
     } else {addLepEff = 1.0;}
 
-    unsigned int NjetSyst[2] = {0., 0.};
-    if(bgdEvent.jet1_.Pt()*1.05 > ptJetMin) NjetSyst[0]++;
-    if(bgdEvent.jet2_.Pt()*1.05 > ptJetMin) NjetSyst[0]++;
-    if(bgdEvent.jet3_.Pt()*1.05 > ptJetMin) NjetSyst[0]++;
-    if(bgdEvent.jet4_.Pt()*1.05 > ptJetMin) NjetSyst[0]++;
-    if(bgdEvent.jet1_.Pt()*0.95 > ptJetMin) NjetSyst[1]++;
-    if(bgdEvent.jet2_.Pt()*0.95 > ptJetMin) NjetSyst[1]++;
-    if(bgdEvent.jet3_.Pt()*0.95 > ptJetMin) NjetSyst[1]++;
-    if(bgdEvent.jet4_.Pt()*0.95 > ptJetMin) NjetSyst[1]++;
-
     bool   passMETSyst[3] = {TMath::Min(outputVarJESP[4]/bgdEvent.met_*bgdEvent.pmet_,outputVarJESP[6]/bgdEvent.trackMet_*bgdEvent.pTrackMet_) > metMin,
                              TMath::Min(outputVarJESM[4]/bgdEvent.met_*bgdEvent.pmet_,outputVarJESM[6]/bgdEvent.trackMet_*bgdEvent.pTrackMet_) > metMin,
 			     TMath::Min(outputVarMET[4] /bgdEvent.met_*bgdEvent.pmet_,outputVarMET[6] /bgdEvent.trackMet_*bgdEvent.pTrackMet_) > metMin};
     if(bgdEvent.type_ == SmurfTree::mm || bgdEvent.type_ == SmurfTree::ee){
       if(useDYMVA == false){
-        if     (NjetSyst[0]     <= 1) passMETSyst[0] = passMETSyst[0] && TMath::Min(outputVarJESP[4]/bgdEvent.met_*bgdEvent.pmet_,outputVarJESP[6]/bgdEvent.trackMet_*bgdEvent.pTrackMet_) > 45.0;
-        else                          passMETSyst[0] = passMETSyst[0] &&	    outputVarJESP[4]											   > 45.0;
+        if     (NjetSyst[1] <= 1) passMETSyst[0] = passMETSyst[0] && TMath::Min(outputVarJESP[4]/bgdEvent.met_*bgdEvent.pmet_,outputVarJESP[6]/bgdEvent.trackMet_*bgdEvent.pTrackMet_) > 45.0;
+        else                	  passMETSyst[0] = passMETSyst[0] &&		outputVarJESP[4]										       > 45.0;
 
-        if     (NjetSyst[1]     <= 1) passMETSyst[1] = passMETSyst[1] && TMath::Min(outputVarJESM[4]/bgdEvent.met_*bgdEvent.pmet_,outputVarJESM[6]/bgdEvent.trackMet_*bgdEvent.pTrackMet_) > 45.0;
-        else                          passMETSyst[1] = passMETSyst[1] &&	    outputVarJESM[4]											   > 45.0;
+        if     (NjetSyst[2] <= 1) passMETSyst[1] = passMETSyst[1] && TMath::Min(outputVarJESM[4]/bgdEvent.met_*bgdEvent.pmet_,outputVarJESM[6]/bgdEvent.trackMet_*bgdEvent.pTrackMet_) > 45.0;
+        else                	  passMETSyst[1] = passMETSyst[1] &&		outputVarJESM[4]										       > 45.0;
 
-        if     (bgdEvent.njets_ <= 1) passMETSyst[2] = passMETSyst[2] && TMath::Min( outputVarMET[4]/bgdEvent.met_*bgdEvent.pmet_, outputVarMET[6]/bgdEvent.trackMet_*bgdEvent.pTrackMet_) > 45.0;
-        else                          passMETSyst[3] = passMETSyst[3] &&	     outputVarMET[4]											   > 45.0;
-
+        if     (NjetSyst[0] <= 1) passMETSyst[2] = passMETSyst[2] && TMath::Min( outputVarMET[4]/bgdEvent.met_*bgdEvent.pmet_, outputVarMET[6]/bgdEvent.trackMet_*bgdEvent.pTrackMet_)  > 45.0;
+        else                      passMETSyst[3] = passMETSyst[3] &&	         outputVarMET[4]											> 45.0;
+ 
 
       } else {
-        if     (NjetSyst[0]     == 0) passMETSyst[0] = passMETSyst[0] && dymvaJESU >  0.88;
-        else if(NjetSyst[0]     == 1) passMETSyst[0] = passMETSyst[0] && dymvaJESU >  0.84;
-        else                          passMETSyst[0] = passMETSyst[0] &&            outputVarJESP[4]                                                                                       > 45.0;
+        if     (NjetSyst[1] == 0) passMETSyst[0] = passMETSyst[0] && dymvaJESU >  0.88;
+        else if(NjetSyst[1] == 1) passMETSyst[0] = passMETSyst[0] && dymvaJESU >  0.84;
+        else                	  passMETSyst[0] = passMETSyst[0] &&		outputVarJESP[4]										       > 45.0;
 
-        if     (NjetSyst[0]     == 0) passMETSyst[1] = passMETSyst[1] && dymvaJESD >  0.88;
-        else if(NjetSyst[0]     == 1) passMETSyst[1] = passMETSyst[1] && dymvaJESD >  0.84;
-        else                          passMETSyst[1] = passMETSyst[1] &&            outputVarJESM[4]                                                                                       > 45.0;
+        if     (NjetSyst[2] == 0) passMETSyst[1] = passMETSyst[1] && dymvaJESD >  0.88;
+        else if(NjetSyst[2] == 1) passMETSyst[1] = passMETSyst[1] && dymvaJESD >  0.84;
+        else                	  passMETSyst[1] = passMETSyst[1] &&		outputVarJESM[4]										       > 45.0;
 
-        if     (bgdEvent.njets_ == 0) passMETSyst[2] = passMETSyst[2] && dymvaMET  >  0.88;
-        else if(bgdEvent.njets_ == 1) passMETSyst[2] = passMETSyst[2] && dymvaMET  >  0.84;
-        else                          passMETSyst[2] = passMETSyst[2] &&            outputVarMET[4]                                                                                        > 45.0;
+        if     (NjetSyst[0] == 0) passMETSyst[2] = passMETSyst[2] && dymvaMET  >  0.88;
+        else if(NjetSyst[0] == 1) passMETSyst[2] = passMETSyst[2] && dymvaMET  >  0.84;
+        else                      passMETSyst[2] = passMETSyst[2] &&            outputVarMET[4]                                                                                        > 45.0;
 
       }
     }
@@ -710,11 +716,11 @@ void ww_ana
     else if(lSel == 5 && (bgdEvent.type_ == SmurfTree::mm || bgdEvent.type_ == SmurfTree::ee)) passLSel = true;
     else if(lSel == 6 && (bgdEvent.type_ == SmurfTree::me || bgdEvent.type_ == SmurfTree::em)) passLSel = true;
 
-    if(nJetsType == 3 && NjetSyst[0] <= 1) NjetSyst[0] = 3;
     if(nJetsType == 3 && NjetSyst[1] <= 1) NjetSyst[1] = 3;
+    if(nJetsType == 3 && NjetSyst[2] <= 1) NjetSyst[2] = 3;
 
-    if(passLSel && NjetSyst[0] == nJetsType     && passMETSyst[0]                                                                                                                        && dPhiDiLepJetCut && outputVar[0]	> ptLMin && outputVar[1]     > ptLMin && outputVar[3]     > ptLLCut && passBtagVeto && pass3rLVeto && outputVar[2]	> 12.0 && (TMath::Abs(outputVar[2]    -91.1876) > 15 || bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me)) passSystCuts[lType][JESUP] = true;
-    if(passLSel && NjetSyst[1] == nJetsType     && passMETSyst[1]                                                                                                                        && dPhiDiLepJetCut && outputVar[0]	> ptLMin && outputVar[1]     > ptLMin && outputVar[3]     > ptLLCut && passBtagVeto && pass3rLVeto && outputVar[2]	> 12.0 && (TMath::Abs(outputVar[2]    -91.1876) > 15 || bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me)) passSystCuts[lType][JESDOWN] = true;
+    if(passLSel && NjetSyst[1] == nJetsType     && passMETSyst[0]                                                                                                                        && dPhiDiLepJetCut && outputVar[0]	> ptLMin && outputVar[1]     > ptLMin && outputVar[3]     > ptLLCut && passBtagVeto && pass3rLVeto && outputVar[2]	> 12.0 && (TMath::Abs(outputVar[2]    -91.1876) > 15 || bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me)) passSystCuts[lType][JESUP] = true;
+    if(passLSel && NjetSyst[2] == nJetsType     && passMETSyst[1]                                                                                                                        && dPhiDiLepJetCut && outputVar[0]	> ptLMin && outputVar[1]     > ptLMin && outputVar[3]     > ptLLCut && passBtagVeto && pass3rLVeto && outputVar[2]	> 12.0 && (TMath::Abs(outputVar[2]    -91.1876) > 15 || bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me)) passSystCuts[lType][JESDOWN] = true;
     if(passLSel && passNjets                    && TMath::Min(outputVarLepP[4]/bgdEvent.met_*bgdEvent.pmet_,outputVarLepP[6]/bgdEvent.trackMet_*bgdEvent.pTrackMet_) > metMin && passMET && dPhiDiLepJetCut && outputVarLepP[0] > ptLMin && outputVarLepP[1] > ptLMin && outputVarLepP[3] > ptLLCut && passBtagVeto && pass3rLVeto && outputVarLepP[2] > 12.0 && (TMath::Abs(outputVarLepP[2]-91.1876) > 15 || bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me)) passSystCuts[lType][LEPP] = true;
     if(passLSel && passNjets                    && TMath::Min(outputVarLepM[4]/bgdEvent.met_*bgdEvent.pmet_,outputVarLepM[6]/bgdEvent.trackMet_*bgdEvent.pTrackMet_) > metMin && passMET && dPhiDiLepJetCut && outputVarLepM[0] > ptLMin && outputVarLepM[1] > ptLMin && outputVarLepM[3] > ptLLCut && passBtagVeto && pass3rLVeto && outputVarLepM[2] > 12.0 && (TMath::Abs(outputVarLepM[2]-91.1876) > 15 || bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me)) passSystCuts[lType][LEPM] = true;
     if(passLSel && passNjets                    && passMETSyst[2]															 && dPhiDiLepJetCut && outputVarMET[0]  > ptLMin && outputVarMET[1]  > ptLMin && outputVarMET[3]  > ptLLCut && passBtagVeto && pass3rLVeto && outputVarMET[2]  > 12.0 && (TMath::Abs(outputVarMET[2] -91.1876) > 15 || bgdEvent.type_ == SmurfTree::em || bgdEvent.type_ == SmurfTree::me)) passSystCuts[lType][MET] = true;
@@ -867,14 +873,14 @@ void ww_ana
 	 printf("PROBLEMCB(%d): %f %f %f = %f - %f %f %f %f %f = %f\n",bgdEvent.event_,add1,add2,trigEff,add,bgdEvent.sfWeightFR_,bgdEvent.sfWeightPU_,bgdEvent.sfWeightEff_,bgdEvent.sfWeightTrig_,bgdEvent.sfWeightHPt_,bgdEvent.sfWeightFR_*bgdEvent.sfWeightPU_*bgdEvent.sfWeightEff_*bgdEvent.sfWeightTrig_*bgdEvent.sfWeightHPt_);
 
   	if(fDecay == 9 && (bgdEvent.type_ == SmurfTree::mm || bgdEvent.type_ == SmurfTree::ee)) {
-  	  if(bgdEvent.njets_ == 0) add=add*DYBkgScaleFactor(0);
-  	  if(bgdEvent.njets_ == 1) add=add*DYBkgScaleFactor(1);
-  	  if(bgdEvent.njets_ >= 2) add=add*DYBkgScaleFactor(2);
+  	  if(NjetSyst[0] == 0) add=add*DYBkgScaleFactor(0);
+  	  if(NjetSyst[0] == 1) add=add*DYBkgScaleFactor(1);
+  	  if(NjetSyst[0] >= 2) add=add*DYBkgScaleFactor(2);
   	}
   	if(fDecay == 5 || fDecay == 13) {
-  	  if	 (bgdEvent.njets_ == 0) add=add*TopBkgScaleFactor(0);
-  	  else if(bgdEvent.njets_ == 1) add=add*TopBkgScaleFactor(1); 
-  	  else if(bgdEvent.njets_ >= 2) add=add*TopBkgScaleFactor(2);
+  	  if	 (NjetSyst[0] == 0) add=add*TopBkgScaleFactor(0);
+  	  else if(NjetSyst[0] == 1) add=add*TopBkgScaleFactor(1); 
+  	  else if(NjetSyst[0] >= 2) add=add*TopBkgScaleFactor(2);
   	}
 
 	if(bgdEvent.dstype_ == SmurfTree::wgstar) add = add*WGstarScaleFactor(bgdEvent.type_,theMET);
@@ -890,16 +896,16 @@ void ww_ana
       if(useWeightEWKCorr == true && bgdEvent.dstype_ == SmurfTree::qqww2j)  theWeight = theWeight * weightEWKCorr(bgdEvent.higgsPt_,3);
       if(useWeightEWKCorr == true && bgdEvent.dstype_ == SmurfTree::qqwwPWG) theWeight = theWeight * weightEWKCorr(bgdEvent.higgsPt_,3);
 
-      if(useWeightNNLOCorr == true && (bgdEvent.dstype_ == SmurfTree::qqww||bgdEvent.dstype_ == SmurfTree::qqwwPWG)) theWeight = theWeight * weightNNLOCorr(fhDRatioNNLO,bgdEvent.jet3McId_,0);
+      theWeight = theWeight * theWeightNNLOCorr;
       if(useWeightNNLOCorr == true && (bgdEvent.dstype_ == SmurfTree::qqww||bgdEvent.dstype_ == SmurfTree::qqwwPWG||
                                        bgdEvent.dstype_ == SmurfTree::qqww2j||bgdEvent.dstype_ == SmurfTree::ggww)) theWeight = theWeight * weightNLOToNNLOCorr(period);
 
       //if(bgdEvent.dstype_ == SmurfTree::qqww  )  theWeight = theWeight * weightJetPt(0,bgdEvent.jet3McId_,bgdEvent.jet4McId_);
       //if(bgdEvent.dstype_ == SmurfTree::qqww2j)  theWeight = theWeight * weightJetPt(0,bgdEvent.jet3McId_,bgdEvent.jet4McId_);
       //if(bgdEvent.dstype_ == SmurfTree::qqwwPWG) theWeight = theWeight * weightJetPt(0,bgdEvent.jet3McId_,bgdEvent.jet4McId_);
-
-      if(minGenCuts == true && passCuts[1][WWSEL] && genLevelSel == false) genLevelNorm[2]++;
-      if(minGenCuts == true && passCuts[1][WWSEL] && genLevelSel == true)  genLevelNorm[3]++;
+      
+      if(minGenCuts == true && passCuts[1][WWSEL] && genLevelSel == false) genLevelNorm[2] = genLevelNorm[2] + theWeightNNLOCorr;
+      if(minGenCuts == true && passCuts[1][WWSEL] && genLevelSel == true)  genLevelNorm[3] = genLevelNorm[3] + theWeightNNLOCorr;
  
        if(passCuts[1][WWSEL]){ // begin making plots
 	double myVar = theMET;
@@ -918,7 +924,7 @@ void ww_ana
 	else if(thePlot ==14) myVar = fabs(bgdEvent.dilep_.M()-91.1876);
 	else if(thePlot ==15) myVar = fabs(theMET-bgdEvent.dilep_.Pt())/bgdEvent.dilep_.Pt();
 	else if(thePlot ==16) myVar = bgdEvent.lep2_.Pt()/bgdEvent.lep1_.Pt();
-	else if(thePlot ==17) myVar = bgdEvent.njets_;
+	else if(thePlot ==17) myVar = NjetSyst[0];
 	else if(thePlot ==18) myVar = bgdEvent.nvtx_;
 	else if(thePlot ==19) myVar = TMath::Max(TMath::Min((bgdEvent.lep1_+bgdEvent.lep2_+bgdEvent.jet1_+bgdEvent.jet2_).M(),2999.999),700.001);
 	else if(thePlot ==20) myVar = bgdEvent.dPhi_*180.0/TMath::Pi();
@@ -998,7 +1004,7 @@ void ww_ana
         if(passSystCuts[1][MET]     == true) histo_VVV_CMS_MVAMETResBoundingUp  ->Fill(MVAVar[5], theWeight);;
       }
       else if(fDecay == 29){
-        if(bgdEvent.njets_ == 0 && passCuts[1][WWSEL]) events_0Jet[0] = events_0Jet[0] + theWeight;
+        if(NjetSyst[0] == 0 && passCuts[1][WWSEL]) events_0Jet[0] = events_0Jet[0] + theWeight;
         if(passCuts[1][WWSEL])  	     histo_qqWW			         ->Fill(MVAVar[0], theWeight);
         if(passCuts[1][WWSEL])  	     histo_qqWW_CMS_MVALepEffBoundingUp  ->Fill(MVAVar[0], theWeight*addLepEffUp  /addLepEff);
         if(passCuts[1][WWSEL])  	     histo_qqWW_CMS_MVALepEffBoundingDown->Fill(MVAVar[0], theWeight*addLepEffDown/addLepEff);
@@ -1041,7 +1047,7 @@ void ww_ana
         if(passSystCuts[1][MET]     == true) histo_VV_CMS_MVAMETResBoundingUp  ->Fill(MVAVar[5], theWeight);;
       }
       else if(fDecay ==  5 || fDecay == 13){
-        if(bgdEvent.njets_ == 0 && passCuts[1][WWSEL]) events_0Jet[2] = events_0Jet[2] + theWeight;
+        if(NjetSyst[0] == 0 && passCuts[1][WWSEL]) events_0Jet[2] = events_0Jet[2] + theWeight;
         if(passCuts[1][WWSEL])  	     histo_Top		               ->Fill(MVAVar[0], theWeight);
         if(passCuts[1][WWSEL])  	     histo_Top_CMS_MVALepEffBoundingUp  ->Fill(MVAVar[0], theWeight*addLepEffUp  /addLepEff);
         if(passCuts[1][WWSEL])  	     histo_Top_CMS_MVALepEffBoundingDown->Fill(MVAVar[0], theWeight*addLepEffDown/addLepEff);
@@ -1052,7 +1058,7 @@ void ww_ana
         if(passSystCuts[1][MET]     == true) histo_Top_CMS_MVAMETResBoundingUp  ->Fill(MVAVar[5], theWeight);
       }
       else if(fDecay ==  9){
-        if(bgdEvent.njets_ == 0 && passCuts[1][WWSEL]) events_0Jet[3] = events_0Jet[3] + theWeight;
+        if(NjetSyst[0] == 0 && passCuts[1][WWSEL]) events_0Jet[3] = events_0Jet[3] + theWeight;
         if(passCuts[1][WWSEL])  	     histo_Zjets		               ->Fill(MVAVar[0], theWeight);
         if(passCuts[1][WWSEL])  	     histo_Zjets_CMS_MVALepEffBoundingUp  ->Fill(MVAVar[0], theWeight*addLepEffUp  /addLepEff);
         if(passCuts[1][WWSEL])  	     histo_Zjets_CMS_MVALepEffBoundingDown->Fill(MVAVar[0], theWeight*addLepEffDown/addLepEff);
@@ -1173,29 +1179,35 @@ void ww_ana
     int lType = 0;
     if     (systEvent.lq1_ * systEvent.lq2_ < 0) lType = 1;
 
+    unsigned int NjetSyst[3] = {0, 0, 0};
+    if(systEvent.jet1_.Pt()*1.00 > ptJetMin) NjetSyst[0]++;
+    if(systEvent.jet2_.Pt()*1.00 > ptJetMin) NjetSyst[0]++;
+    if(systEvent.jet3_.Pt()*1.00 > ptJetMin) NjetSyst[0]++;
+    if(systEvent.jet4_.Pt()*1.00 > ptJetMin) NjetSyst[0]++;
+
     double usedMet = TMath::Min(systEvent.pmet_,systEvent.pTrackMet_);
     bool   passMET = usedMet > metMin;
     if(useDYMVA == false){
-      if     (systEvent.njets_ == 0) passMET = passMET && (usedMet > 45. || systEvent.type_ == SmurfTree::em || systEvent.type_ == SmurfTree::me);
-      else if(systEvent.njets_ == 1) passMET = passMET && (usedMet > 45. || systEvent.type_ == SmurfTree::em || systEvent.type_ == SmurfTree::me);
-      else                           passMET = passMET && (systEvent.met_ > 45.0 || systEvent.type_ == SmurfTree::em || systEvent.type_ == SmurfTree::me);
+      if     (NjetSyst[0] == 0) passMET = passMET && (usedMet > 45. || systEvent.type_ == SmurfTree::em || systEvent.type_ == SmurfTree::me);
+      else if(NjetSyst[0] == 1) passMET = passMET && (usedMet > 45. || systEvent.type_ == SmurfTree::em || systEvent.type_ == SmurfTree::me);
+      else                      passMET = passMET && (systEvent.met_ > 45.0 || systEvent.type_ == SmurfTree::em || systEvent.type_ == SmurfTree::me);
     } else {
-      if     (systEvent.njets_ == 0) passMET = passMET && (systEvent.dymva_ >  0.88 || systEvent.type_ == SmurfTree::em || systEvent.type_ == SmurfTree::me);
-      else if(systEvent.njets_ == 1) passMET = passMET && (systEvent.dymva_ >  0.84 || systEvent.type_ == SmurfTree::em || systEvent.type_ == SmurfTree::me);
-      else                           passMET = passMET && (systEvent.met_   >  45.0 || systEvent.type_ == SmurfTree::em || systEvent.type_ == SmurfTree::me);
+      if     (NjetSyst[0] == 0) passMET = passMET && (systEvent.dymva_ >  0.88 || systEvent.type_ == SmurfTree::em || systEvent.type_ == SmurfTree::me);
+      else if(NjetSyst[0] == 1) passMET = passMET && (systEvent.dymva_ >  0.84 || systEvent.type_ == SmurfTree::em || systEvent.type_ == SmurfTree::me);
+      else                      passMET = passMET && (systEvent.met_   >  45.0 || systEvent.type_ == SmurfTree::em || systEvent.type_ == SmurfTree::me);
     }
     bool dPhiDiLepJetCut = true;
     if(useDYMVA == false){
-      if(systEvent.njets_ <= 1) dPhiDiLepJetCut = systEvent.jet1_.Pt() <= 15. || systEvent.dPhiDiLepJet1_*180.0/TMath::Pi() < 165. || 
-      	                                         systEvent.type_ == SmurfTree::em || systEvent.type_ == SmurfTree::me;
-      else                     dPhiDiLepJetCut = DeltaPhi((systEvent.jet1_+systEvent.jet2_).Phi(),systEvent.dilep_.Phi())*180.0/TMath::Pi() < 165. || 
-    	                                         systEvent.type_ == SmurfTree::em || systEvent.type_ == SmurfTree::me;
+      if(NjetSyst[0] <= 1) dPhiDiLepJetCut = systEvent.jet1_.Pt() <= 15. || systEvent.dPhiDiLepJet1_*180.0/TMath::Pi() < 165. || 
+      	                                     systEvent.type_ == SmurfTree::em || systEvent.type_ == SmurfTree::me;
+      else                 dPhiDiLepJetCut = DeltaPhi((systEvent.jet1_+systEvent.jet2_).Phi(),systEvent.dilep_.Phi())*180.0/TMath::Pi() < 165. || 
+    	                   		     systEvent.type_ == SmurfTree::em || systEvent.type_ == SmurfTree::me;
     }
-    if(systEvent.njets_ >= 2) dPhiDiLepJetCut = DeltaPhi((systEvent.jet1_+systEvent.jet2_).Phi(),systEvent.dilep_.Phi())*180.0/TMath::Pi() < 165. ||
-                                                         systEvent.type_ == SmurfTree::em || systEvent.type_ == SmurfTree::me;
+    if(NjetSyst[0] >= 2) dPhiDiLepJetCut = DeltaPhi((systEvent.jet1_+systEvent.jet2_).Phi(),systEvent.dilep_.Phi())*180.0/TMath::Pi() < 165. ||
+                                                     systEvent.type_ == SmurfTree::em || systEvent.type_ == SmurfTree::me;
 
     double ptLLCut = ptLLMin; if(systEvent.type_ == SmurfTree::ee || systEvent.type_ == SmurfTree::mm) ptLLCut = 45;
-    bool passNjets         = systEvent.njets_ == nJetsType; if(nJetsType == 3) passNjets = systEvent.njets_ <= 1;
+    bool passNjets         = NjetSyst[0] == nJetsType; if(nJetsType == 3) passNjets = NjetSyst[0] <= 1;
     bool preselCuts        = systEvent.lep1_.Pt() > ptLMin && systEvent.lep2_.Pt() > ptLMin && systEvent.dilep_.Pt() > ptLLCut;
     bool passBtagVeto      = (systEvent.cuts_ & patternTopVeto) == patternTopVeto;
     bool pass3rLVeto       = (systEvent.cuts_ & SmurfTree::ExtraLeptonVeto) == SmurfTree::ExtraLeptonVeto;
@@ -1343,7 +1355,7 @@ void ww_ana
       makeSystematicEffects(systEvent.lid1_, systEvent.lid2_, systEvent.lep1_, systEvent.lep2_, systEvent.dilep_, 
                             systEvent.mt_, theMET, theMETPHI, 
                             systEvent.trackMet_, systEvent.trackMetPhi_, 
-			    systEvent.njets_, systEvent.jet1_, systEvent.jet2_,
+			    NjetSyst[0], systEvent.jet1_, systEvent.jet2_,
 			    year, 3, outputVar);
       double MVAVar[6] = {outputVar[13],0,0,0,0,0};
       for(int nv=0; nv<6; nv++) MVAVar[nv] = TMath::Min(TMath::Max(MVAVar[nv],xbins[0]+0.001),xbins[nBinMVA]-0.001);
@@ -1405,29 +1417,43 @@ void ww_ana
     int lType = 0;
     if     (sigEvent.lq1_ * sigEvent.lq2_ < 0) lType = 1;
 
+    unsigned int NjetSyst[3] = {0, 0, 0};
+    if(sigEvent.jet1_.Pt()*1.00 > ptJetMin) NjetSyst[0]++;
+    if(sigEvent.jet2_.Pt()*1.00 > ptJetMin) NjetSyst[0]++;
+    if(sigEvent.jet3_.Pt()*1.00 > ptJetMin) NjetSyst[0]++;
+    if(sigEvent.jet4_.Pt()*1.00 > ptJetMin) NjetSyst[0]++;
+    if(sigEvent.jet1_.Pt()*1.05 > ptJetMin) NjetSyst[1]++;
+    if(sigEvent.jet2_.Pt()*1.05 > ptJetMin) NjetSyst[1]++;
+    if(sigEvent.jet3_.Pt()*1.05 > ptJetMin) NjetSyst[1]++;
+    if(sigEvent.jet4_.Pt()*1.05 > ptJetMin) NjetSyst[1]++;
+    if(sigEvent.jet1_.Pt()*0.95 > ptJetMin) NjetSyst[2]++;
+    if(sigEvent.jet2_.Pt()*0.95 > ptJetMin) NjetSyst[2]++;
+    if(sigEvent.jet3_.Pt()*0.95 > ptJetMin) NjetSyst[2]++;
+    if(sigEvent.jet4_.Pt()*0.95 > ptJetMin) NjetSyst[2]++;
+ 
     double usedMet = TMath::Min(sigEvent.pmet_,sigEvent.pTrackMet_);
     bool   passMET = usedMet > metMin;
     if(useDYMVA == false){
-      if     (sigEvent.njets_ == 0) passMET = passMET && (usedMet > 45. || sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me);
-      else if(sigEvent.njets_ == 1) passMET = passMET && (usedMet > 45. || sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me);
-      else                          passMET = passMET && (sigEvent.met_ > 45.0 || sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me);
+      if     (NjetSyst[0] == 0) passMET = passMET && (usedMet > 45. || sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me);
+      else if(NjetSyst[0] == 1) passMET = passMET && (usedMet > 45. || sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me);
+      else                      passMET = passMET && (sigEvent.met_ > 45.0 || sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me);
     } else {
-      if     (sigEvent.njets_ == 0) passMET = passMET && (sigEvent.dymva_ >  0.88 || sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me);
-      else if(sigEvent.njets_ == 1) passMET = passMET && (sigEvent.dymva_ >  0.84 || sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me);
-      else                          passMET = passMET && (sigEvent.met_   >  45.0 || sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me);
+      if     (NjetSyst[0] == 0) passMET = passMET && (sigEvent.dymva_ >  0.88 || sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me);
+      else if(NjetSyst[0] == 1) passMET = passMET && (sigEvent.dymva_ >  0.84 || sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me);
+      else                      passMET = passMET && (sigEvent.met_   >  45.0 || sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me);
     }
     bool dPhiDiLepJetCut = true;
     if(useDYMVA == false){
-      if(sigEvent.njets_ <= 1) dPhiDiLepJetCut = sigEvent.jet1_.Pt() <= 15. || sigEvent.dPhiDiLepJet1_*180.0/TMath::Pi() < 165. || 
-      	                                         sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me;
-      else                     dPhiDiLepJetCut = DeltaPhi((sigEvent.jet1_+sigEvent.jet2_).Phi(),sigEvent.dilep_.Phi())*180.0/TMath::Pi() < 165. || 
-    	                                         sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me;
+      if(NjetSyst[0] <= 1) dPhiDiLepJetCut = sigEvent.jet1_.Pt() <= 15. || sigEvent.dPhiDiLepJet1_*180.0/TMath::Pi() < 165. || 
+      	                                     sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me;
+      else                 dPhiDiLepJetCut = DeltaPhi((sigEvent.jet1_+sigEvent.jet2_).Phi(),sigEvent.dilep_.Phi())*180.0/TMath::Pi() < 165. || 
+    	                   		     sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me;
     }
-    if(sigEvent.njets_ >= 2) dPhiDiLepJetCut = DeltaPhi((sigEvent.jet1_+sigEvent.jet2_).Phi(),sigEvent.dilep_.Phi())*180.0/TMath::Pi() < 165. ||
-                                                         sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me;
+    if(NjetSyst[0] >= 2) dPhiDiLepJetCut = DeltaPhi((sigEvent.jet1_+sigEvent.jet2_).Phi(),sigEvent.dilep_.Phi())*180.0/TMath::Pi() < 165. ||
+                                                     sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me;
 
     double ptLLCut = ptLLMin; if(sigEvent.type_ == SmurfTree::ee || sigEvent.type_ == SmurfTree::mm) ptLLCut = 45;
-    bool passNjets         = sigEvent.njets_ == nJetsType; if(nJetsType == 3) passNjets = sigEvent.njets_ <= 1;
+    bool passNjets         = NjetSyst[0] == nJetsType; if(nJetsType == 3) passNjets =  NjetSyst[0] <= 1;
     bool preselCuts        = sigEvent.lep1_.Pt() > ptLMin && sigEvent.lep2_.Pt() > ptLMin && sigEvent.dilep_.Pt() > ptLLCut;
     bool passBtagVeto      = (sigEvent.cuts_ & patternTopVeto) == patternTopVeto;
     bool pass3rLVeto       = (sigEvent.cuts_ & SmurfTree::ExtraLeptonVeto) == SmurfTree::ExtraLeptonVeto;
@@ -1437,37 +1463,37 @@ void ww_ana
     makeSystematicEffects(sigEvent.lid1_, sigEvent.lid2_, sigEvent.lep1_, sigEvent.lep2_, sigEvent.dilep_, 
                          sigEvent.mt_, theMET, theMETPHI, 
                          sigEvent.trackMet_, sigEvent.trackMetPhi_, 
-			 sigEvent.njets_, sigEvent.jet1_, sigEvent.jet2_,
+			 NjetSyst[0], sigEvent.jet1_, sigEvent.jet2_,
 			 year, 0, outputVarLepP);
     double outputVarLepM[15];
     makeSystematicEffects(sigEvent.lid1_, sigEvent.lid2_, sigEvent.lep1_, sigEvent.lep2_, sigEvent.dilep_, 
                          sigEvent.mt_, theMET, theMETPHI, 
                          sigEvent.trackMet_, sigEvent.trackMetPhi_, 
-			 sigEvent.njets_, sigEvent.jet1_, sigEvent.jet2_,
+			 NjetSyst[0], sigEvent.jet1_, sigEvent.jet2_,
 			 year, 1, outputVarLepM);
     double outputVarMET[15];
     makeSystematicEffects(sigEvent.lid1_, sigEvent.lid2_, sigEvent.lep1_, sigEvent.lep2_, sigEvent.dilep_, 
                          sigEvent.mt_, theMET, theMETPHI, 
                          sigEvent.trackMet_, sigEvent.trackMetPhi_, 
-			 sigEvent.njets_, sigEvent.jet1_, sigEvent.jet2_,
+			 NjetSyst[0], sigEvent.jet1_, sigEvent.jet2_,
 			 year, 2, outputVarMET);
     double outputVar[15];
     makeSystematicEffects(sigEvent.lid1_, sigEvent.lid2_, sigEvent.lep1_, sigEvent.lep2_, sigEvent.dilep_, 
                          sigEvent.mt_, theMET, theMETPHI, 
                          sigEvent.trackMet_, sigEvent.trackMetPhi_, 
-			 sigEvent.njets_, sigEvent.jet1_, sigEvent.jet2_,
+			 NjetSyst[0], sigEvent.jet1_, sigEvent.jet2_,
 			 year, 3, outputVar);
     double outputVarJESP[15];
     makeSystematicEffects(sigEvent.lid1_, sigEvent.lid2_, sigEvent.lep1_, sigEvent.lep2_, sigEvent.dilep_, 
                          sigEvent.mt_, theMET, theMETPHI, 
                          sigEvent.trackMet_, sigEvent.trackMetPhi_, 
-			 sigEvent.njets_, sigEvent.jet1_, sigEvent.jet2_,
+			 NjetSyst[0], sigEvent.jet1_, sigEvent.jet2_,
 			 year, 4, outputVarJESP);
     double outputVarJESM[15];
     makeSystematicEffects(sigEvent.lid1_, sigEvent.lid2_, sigEvent.lep1_, sigEvent.lep2_, sigEvent.dilep_, 
                          sigEvent.mt_, theMET, theMETPHI, 
                          sigEvent.trackMet_, sigEvent.trackMetPhi_, 
-			 sigEvent.njets_, sigEvent.jet1_, sigEvent.jet2_,
+			 NjetSyst[0], sigEvent.jet1_, sigEvent.jet2_,
 			 year, 5, outputVarJESM);
     double MVAVar[6] = {outputVar[13],outputVarJESP[13],outputVarJESM[13],outputVarLepP[13],outputVarLepM[13],outputVarMET[13]};
     for(int nv=0; nv<6; nv++) MVAVar[nv] = TMath::Min(TMath::Max(MVAVar[nv],xbins[0]+0.001),xbins[nBinMVA]-0.001);
@@ -1481,43 +1507,33 @@ void ww_ana
         	      leptonEfficiency(sigEvent.lep2_.Pt(), sigEvent.lep2_.Eta(), fhDEffMu, fhDEffEl, sigEvent.lid2_,-1);
     } else {addLepEff = 1.0;}
 
-    unsigned int NjetSyst[2] = {0., 0.};
-    if(sigEvent.jet1_.Pt()*1.05 > ptJetMin) NjetSyst[0]++;
-    if(sigEvent.jet2_.Pt()*1.05 > ptJetMin) NjetSyst[0]++;
-    if(sigEvent.jet3_.Pt()*1.05 > ptJetMin) NjetSyst[0]++;
-    if(sigEvent.jet4_.Pt()*1.05 > ptJetMin) NjetSyst[0]++;
-    if(sigEvent.jet1_.Pt()*0.95 > ptJetMin) NjetSyst[1]++;
-    if(sigEvent.jet2_.Pt()*0.95 > ptJetMin) NjetSyst[1]++;
-    if(sigEvent.jet3_.Pt()*0.95 > ptJetMin) NjetSyst[1]++;
-    if(sigEvent.jet4_.Pt()*0.95 > ptJetMin) NjetSyst[1]++;
- 
     bool   passMETSyst[3] = {TMath::Min(outputVarJESP[4]/sigEvent.met_*sigEvent.pmet_,outputVarJESP[6]/sigEvent.trackMet_*sigEvent.pTrackMet_) > metMin,
                              TMath::Min(outputVarJESM[4]/sigEvent.met_*sigEvent.pmet_,outputVarJESM[6]/sigEvent.trackMet_*sigEvent.pTrackMet_) > metMin,
 			     TMath::Min(outputVarMET[4] /sigEvent.met_*sigEvent.pmet_,outputVarMET[6] /sigEvent.trackMet_*sigEvent.pTrackMet_) > metMin};
     if(sigEvent.type_ == SmurfTree::mm || sigEvent.type_ == SmurfTree::ee){
       if(useDYMVA == false){
-        if     (NjetSyst[0]     <= 1) passMETSyst[0] = passMETSyst[0] && TMath::Min(outputVarJESP[4]/sigEvent.met_*sigEvent.pmet_,outputVarJESP[6]/sigEvent.trackMet_*sigEvent.pTrackMet_) > 45.0;
-        else                          passMETSyst[0] = passMETSyst[0] &&	    outputVarJESP[4]											   > 45.0;
+        if     (NjetSyst[1] <= 1) passMETSyst[0] = passMETSyst[0] && TMath::Min(outputVarJESP[4]/sigEvent.met_*sigEvent.pmet_,outputVarJESP[6]/sigEvent.trackMet_*sigEvent.pTrackMet_) > 45.0;
+        else                	  passMETSyst[0] = passMETSyst[0] &&		outputVarJESP[4]										       > 45.0;
 
-        if     (NjetSyst[1]     <= 1) passMETSyst[1] = passMETSyst[1] && TMath::Min(outputVarJESM[4]/sigEvent.met_*sigEvent.pmet_,outputVarJESM[6]/sigEvent.trackMet_*sigEvent.pTrackMet_) > 45.0;
-        else                          passMETSyst[1] = passMETSyst[1] &&	    outputVarJESM[4]											   > 45.0;
+        if     (NjetSyst[2] <= 1) passMETSyst[1] = passMETSyst[1] && TMath::Min(outputVarJESM[4]/sigEvent.met_*sigEvent.pmet_,outputVarJESM[6]/sigEvent.trackMet_*sigEvent.pTrackMet_) > 45.0;
+        else                	  passMETSyst[1] = passMETSyst[1] &&		outputVarJESM[4]										       > 45.0;
 
-        if     (sigEvent.njets_ <= 1) passMETSyst[2] = passMETSyst[2] && TMath::Min( outputVarMET[4]/sigEvent.met_*sigEvent.pmet_, outputVarMET[6]/sigEvent.trackMet_*sigEvent.pTrackMet_) > 45.0;
-        else                          passMETSyst[3] = passMETSyst[3] &&	     outputVarMET[4]											   > 45.0;
+        if     (NjetSyst[0] <= 1) passMETSyst[2] = passMETSyst[2] && TMath::Min( outputVarMET[4]/sigEvent.met_*sigEvent.pmet_, outputVarMET[6]/sigEvent.trackMet_*sigEvent.pTrackMet_) > 45.0;
+        else                      passMETSyst[3] = passMETSyst[3] &&	         outputVarMET[4]										       > 45.0;
 
 
       } else {
-        if     (NjetSyst[0]     == 0) passMETSyst[0] = passMETSyst[0] && dymvaJESU >  0.88;
-        else if(NjetSyst[0]     == 1) passMETSyst[0] = passMETSyst[0] && dymvaJESU >  0.84;
-        else                          passMETSyst[0] = passMETSyst[0] &&            outputVarJESP[4]                                                                                       > 45.0;
+        if     (NjetSyst[1] == 0) passMETSyst[0] = passMETSyst[0] && dymvaJESU >  0.88;
+        else if(NjetSyst[1] == 1) passMETSyst[0] = passMETSyst[0] && dymvaJESU >  0.84;
+        else                	  passMETSyst[0] = passMETSyst[0] &&		outputVarJESP[4]										       > 45.0;
 
-        if     (NjetSyst[0]     == 0) passMETSyst[1] = passMETSyst[1] && dymvaJESD >  0.88;
-        else if(NjetSyst[0]     == 1) passMETSyst[1] = passMETSyst[1] && dymvaJESD >  0.84;
-        else                          passMETSyst[1] = passMETSyst[1] &&            outputVarJESM[4]                                                                                       > 45.0;
+        if     (NjetSyst[2] == 0) passMETSyst[1] = passMETSyst[1] && dymvaJESD >  0.88;
+        else if(NjetSyst[2] == 1) passMETSyst[1] = passMETSyst[1] && dymvaJESD >  0.84;
+        else                	  passMETSyst[1] = passMETSyst[1] &&		outputVarJESM[4]										       > 45.0;
 
-        if     (sigEvent.njets_ == 0) passMETSyst[2] = passMETSyst[2] && dymvaMET  >  0.88;
-        else if(sigEvent.njets_ == 1) passMETSyst[2] = passMETSyst[2] && dymvaMET  >  0.84;
-        else                          passMETSyst[2] = passMETSyst[2] &&            outputVarMET[4]                                                                                        > 45.0;
+        if     (NjetSyst[0] == 0) passMETSyst[2] = passMETSyst[2] && dymvaMET  >  0.88;
+        else if(NjetSyst[0] == 1) passMETSyst[2] = passMETSyst[2] && dymvaMET  >  0.84;
+        else                      passMETSyst[2] = passMETSyst[2] &&            outputVarMET[4]                                                                                        > 45.0;
 
       }
     }
@@ -1531,11 +1547,11 @@ void ww_ana
     else if(lSel == 5 && (sigEvent.type_ == SmurfTree::mm || sigEvent.type_ == SmurfTree::ee)) passLSel = true;
     else if(lSel == 6 && (sigEvent.type_ == SmurfTree::me || sigEvent.type_ == SmurfTree::em)) passLSel = true;
 
-    if(nJetsType == 3 && NjetSyst[0] <= 1) NjetSyst[0] = 3;
     if(nJetsType == 3 && NjetSyst[1] <= 1) NjetSyst[1] = 3;
+    if(nJetsType == 3 && NjetSyst[2] <= 1) NjetSyst[2] = 3;
 
-    if(passLSel && NjetSyst[0] == nJetsType     && passMETSyst[0]                                                                                                                        && dPhiDiLepJetCut && outputVar[0]	> ptLMin && outputVar[1]     > ptLMin && outputVar[3]     > ptLLCut && passBtagVeto && pass3rLVeto && outputVar[2]	> 12.0 && (TMath::Abs(outputVar[2]    -91.1876) > 15 || sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me)) passSystCuts[lType][JESUP] = true;
-    if(passLSel && NjetSyst[1] == nJetsType     && passMETSyst[1]                                                                                                                        && dPhiDiLepJetCut && outputVar[0]	> ptLMin && outputVar[1]     > ptLMin && outputVar[3]     > ptLLCut && passBtagVeto && pass3rLVeto && outputVar[2]	> 12.0 && (TMath::Abs(outputVar[2]    -91.1876) > 15 || sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me)) passSystCuts[lType][JESDOWN] = true;
+    if(passLSel && NjetSyst[1] == nJetsType     && passMETSyst[0]                                                                                                                        && dPhiDiLepJetCut && outputVar[0]	> ptLMin && outputVar[1]     > ptLMin && outputVar[3]     > ptLLCut && passBtagVeto && pass3rLVeto && outputVar[2]	> 12.0 && (TMath::Abs(outputVar[2]    -91.1876) > 15 || sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me)) passSystCuts[lType][JESUP] = true;
+    if(passLSel && NjetSyst[2] == nJetsType     && passMETSyst[1]                                                                                                                        && dPhiDiLepJetCut && outputVar[0]	> ptLMin && outputVar[1]     > ptLMin && outputVar[3]     > ptLLCut && passBtagVeto && pass3rLVeto && outputVar[2]	> 12.0 && (TMath::Abs(outputVar[2]    -91.1876) > 15 || sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me)) passSystCuts[lType][JESDOWN] = true;
     if(passLSel && passNjets                    && TMath::Min(outputVarLepP[4]/sigEvent.met_*sigEvent.pmet_,outputVarLepP[6]/sigEvent.trackMet_*sigEvent.pTrackMet_) > metMin && passMET && dPhiDiLepJetCut && outputVarLepP[0] > ptLMin && outputVarLepP[1] > ptLMin && outputVarLepP[3] > ptLLCut && passBtagVeto && pass3rLVeto && outputVarLepP[2] > 12.0 && (TMath::Abs(outputVarLepP[2]-91.1876) > 15 || sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me)) passSystCuts[lType][LEPP] = true;
     if(passLSel && passNjets                    && TMath::Min(outputVarLepM[4]/sigEvent.met_*sigEvent.pmet_,outputVarLepM[6]/sigEvent.trackMet_*sigEvent.pTrackMet_) > metMin && passMET && dPhiDiLepJetCut && outputVarLepM[0] > ptLMin && outputVarLepM[1] > ptLMin && outputVarLepM[3] > ptLLCut && passBtagVeto && pass3rLVeto && outputVarLepM[2] > 12.0 && (TMath::Abs(outputVarLepM[2]-91.1876) > 15 || sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me)) passSystCuts[lType][LEPM] = true;
     if(passLSel && passNjets                    && passMETSyst[2]                                                                                                                        && dPhiDiLepJetCut && outputVarMET[0]  > ptLMin && outputVarMET[1]  > ptLMin && outputVarMET[3]  > ptLLCut && passBtagVeto && pass3rLVeto && outputVarMET[2]  > 12.0 && (TMath::Abs(outputVarMET[2] -91.1876) > 15 || sigEvent.type_ == SmurfTree::em || sigEvent.type_ == SmurfTree::me)) passSystCuts[lType][MET] = true;
@@ -1579,7 +1595,7 @@ void ww_ana
 	else if(thePlot ==14) myVar = fabs(sigEvent.dilep_.M()-91.1876);
 	else if(thePlot ==15) myVar = fabs(theMET-sigEvent.dilep_.Pt())/sigEvent.dilep_.Pt();
 	else if(thePlot ==16) myVar = sigEvent.lep2_.Pt()/sigEvent.lep1_.Pt();
-	else if(thePlot ==17) myVar = sigEvent.njets_;
+	else if(thePlot ==17) myVar = NjetSyst[0];
 	else if(thePlot ==18) myVar = sigEvent.nvtx_;
 	else if(thePlot ==19) myVar = TMath::Max(TMath::Min((sigEvent.lep1_+sigEvent.lep2_+sigEvent.jet1_+sigEvent.jet2_).M(),2999.999),700.001);
 	else if(thePlot ==20) myVar = sigEvent.dPhi_*180.0/TMath::Pi();
@@ -1632,7 +1648,7 @@ void ww_ana
         nSigECutSyst[EFFM+lType*nSelTypesSyst] += theWeight*theWeight*addLepEffDown/addLepEff*addLepEffDown/addLepEff;
       }
       if(passLSel){
-        if(sigEvent.njets_ == 0 && passCuts[1][WWSEL]) events_0Jet[1] = events_0Jet[1] + theWeight;
+        if(NjetSyst[0] == 0 && passCuts[1][WWSEL]) events_0Jet[1] = events_0Jet[1] + theWeight;
 	if(passCuts[1][WWSEL]) 	             histo_Higgs                           ->Fill(MVAVar[0], theWeight);
         if(passCuts[1][WWSEL]) 	             histo_Higgs_CMS_MVALepEffBoundingUp   ->Fill(MVAVar[0], theWeight*addLepEffUp  /addLepEff);
         if(passCuts[1][WWSEL]) 	             histo_Higgs_CMS_MVALepEffBoundingDown ->Fill(MVAVar[0], theWeight*addLepEffDown/addLepEff);
@@ -1673,29 +1689,35 @@ void ww_ana
     int lType = 0;
     if     (dataEvent.lq1_ * dataEvent.lq2_ < 0) lType = 1;
 
+    unsigned int NjetSyst[3] = {0, 0, 0};
+    if(dataEvent.jet1_.Pt()*1.00 > ptJetMin) NjetSyst[0]++;
+    if(dataEvent.jet2_.Pt()*1.00 > ptJetMin) NjetSyst[0]++;
+    if(dataEvent.jet3_.Pt()*1.00 > ptJetMin) NjetSyst[0]++;
+    if(dataEvent.jet4_.Pt()*1.00 > ptJetMin) NjetSyst[0]++;
+
     double usedMet = TMath::Min(dataEvent.pmet_,dataEvent.pTrackMet_);
     bool   passMET = usedMet > metMin;
     if(useDYMVA == false){
-      if     (dataEvent.njets_ == 0) passMET = passMET && (usedMet > 45. || dataEvent.type_ == SmurfTree::em || dataEvent.type_ == SmurfTree::me);
-      else if(dataEvent.njets_ == 1) passMET = passMET && (usedMet > 45. || dataEvent.type_ == SmurfTree::em || dataEvent.type_ == SmurfTree::me);
-      else                          passMET = passMET && (dataEvent.met_ > 45.0 || dataEvent.type_ == SmurfTree::em || dataEvent.type_ == SmurfTree::me);
+      if     (NjetSyst[0] == 0) passMET = passMET && (usedMet > 45. || dataEvent.type_ == SmurfTree::em || dataEvent.type_ == SmurfTree::me);
+      else if(NjetSyst[0] == 1) passMET = passMET && (usedMet > 45. || dataEvent.type_ == SmurfTree::em || dataEvent.type_ == SmurfTree::me);
+      else                      passMET = passMET && (dataEvent.met_ > 45.0 || dataEvent.type_ == SmurfTree::em || dataEvent.type_ == SmurfTree::me);
     } else {
-      if     (dataEvent.njets_ == 0) passMET = passMET && (dataEvent.dymva_ >  0.88 || dataEvent.type_ == SmurfTree::em || dataEvent.type_ == SmurfTree::me);
-      else if(dataEvent.njets_ == 1) passMET = passMET && (dataEvent.dymva_ >  0.84 || dataEvent.type_ == SmurfTree::em || dataEvent.type_ == SmurfTree::me);
-      else                          passMET = passMET && (dataEvent.met_   >  45.0 || dataEvent.type_ == SmurfTree::em || dataEvent.type_ == SmurfTree::me);
+      if     ( NjetSyst[0] == 0) passMET = passMET && (dataEvent.dymva_ >  0.88 || dataEvent.type_ == SmurfTree::em || dataEvent.type_ == SmurfTree::me);
+      else if( NjetSyst[0] == 1) passMET = passMET && (dataEvent.dymva_ >  0.84 || dataEvent.type_ == SmurfTree::em || dataEvent.type_ == SmurfTree::me);
+      else                       passMET = passMET && (dataEvent.met_   >  45.0 || dataEvent.type_ == SmurfTree::em || dataEvent.type_ == SmurfTree::me);
     }
     bool dPhiDiLepJetCut = true;
     if(useDYMVA == false){
-      if(dataEvent.njets_ <= 1) dPhiDiLepJetCut = dataEvent.jet1_.Pt() <= 15. || dataEvent.dPhiDiLepJet1_*180.0/TMath::Pi() < 165. || 
-      	                                         dataEvent.type_ == SmurfTree::em || dataEvent.type_ == SmurfTree::me;
-      else                     dPhiDiLepJetCut = DeltaPhi((dataEvent.jet1_+dataEvent.jet2_).Phi(),dataEvent.dilep_.Phi())*180.0/TMath::Pi() < 165. || 
-    	                                         dataEvent.type_ == SmurfTree::em || dataEvent.type_ == SmurfTree::me;
+      if(NjetSyst[0] <= 1) dPhiDiLepJetCut = dataEvent.jet1_.Pt() <= 15. || dataEvent.dPhiDiLepJet1_*180.0/TMath::Pi() < 165. || 
+      	                                     dataEvent.type_ == SmurfTree::em || dataEvent.type_ == SmurfTree::me;
+      else                 dPhiDiLepJetCut = DeltaPhi((dataEvent.jet1_+dataEvent.jet2_).Phi(),dataEvent.dilep_.Phi())*180.0/TMath::Pi() < 165. || 
+    	                   		     dataEvent.type_ == SmurfTree::em || dataEvent.type_ == SmurfTree::me;
     }
-    if(dataEvent.njets_ >= 2) dPhiDiLepJetCut = DeltaPhi((dataEvent.jet1_+dataEvent.jet2_).Phi(),dataEvent.dilep_.Phi())*180.0/TMath::Pi() < 165. ||
-                                                         dataEvent.type_ == SmurfTree::em || dataEvent.type_ == SmurfTree::me;
+    if(NjetSyst[0] >= 2) dPhiDiLepJetCut = DeltaPhi((dataEvent.jet1_+dataEvent.jet2_).Phi(),dataEvent.dilep_.Phi())*180.0/TMath::Pi() < 165. ||
+                                                     dataEvent.type_ == SmurfTree::em || dataEvent.type_ == SmurfTree::me;
 
     double ptLLCut = ptLLMin; if(dataEvent.type_ == SmurfTree::ee || dataEvent.type_ == SmurfTree::mm) ptLLCut = 45;
-    bool passNjets         = dataEvent.njets_ == nJetsType; if(nJetsType == 3) passNjets = dataEvent.njets_ <= 1;
+    bool passNjets         = NjetSyst[0] == nJetsType; if(nJetsType == 3) passNjets = NjetSyst[0] <= 1;
     bool preselCuts        = dataEvent.lep1_.Pt() > ptLMin && dataEvent.lep2_.Pt() > ptLMin && dataEvent.dilep_.Pt() > ptLLCut;
     bool passBtagVeto      = (dataEvent.cuts_ & patternTopVeto) == patternTopVeto;
     bool pass3rLVeto       = (dataEvent.cuts_ & SmurfTree::ExtraLeptonVeto) == SmurfTree::ExtraLeptonVeto;
@@ -1735,7 +1757,7 @@ void ww_ana
 	else if(thePlot ==14) myVar = fabs(dataEvent.dilep_.M()-91.1876);
 	else if(thePlot ==15) myVar = fabs(theMET-dataEvent.dilep_.Pt())/dataEvent.dilep_.Pt();
 	else if(thePlot ==16) myVar = dataEvent.lep2_.Pt()/dataEvent.lep1_.Pt();
-	else if(thePlot ==17) myVar = dataEvent.njets_;
+	else if(thePlot ==17) myVar = NjetSyst[0];
 	else if(thePlot ==18) myVar = dataEvent.nvtx_;
 	else if(thePlot ==19) myVar = TMath::Max(TMath::Min((dataEvent.lep1_+dataEvent.lep2_+dataEvent.jet1_+dataEvent.jet2_).M(),2999.999),700.001);
 	else if(thePlot ==20) myVar = dataEvent.dPhi_*180.0/TMath::Pi();
@@ -1768,7 +1790,7 @@ void ww_ana
       makeSystematicEffects(dataEvent.lid1_, dataEvent.lid2_, dataEvent.lep1_, dataEvent.lep2_, dataEvent.dilep_, 
                             dataEvent.mt_, theMET, theMETPHI, 
                             dataEvent.trackMet_, dataEvent.trackMetPhi_, 
-			    dataEvent.njets_, dataEvent.jet1_, dataEvent.jet2_, 
+			    NjetSyst[0], dataEvent.jet1_, dataEvent.jet2_, 
 			    year, 3, outputVar);
       double MVAVar[6] = {outputVar[13],0,0,0,0,0};
       for(int nv=0; nv<6; nv++) MVAVar[nv] = TMath::Min(TMath::Max(MVAVar[nv],xbins[0]+0.001),xbins[nBinMVA]-0.001);
@@ -1787,8 +1809,8 @@ void ww_ana
     } // if passCuts
   } // End loop data
 
-  printf("gen_eff: %f / %f = %f | rec_eff: %f / %f = %f\n",genLevelNorm[1],genLevelNorm[0],genLevelNorm[1]/genLevelNorm[0],
-                                                           genLevelNorm[2],genLevelNorm[3],genLevelNorm[2]/genLevelNorm[3]);
+  printf("gen_eff: %11.3f / %11.3f = %8.6f | rec_eff: %11.3f / %11.3f = %8.6f\n",genLevelNorm[1],genLevelNorm[0],genLevelNorm[1]/genLevelNorm[0],
+                                                                                 genLevelNorm[2],genLevelNorm[3],genLevelNorm[2]/genLevelNorm[3]);
   char output[200];
   sprintf(output,Form("histo_nice%s_%dj_%s.root",ECMsb.Data(),nJetsType,finalStateName));	 
   TFile* outFilePlotsNote = new TFile(output,"recreate");
