@@ -512,6 +512,7 @@ void ww_ana
          //&& TMath::Abs(bgdEvent.genlep1McId_) != TMath::Abs(bgdEvent.genlep2McId_) &&
          //bgdEvent.genlep1_.Pt() > 20 && TMath::Abs(bgdEvent.genlep1_.Eta()) < etaCut[0] && 
          //bgdEvent.genlep2_.Pt() > 20 && TMath::Abs(bgdEvent.genlep2_.Eta()) < etaCut[1]
+	 //&& bgdEvent.auxVar0_ == 0
         ) {
         genLevelNorm[1] = genLevelNorm[1] + theWeightNNLOCorr;
 	genLevelSel = true;
