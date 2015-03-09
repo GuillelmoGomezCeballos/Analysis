@@ -259,9 +259,28 @@ void ww_ana
   else if(thePlot >= 56 && thePlot <= 56) {nBinPlot = 100; xminPlot = 0.0; xmaxPlot = 100.0;}
   else if(thePlot >= 57 && thePlot <= 57) {nBinPlot = 50; xminPlot = 0.0; xmaxPlot = 5.0;}
 
+  Double_t pt1bins[9] = {20,40,60,80,100,125,150,175,200};
+  Double_t ptllbins[8] = {30,40,50,60,70,85,120,150};
+  Double_t mllbins[9] = {20,40,60,80,100,125,150,175,200};
+  Double_t dphibins[13] = {0,0.25,0.5,0.75,1,1.25,1.5,1.75,2,2.25,2.5,2.75,3};
   TH1D* histos;
-  histos = new TH1D("histos", "histos", nBinPlot, xminPlot, xmaxPlot);
+  if(thePlot == 58){
+    histos = new TH1D("histos", "histos", 9-1, pt1bins);
+  }
+  else if(thePlot == 59){
+    histos = new TH1D("histos", "histos", 8-1, ptllbins);
+  }
+  else if(thePlot == 60){
+    histos = new TH1D("histos", "histos", 9-1, mllbins);
+  }
+  else if(thePlot == 61){
+    histos = new TH1D("histos", "histos", 13-1, dphibins);
+  }
+  else {
+    histos = new TH1D("histos", "histos", nBinPlot, xminPlot, xmaxPlot);
+  }
   histos->Sumw2();
+
   TH1D* histo0 = (TH1D*) histos->Clone("histo0");
   TH1D* histo1 = (TH1D*) histos->Clone("histo1");
   TH1D* histo2 = (TH1D*) histos->Clone("histo2");
@@ -504,15 +523,19 @@ void ww_ana
       if(bgdEvent.genjet2_.Pt() > ptJetMin && TMath::Abs(bgdEvent.genjet2_.Eta()) < 5.0) nGenJets++;
       if(bgdEvent.genjet2_.Pt() > ptJetMin && TMath::Abs(bgdEvent.genjet3_.Eta()) < 5.0) nGenJets++;
 
-      //double etaCut[2] = {2.5, 2.5};
+      double etaCut[2] = {2.5, 2.5};
       //if(TMath::Abs(bgdEvent.genlep1McId_) == 11) etaCut[0] = 2.4;
       //if(TMath::Abs(bgdEvent.genlep2McId_) == 11) etaCut[1] = 2.4;
 
       if(nGenJets == 0
-         //&& TMath::Abs(bgdEvent.genlep1McId_) != TMath::Abs(bgdEvent.genlep2McId_) &&
-         //bgdEvent.genlep1_.Pt() > 20 && TMath::Abs(bgdEvent.genlep1_.Eta()) < etaCut[0] && 
-         //bgdEvent.genlep2_.Pt() > 20 && TMath::Abs(bgdEvent.genlep2_.Eta()) < etaCut[1]
-	 //&& bgdEvent.auxVar0_ == 0
+         ////&& TMath::Abs(bgdEvent.genlep1McId_) != TMath::Abs(bgdEvent.genlep2McId_) &&
+         ////bgdEvent.genlep1_.Pt() > 20 && TMath::Abs(bgdEvent.genlep1_.Eta()) < etaCut[0] && 
+         ////bgdEvent.genlep2_.Pt() > 20 && TMath::Abs(bgdEvent.genlep2_.Eta()) < etaCut[1]
+	 ////&& bgdEvent.auxVar0_ == 0
+         && TMath::Abs(bgdEvent.genlep1McId_) != TMath::Abs(bgdEvent.genlep2McId_) &&
+         bgdEvent.genPart1_.Pt() > 20 && TMath::Abs(bgdEvent.genPart1_.Eta()) < etaCut[0] && 
+         bgdEvent.genPart3_.Pt() > 20 && TMath::Abs(bgdEvent.genPart3_.Eta()) < etaCut[1]
+	 && bgdEvent.auxVar0_ == 0
         ) {
         genLevelNorm[1] = genLevelNorm[1] + theWeightNNLOCorr;
 	genLevelSel = true;
@@ -520,6 +543,7 @@ void ww_ana
     }
 
     if(bgdEvent.lep1_.Pt() < 1.0) continue;
+    //if(bgdEvent.auxVar0_ != 0) continue;
 
     if(!(((bgdEvent.cuts_ & SmurfTree::Lep1FullSelection) == SmurfTree::Lep1FullSelection && (bgdEvent.cuts_ & SmurfTree::Lep2FullSelection) != SmurfTree::Lep2FullSelection) ||
          ((bgdEvent.cuts_ & SmurfTree::Lep1FullSelection) != SmurfTree::Lep1FullSelection && (bgdEvent.cuts_ & SmurfTree::Lep2FullSelection) == SmurfTree::Lep2FullSelection) ||
@@ -952,6 +976,10 @@ void ww_ana
 	else if(thePlot ==53) myVar = DeltaPhi(bgdEvent.jet3_.Phi(),bgdEvent.jet4_.Phi())*180.0/TMath::Pi();
 	else if(thePlot ==55) myVar = bgdEvent.dPhiDiLepMET_*180.0/TMath::Pi();
 	else if(thePlot ==57) myVar = TMath::Min(deltaRJJGen,4.999);
+	else if(thePlot ==58) myVar = bgdEvent.lep1_.Pt();
+	else if(thePlot ==59) myVar = bgdEvent.dilep_.Pt();
+	else if(thePlot ==60) myVar = bgdEvent.dilep_.M();
+	else if(thePlot ==61) myVar = bgdEvent.dPhi_;
         if     (fDecay == 14 || fDecay == 29 || fDecay == 30){
           histo0->Fill(myVar,theWeight);
         }
@@ -1623,6 +1651,10 @@ void ww_ana
 	else if(thePlot ==53) myVar = DeltaPhi(sigEvent.jet3_.Phi(),sigEvent.jet4_.Phi())*180.0/TMath::Pi();
 	else if(thePlot ==55) myVar = sigEvent.dPhiDiLepMET_*180.0/TMath::Pi();
 	else if(thePlot ==57) myVar = TMath::Min(deltaRJJGen,4.999);
+	else if(thePlot ==58) myVar = sigEvent.lep1_.Pt();
+	else if(thePlot ==59) myVar = sigEvent.dilep_.Pt();
+	else if(thePlot ==60) myVar = sigEvent.dilep_.M();
+	else if(thePlot ==61) myVar = sigEvent.dPhi_;
       	histos->Fill(myVar,theWeight);
       } // end making plots
 
@@ -1784,6 +1816,10 @@ void ww_ana
 	else if(thePlot ==52) myVar = dataEvent.trackMet_*sin(dataEvent.trackMetPhi_);
 	else if(thePlot ==53) myVar = DeltaPhi(dataEvent.jet3_.Phi(),dataEvent.jet4_.Phi())*180.0/TMath::Pi();
 	else if(thePlot ==55) myVar = dataEvent.dPhiDiLepMET_*180.0/TMath::Pi();
+	else if(thePlot ==58) myVar = dataEvent.lep1_.Pt();
+	else if(thePlot ==59) myVar = dataEvent.dilep_.Pt();
+	else if(thePlot ==60) myVar = dataEvent.dilep_.M();
+	else if(thePlot ==61) myVar = dataEvent.dPhi_;
       	histo5->Fill(myVar,1.0);
       } // end making plots
 
