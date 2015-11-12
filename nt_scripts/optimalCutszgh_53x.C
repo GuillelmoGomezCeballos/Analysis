@@ -938,7 +938,7 @@ void optimalCutszgh_53x
        if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG  && !passBtagVeto &&  passZMass		        && passMET && passPTLL && passDPhiLL && passDPhiZMET && passPTFrac) passCuts[lType][BTAGSEL] = true;
        if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLGF &&  passBtagVeto &&  passZMass		        && passMET && passPTLL && passDPhiLL && passDPhiZMET && passPTFrac) passCuts[lType][SIGFSEL] = true;
 
-       if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG       &&  passBtagVeto &&  passZMass             && passMET        && passPTLL      && passDPhiLL && passDPhiZMET        && passPTFrac       ) passCuts[lType][SIGSEL]      = true;
+       if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG  &&  passBtagVeto &&  passZMass                   && passMET && passPTLL && passDPhiLL && passDPhiZMET && passPTFrac) passCuts[lType][SIGSEL]  = true;
 
        if(NjetSyst[0] == nJetsType && trackSel[2]+trackSel[3] == 0 && passLLG && passPTLL) passCuts[lType][ZLLGSEL] = true;
 
@@ -1002,6 +1002,7 @@ void optimalCutszgh_53x
     }
 
     if(passCuts[1][SIGSEL]){ // begin making plots
+      //printf("%d %d %d - %d %d %d - %f %f %f - %f %f %f - %f %f %f - %f %f %f\n",dataEvent.run_,dataEvent.event_,dataEvent.lumi_,dataEvent.lid1_,dataEvent.lid2_,dataEvent.lid3_,lep1.pt(),lep1.eta(),lep1.phi(),lep2.pt(),lep2.eta(),lep2.phi(),gamma.pt(),gamma.eta(),gamma.phi(),dataEvent.jet1_.Pt(),dataEvent.jet1_.Eta(),dataEvent.jet1_.Phi());
       double myVar = dataEvent.met_; // var0
       if     (thePlot == 1) myVar = lep1.pt();
       else if(thePlot == 2) myVar = lep2.pt();

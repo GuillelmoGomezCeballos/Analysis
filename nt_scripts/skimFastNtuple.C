@@ -32,6 +32,7 @@ else if(skim ==12) sprintf(cutString,"min(pmet,pTrackMet)>20&&(TMath::Abs(dilep-
 else if(skim ==13) sprintf(cutString,"dilep->pt()>50");
 else if(skim ==14) sprintf(cutString,"dilep->mass()>15&&TMath::Abs(jet1->Eta()-jet2->Eta())>2.5&&jet1->Pt()>25&&jet2->Pt()>25&&met>40");
 else if(skim ==15) sprintf(cutString,"!((lid1!=0&&lep1->Eta()>-1.82&&lep1->Eta()<-1.72&&lep1->phi()>1.365&&lep1->phi()<1.385)||(lid2!=0&&lep2->Eta()>-1.82&&lep2->Eta()<-1.72&&lep2->phi()>1.365&&lep2->phi()<1.385)||(lid3!=0&&lep3->Eta()>-1.82&&lep3->Eta()<-1.72&&lep3->phi()>1.365&&lep3->phi()<1.385))");
+else if(skim ==16) sprintf(cutString,"lid3==0&&dilep->M()<70&&lep1->Pt()>25&&lep2->Pt()>25&&jet1->Pt()>30");
 else {cout << "No good option" << endl; return;}
 cout << "cut: " << cutString << endl;
 

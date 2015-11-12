@@ -235,7 +235,8 @@ void ww_ana
   else if(thePlot >= 17 && thePlot <= 17) {nBinPlot =  8; xminPlot = -0.5; xmaxPlot =  7.5;}
   else if(thePlot >= 18 && thePlot <= 18) {nBinPlot = 40; xminPlot = -0.5; xmaxPlot = 39.5;}
   else if(thePlot >= 19 && thePlot <= 19) {nBinPlot = 20; xminPlot = 0.0; xmaxPlot = 2000.0;} // mlljj
-  else if(thePlot >= 20 && thePlot <= 24) {nBinPlot = 90; xminPlot = 0.0; xmaxPlot = 180.0;}
+  else if(thePlot >= 20 && thePlot <= 20) {nBinPlot = 12; xminPlot = 0.0; xmaxPlot = TMath::Pi();}
+  else if(thePlot >= 21 && thePlot <= 24) {nBinPlot = 90; xminPlot = 0.0; xmaxPlot = 180.0;}
   else if(thePlot >= 25 && thePlot <= 25) {nBinPlot = 40; xminPlot = 0.0; xmaxPlot = 2.0;}
   else if(thePlot >= 26 && thePlot <= 26) {nBinPlot = 200;  xminPlot =  -1.0; xmaxPlot = 1.0;}
   else if(thePlot >= 27 && thePlot <= 28) {nBinPlot = 100;  xminPlot =   0.0; xmaxPlot = 5.0;}
@@ -516,12 +517,9 @@ void ww_ana
     if(minGenCuts == true) {
       genLevelNorm[0] = genLevelNorm[0] + theWeightNNLOCorr;
       int nGenJets = 0;
-      //if(bgdEvent.genjet1_.Pt() > ptJetMin && TMath::Abs(bgdEvent.genjet1_.Eta()) < 4.7) nGenJets++;
-      //if(bgdEvent.genjet2_.Pt() > ptJetMin && TMath::Abs(bgdEvent.genjet2_.Eta()) < 4.7) nGenJets++;
-      //if(bgdEvent.genjet2_.Pt() > ptJetMin && TMath::Abs(bgdEvent.genjet3_.Eta()) < 4.7) nGenJets++;
-      if(bgdEvent.genjet1_.Pt() > ptJetMin && TMath::Abs(bgdEvent.genjet1_.Eta()) < 5.0) nGenJets++;
-      if(bgdEvent.genjet2_.Pt() > ptJetMin && TMath::Abs(bgdEvent.genjet2_.Eta()) < 5.0) nGenJets++;
-      if(bgdEvent.genjet2_.Pt() > ptJetMin && TMath::Abs(bgdEvent.genjet3_.Eta()) < 5.0) nGenJets++;
+      if(bgdEvent.genjet1_.Pt() > ptJetMin && TMath::Abs(bgdEvent.genjet1_.Eta()) < 4.7) nGenJets++;
+      if(bgdEvent.genjet2_.Pt() > ptJetMin && TMath::Abs(bgdEvent.genjet2_.Eta()) < 4.7) nGenJets++;
+      if(bgdEvent.genjet2_.Pt() > ptJetMin && TMath::Abs(bgdEvent.genjet3_.Eta()) < 4.7) nGenJets++;
 
       double etaCut[2] = {2.5, 2.5};
       //if(TMath::Abs(bgdEvent.genlep1McId_) == 11) etaCut[0] = 2.4;
@@ -952,7 +950,7 @@ void ww_ana
 	else if(thePlot ==17) myVar = NjetSyst[0];
 	else if(thePlot ==18) myVar = bgdEvent.nvtx_;
 	else if(thePlot ==19) myVar = TMath::Max(TMath::Min((bgdEvent.lep1_+bgdEvent.lep2_+bgdEvent.jet1_+bgdEvent.jet2_).M(),2999.999),700.001);
-	else if(thePlot ==20) myVar = bgdEvent.dPhi_*180.0/TMath::Pi();
+	else if(thePlot ==20) myVar = bgdEvent.dPhi_;
 	else if(thePlot ==21) myVar = TMath::Min(bgdEvent.dPhiLep1MET_,bgdEvent.dPhiLep2MET_)*180.0/TMath::Pi();
 	else if(thePlot ==22) myVar = DeltaPhi(bgdEvent.dilep_.Phi() ,theMETPHI)*180.0/TMath::Pi();
 	else if(thePlot ==23) myVar = DeltaPhi(bgdEvent.trackMetPhi_ ,theMETPHI)*180.0/TMath::Pi();
@@ -1627,7 +1625,7 @@ void ww_ana
 	else if(thePlot ==17) myVar = NjetSyst[0];
 	else if(thePlot ==18) myVar = sigEvent.nvtx_;
 	else if(thePlot ==19) myVar = TMath::Max(TMath::Min((sigEvent.lep1_+sigEvent.lep2_+sigEvent.jet1_+sigEvent.jet2_).M(),2999.999),700.001);
-	else if(thePlot ==20) myVar = sigEvent.dPhi_*180.0/TMath::Pi();
+	else if(thePlot ==20) myVar = sigEvent.dPhi_;
 	else if(thePlot ==21) myVar = TMath::Min(sigEvent.dPhiLep1MET_,sigEvent.dPhiLep2MET_)*180.0/TMath::Pi();
 	else if(thePlot ==22) myVar = DeltaPhi(sigEvent.dilep_.Phi() ,theMETPHI)*180.0/TMath::Pi();
 	else if(thePlot ==23) myVar = DeltaPhi(sigEvent.trackMetPhi_ ,theMETPHI)*180.0/TMath::Pi();
@@ -1793,7 +1791,7 @@ void ww_ana
 	else if(thePlot ==17) myVar = NjetSyst[0];
 	else if(thePlot ==18) myVar = dataEvent.nvtx_;
 	else if(thePlot ==19) myVar = TMath::Max(TMath::Min((dataEvent.lep1_+dataEvent.lep2_+dataEvent.jet1_+dataEvent.jet2_).M(),2999.999),700.001);
-	else if(thePlot ==20) myVar = dataEvent.dPhi_*180.0/TMath::Pi();
+	else if(thePlot ==20) myVar = dataEvent.dPhi_;
 	else if(thePlot ==21) myVar = TMath::Min(dataEvent.dPhiLep1MET_,dataEvent.dPhiLep2MET_)*180.0/TMath::Pi();
 	else if(thePlot ==22) myVar = DeltaPhi(dataEvent.dilep_.Phi() ,theMETPHI)*180.0/TMath::Pi();
 	else if(thePlot ==23) myVar = DeltaPhi(dataEvent.trackMetPhi_ ,theMETPHI)*180.0/TMath::Pi();

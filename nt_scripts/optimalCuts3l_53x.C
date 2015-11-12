@@ -21,6 +21,8 @@ const int verboseLevel =   1;
 const bool UseDyttDataDriven = false; // if true, then remove em events in dyll MC
 SmurfTree ttEvent;
 SmurfTree systEvent;
+const bool useStat3BTemplates	= true;
+const double max3BTolerance = 0.0001;
 
 //------------------------------------------------------------------------------
 // GF  == 10010, WBF == 10001, WH == 26, ZH == 24, ttH=121/122
@@ -179,7 +181,7 @@ void optimalCuts3l_53x
   else if(thePlot >= 32 && thePlot <= 33) {nBinPlot = 120; xminPlot = 0; xmaxPlot = 12.0;}
   else if(thePlot >= 34 && thePlot <= 34) {nBinPlot = 100; xminPlot = 0.0; xmaxPlot =  1000.0;}
   else if(thePlot >= 35 && thePlot <= 35) {nBinPlot = 50; xminPlot = 0.0; xmaxPlot =  8.75;}
-  else if(thePlot >= 36 && thePlot <= 36) {nBinPlot = 100; xminPlot = 50; xmaxPlot =  800;}
+  else if(thePlot >= 36 && thePlot <= 36) {nBinPlot = 100; xminPlot =  0; xmaxPlot =  1000;}
   else if(thePlot >= 37 && thePlot <= 37) {nBinPlot = 100; xminPlot = 0.0; xmaxPlot =  100.0;}
   else if(thePlot >= 38 && thePlot <= 38) {nBinPlot = 100; xminPlot = 0.0; xmaxPlot =  200.0;}
   else if(thePlot >= 39 && thePlot <= 39) {nBinPlot = 40; xminPlot = 0.0; xmaxPlot =  4.0;}
@@ -262,6 +264,45 @@ void optimalCuts3l_53x
   TH1D* histo_WH_htt_SM_CMS_MVAWH_htt_SMStatBounding_8TeVDown = (TH1D*) histo0->Clone(Form("histo_WH_htt_SM_CMS_MVAWH_htt_SMStatBounding_8TeV_vh3l%dDown",nsel));
   TH1D* histo_WH_hww_SM_CMS_MVAWH_hww_SMStatBounding_8TeVUp   = (TH1D*) histo0->Clone(Form("histo_WH_hww_SM_CMS_MVAWH_hww_SMStatBounding_8TeV_vh3l%dUp",nsel));
   TH1D* histo_WH_hww_SM_CMS_MVAWH_hww_SMStatBounding_8TeVDown = (TH1D*) histo0->Clone(Form("histo_WH_hww_SM_CMS_MVAWH_hww_SMStatBounding_8TeV_vh3l%dDown",nsel));
+
+  TH1D* histo_WH_htt_CMS_MVAWH_httStatBounding_8TeVUp_Bins[nBinPlot];
+  TH1D* histo_WH_htt_CMS_MVAWH_httStatBounding_8TeVDown_Bins[nBinPlot];
+  TH1D* histo_WH_hww_CMS_MVAWH_hwwStatBounding_8TeVUp_Bins[nBinPlot];
+  TH1D* histo_WH_hww_CMS_MVAWH_hwwStatBounding_8TeVDown_Bins[nBinPlot];
+  TH1D* histo_WZ_CMS_MVAWZStatBounding_8TeVUp_Bins[nBinPlot];
+  TH1D* histo_WZ_CMS_MVAWZStatBounding_8TeVDown_Bins[nBinPlot];
+  TH1D* histo_ZZ_CMS_MVAZZStatBounding_8TeVUp_Bins[nBinPlot];
+  TH1D* histo_ZZ_CMS_MVAZZStatBounding_8TeVDown_Bins[nBinPlot];
+  TH1D* histo_Wjets_CMS_MVAWjetsStatBounding_8TeVUp_Bins[nBinPlot];
+  TH1D* histo_Wjets_CMS_MVAWjetsStatBounding_8TeVDown_Bins[nBinPlot];
+  TH1D* histo_Wgamma_CMS_MVAWgammaStatBounding_8TeVUp_Bins[nBinPlot];
+  TH1D* histo_Wgamma_CMS_MVAWgammaStatBounding_8TeVDown_Bins[nBinPlot];
+  TH1D* histo_VVV_CMS_MVAVVVStatBounding_8TeVUp_Bins[nBinPlot];
+  TH1D* histo_VVV_CMS_MVAVVVStatBounding_8TeVDown_Bins[nBinPlot];
+  TH1D* histo_WH_htt_SM_CMS_MVAWH_htt_SMStatBounding_8TeVUp_Bins[nBinPlot];
+  TH1D* histo_WH_htt_SM_CMS_MVAWH_htt_SMStatBounding_8TeVDown_Bins[nBinPlot];
+  TH1D* histo_WH_hww_SM_CMS_MVAWH_hww_SMStatBounding_8TeVUp_Bins[nBinPlot];
+  TH1D* histo_WH_hww_SM_CMS_MVAWH_hww_SMStatBounding_8TeVDown_Bins[nBinPlot];  
+  for(int nb=0; nb<nBinPlot; nb++){
+    histo_WH_htt_CMS_MVAWH_httStatBounding_8TeVUp_Bins	      [nb] = new TH1D(Form("histo_WH_htt_CMS_MVAhisto_WH_httStatBounding_8TeV_vh3l%d_bin%dUp",nsel,nb),	     Form("histo_WH_htt_CMS_MVAhisto_WH_httStatBounding_8TeV_vh3l%d_bin%dUp",nsel,nb),     nBinPlot, xminPlot, xmaxPlot);       histo_WH_htt_CMS_MVAWH_httStatBounding_8TeVUp_Bins	  [nb]->Sumw2();
+    histo_WH_htt_CMS_MVAWH_httStatBounding_8TeVDown_Bins      [nb] = new TH1D(Form("histo_WH_htt_CMS_MVAhisto_WH_httStatBounding_8TeV_vh3l%d_bin%dDown",nsel,nb),    Form("histo_WH_htt_CMS_MVAhisto_WH_httStatBounding_8TeV_vh3l%d_bin%dDown",nsel,nb),     nBinPlot, xminPlot, xmaxPlot); 	histo_WH_htt_CMS_MVAWH_httStatBounding_8TeVDown_Bins	  [nb]->Sumw2();
+    histo_WH_hww_CMS_MVAWH_hwwStatBounding_8TeVUp_Bins	      [nb] = new TH1D(Form("histo_WH_hww_CMS_MVAhisto_WH_hwwStatBounding_8TeV_vh3l%d_bin%dUp",nsel,nb),      Form("histo_WH_hww_CMS_MVAhisto_WH_hwwStatBounding_8TeV_vh3l%d_bin%dUp",nsel,nb),      nBinPlot, xminPlot, xmaxPlot); 	histo_WH_hww_CMS_MVAWH_hwwStatBounding_8TeVUp_Bins	  [nb]->Sumw2();
+    histo_WH_hww_CMS_MVAWH_hwwStatBounding_8TeVDown_Bins      [nb] = new TH1D(Form("histo_WH_hww_CMS_MVAhisto_WH_hwwStatBounding_8TeV_vh3l%d_bin%dDown",nsel,nb),    Form("histo_WH_hww_CMS_MVAhisto_WH_hwwStatBounding_8TeV_vh3l%d_bin%dDown",nsel,nb),     nBinPlot, xminPlot, xmaxPlot); 	histo_WH_hww_CMS_MVAWH_hwwStatBounding_8TeVDown_Bins	  [nb]->Sumw2();
+    histo_WZ_CMS_MVAWZStatBounding_8TeVUp_Bins		      [nb] = new TH1D(Form("histo_WZ_CMS_MVAhisto_WZStatBounding_8TeV_vh3l%d_bin%dUp",nsel,nb),   	     Form("histo_WZ_CMS_MVAhisto_WZStatBounding_8TeV_vh3l%d_bin%dUp",nsel,nb),        nBinPlot, xminPlot, xmaxPlot); 		histo_WZ_CMS_MVAWZStatBounding_8TeVUp_Bins		  [nb]->Sumw2();
+    histo_WZ_CMS_MVAWZStatBounding_8TeVDown_Bins	      [nb] = new TH1D(Form("histo_WZ_CMS_MVAhisto_WZStatBounding_8TeV_vh3l%d_bin%dDown",nsel,nb), 	     Form("histo_WZ_CMS_MVAhisto_WZStatBounding_8TeV_vh3l%d_bin%dDown",nsel,nb),      nBinPlot, xminPlot, xmaxPlot); 		histo_WZ_CMS_MVAWZStatBounding_8TeVDown_Bins		  [nb]->Sumw2();
+    histo_ZZ_CMS_MVAZZStatBounding_8TeVUp_Bins		      [nb] = new TH1D(Form("histo_ZZ_CMS_MVAhisto_ZZStatBounding_8TeV_vh3l%d_bin%dUp",nsel,nb),   	     Form("histo_ZZ_CMS_MVAhisto_ZZStatBounding_8TeV_vh3l%d_bin%dUp",nsel,nb),        nBinPlot, xminPlot, xmaxPlot); 		histo_ZZ_CMS_MVAZZStatBounding_8TeVUp_Bins		  [nb]->Sumw2();
+    histo_ZZ_CMS_MVAZZStatBounding_8TeVDown_Bins	      [nb] = new TH1D(Form("histo_ZZ_CMS_MVAhisto_ZZStatBounding_8TeV_vh3l%d_bin%dDown",nsel,nb), 	     Form("histo_ZZ_CMS_MVAhisto_ZZStatBounding_8TeV_vh3l%d_bin%dDown",nsel,nb),      nBinPlot, xminPlot, xmaxPlot); 		histo_ZZ_CMS_MVAZZStatBounding_8TeVDown_Bins		  [nb]->Sumw2();
+    histo_Wjets_CMS_MVAWjetsStatBounding_8TeVUp_Bins 	      [nb] = new TH1D(Form("histo_Wjets_CMS_MVAhisto_WjetsStatBounding_8TeV_vh3l%d_bin%dUp",nsel,nb), 	     Form("histo_Wjets_CMS_MVAhisto_WjetsStatBounding_8TeV_vh3l%d_bin%dUp",nsel,nb),      nBinPlot, xminPlot, xmaxPlot); 	histo_Wjets_CMS_MVAWjetsStatBounding_8TeVUp_Bins	  [nb]->Sumw2();
+    histo_Wjets_CMS_MVAWjetsStatBounding_8TeVDown_Bins	      [nb] = new TH1D(Form("histo_Wjets_CMS_MVAhisto_WjetsStatBounding_8TeV_vh3l%d_bin%dDown",nsel,nb),      Form("histo_Wjets_CMS_MVAhisto_WjetsStatBounding_8TeV_vh3l%d_bin%dDown",nsel,nb),     nBinPlot, xminPlot, xmaxPlot); 	histo_Wjets_CMS_MVAWjetsStatBounding_8TeVDown_Bins	  [nb]->Sumw2();
+    histo_Wgamma_CMS_MVAWgammaStatBounding_8TeVUp_Bins	      [nb] = new TH1D(Form("histo_Wgamma_CMS_MVAhisto_WgammaStatBounding_8TeV_vh3l%d_bin%dUp",nsel,nb),      Form("histo_Wgamma_CMS_MVAhisto_WgammaStatBounding_8TeV_vh3l%d_bin%dUp",nsel,nb),      nBinPlot, xminPlot, xmaxPlot); 	histo_Wgamma_CMS_MVAWgammaStatBounding_8TeVUp_Bins	  [nb]->Sumw2();
+    histo_Wgamma_CMS_MVAWgammaStatBounding_8TeVDown_Bins      [nb] = new TH1D(Form("histo_Wgamma_CMS_MVAhisto_WgammaStatBounding_8TeV_vh3l%d_bin%dDown",nsel,nb),    Form("histo_Wgamma_CMS_MVAhisto_WgammaStatBounding_8TeV_vh3l%d_bin%dDown",nsel,nb),     nBinPlot, xminPlot, xmaxPlot); 	histo_Wgamma_CMS_MVAWgammaStatBounding_8TeVDown_Bins	  [nb]->Sumw2();
+    histo_VVV_CMS_MVAVVVStatBounding_8TeVUp_Bins	      [nb] = new TH1D(Form("histo_VVV_CMS_MVAhisto_VVVStatBounding_8TeV_vh3l%d_bin%dUp",nsel,nb), 	     Form("histo_VVV_CMS_MVAhisto_VVVStatBounding_8TeV_vh3l%d_bin%dUp",nsel,nb),      nBinPlot, xminPlot, xmaxPlot); 		histo_VVV_CMS_MVAVVVStatBounding_8TeVUp_Bins		  [nb]->Sumw2();
+    histo_VVV_CMS_MVAVVVStatBounding_8TeVDown_Bins	      [nb] = new TH1D(Form("histo_VVV_CMS_MVAhisto_VVVStatBounding_8TeV_vh3l%d_bin%dDown",nsel,nb),	     Form("histo_VVV_CMS_MVAhisto_VVVStatBounding_8TeV_vh3l%d_bin%dDown",nsel,nb),     nBinPlot, xminPlot, xmaxPlot); 		histo_VVV_CMS_MVAVVVStatBounding_8TeVDown_Bins  	  [nb]->Sumw2();
+    histo_WH_htt_SM_CMS_MVAWH_htt_SMStatBounding_8TeVUp_Bins  [nb] = new TH1D(Form("histo_WH_htt_CMS_MVAhisto_WH_htt_SMStatBounding_8TeV_vh3l%d_bin%dUp",nsel,nb),   Form("histo_WH_htt_CMS_MVAhisto_WH_htt_SMStatBounding_8TeV_vh3l%d_bin%dUp",nsel,nb),     nBinPlot, xminPlot, xmaxPlot);  	histo_WH_htt_SM_CMS_MVAWH_htt_SMStatBounding_8TeVUp_Bins  [nb]->Sumw2();
+    histo_WH_htt_SM_CMS_MVAWH_htt_SMStatBounding_8TeVDown_Bins[nb] = new TH1D(Form("histo_WH_htt_CMS_MVAhisto_WH_htt_SMStatBounding_8TeV_vh3l%d_bin%dDown",nsel,nb), Form("histo_WH_htt_CMS_MVAhisto_WH_htt_SMStatBounding_8TeV_vh3l%d_bin%dDown",nsel,nb),     nBinPlot, xminPlot, xmaxPlot);  histo_WH_htt_SM_CMS_MVAWH_htt_SMStatBounding_8TeVDown_Bins[nb]->Sumw2();
+    histo_WH_hww_SM_CMS_MVAWH_hww_SMStatBounding_8TeVUp_Bins  [nb] = new TH1D(Form("histo_WH_hww_CMS_MVAhisto_WH_hww_SMStatBounding_8TeV_vh3l%d_bin%dUp",nsel,nb),   Form("histo_WH_hww_CMS_MVAhisto_WH_hww_SMStatBounding_8TeV_vh3l%d_bin%dUp",nsel,nb),      nBinPlot, xminPlot, xmaxPlot); 	histo_WH_hww_SM_CMS_MVAWH_hww_SMStatBounding_8TeVUp_Bins  [nb]->Sumw2();
+    histo_WH_hww_SM_CMS_MVAWH_hww_SMStatBounding_8TeVDown_Bins[nb] = new TH1D(Form("histo_WH_hww_CMS_MVAhisto_WH_hww_SMStatBounding_8TeV_vh3l%d_bin%dDown",nsel,nb), Form("histo_WH_hww_CMS_MVAhisto_WH_hww_SMStatBounding_8TeV_vh3l%d_bin%dDown",nsel,nb),     nBinPlot, xminPlot, xmaxPlot);  histo_WH_hww_SM_CMS_MVAWH_hww_SMStatBounding_8TeVDown_Bins[nb]->Sumw2();
+  }
 
   TH1D* histo_WH_htt_CMS_MVALepEffBoundingUp	     	= (TH1D*) histo0->Clone(Form("histo_WH_htt_CMS_MVALepEffBoundingUp"));  
   TH1D* histo_WH_htt_CMS_MVALepEffBoundingDown       	= (TH1D*) histo0->Clone(Form("histo_WH_htt_CMS_MVALepEffBoundingDown"));
@@ -359,6 +400,27 @@ void optimalCuts3l_53x
     histo_WH_htt_SM_CMS_MVAWH_htt_SMStatBounding_8TeVDown ->Rebin(rebinMVAHist);
     histo_WH_hww_SM_CMS_MVAWH_hww_SMStatBounding_8TeVUp   ->Rebin(rebinMVAHist);
     histo_WH_hww_SM_CMS_MVAWH_hww_SMStatBounding_8TeVDown ->Rebin(rebinMVAHist);
+
+    for(int nb=0; nb<nBinPlot; nb++){
+      histo_WH_htt_CMS_MVAWH_httStatBounding_8TeVUp_Bins	[nb] ->Rebin(rebinMVAHist);
+      histo_WH_htt_CMS_MVAWH_httStatBounding_8TeVDown_Bins	[nb] ->Rebin(rebinMVAHist);
+      histo_WH_hww_CMS_MVAWH_hwwStatBounding_8TeVUp_Bins	[nb] ->Rebin(rebinMVAHist);
+      histo_WH_hww_CMS_MVAWH_hwwStatBounding_8TeVDown_Bins	[nb] ->Rebin(rebinMVAHist);
+      histo_WZ_CMS_MVAWZStatBounding_8TeVUp_Bins		[nb] ->Rebin(rebinMVAHist);
+      histo_WZ_CMS_MVAWZStatBounding_8TeVDown_Bins		[nb] ->Rebin(rebinMVAHist);
+      histo_ZZ_CMS_MVAZZStatBounding_8TeVUp_Bins		[nb] ->Rebin(rebinMVAHist);
+      histo_ZZ_CMS_MVAZZStatBounding_8TeVDown_Bins		[nb] ->Rebin(rebinMVAHist);
+      histo_Wjets_CMS_MVAWjetsStatBounding_8TeVUp_Bins  	[nb] ->Rebin(rebinMVAHist);
+      histo_Wjets_CMS_MVAWjetsStatBounding_8TeVDown_Bins	[nb] ->Rebin(rebinMVAHist);
+      histo_Wgamma_CMS_MVAWgammaStatBounding_8TeVUp_Bins	[nb] ->Rebin(rebinMVAHist);
+      histo_Wgamma_CMS_MVAWgammaStatBounding_8TeVDown_Bins	[nb] ->Rebin(rebinMVAHist);
+      histo_VVV_CMS_MVAVVVStatBounding_8TeVUp_Bins		[nb] ->Rebin(rebinMVAHist);
+      histo_VVV_CMS_MVAVVVStatBounding_8TeVDown_Bins		[nb] ->Rebin(rebinMVAHist);
+      histo_WH_htt_SM_CMS_MVAWH_htt_SMStatBounding_8TeVUp_Bins  [nb] ->Rebin(rebinMVAHist);
+      histo_WH_htt_SM_CMS_MVAWH_htt_SMStatBounding_8TeVDown_Bins[nb] ->Rebin(rebinMVAHist);
+      histo_WH_hww_SM_CMS_MVAWH_hww_SMStatBounding_8TeVUp_Bins  [nb] ->Rebin(rebinMVAHist);
+      histo_WH_hww_SM_CMS_MVAWH_hww_SMStatBounding_8TeVDown_Bins[nb] ->Rebin(rebinMVAHist);
+    }
     
     histo_WH_htt_CMS_MVALepEffBoundingUp	    ->Rebin(rebinMVAHist);
     histo_WH_htt_CMS_MVALepEffBoundingDown	    ->Rebin(rebinMVAHist);
@@ -662,6 +724,9 @@ void optimalCuts3l_53x
       (type3l==1||type3l==8||
       (type3l==2&&bgdEvent.lq1_*bgdEvent.lq2_<0)||(type3l==3&&bgdEvent.lq1_*bgdEvent.lq3_<0)||(type3l==4&&bgdEvent.lq2_*bgdEvent.lq3_<0)||
       (type3l==5&&bgdEvent.lq2_*bgdEvent.lq3_<0)||(type3l==6&&bgdEvent.lq1_*bgdEvent.lq2_<0)||(type3l==7&&bgdEvent.lq1_*bgdEvent.lq3_<0))) cleanMode = false;
+    double MT3lTotx = bgdEvent.met_*cos(bgdEvent.metPhi_)-bgdEvent.lep1_.Px()-bgdEvent.lep2_.Px()-bgdEvent.lep3_.Px();
+    double MT3lToty = bgdEvent.met_*sin(bgdEvent.metPhi_)-bgdEvent.lep1_.Py()-bgdEvent.lep2_.Py()-bgdEvent.lep3_.Py();
+    double MT3lTot = sqrt(MT3lTotx*MT3lTotx+MT3lToty*MT3lToty);
     bool passMode = cleanMode; if(nsel==2) passMode = !passMode;
     bool passCuts = false;
     bool isSignalDecay = false;
@@ -684,6 +749,28 @@ void optimalCuts3l_53x
 	if(bgdEvent.dstype_ == SmurfTree::wz) isSignalDecay = true;
       }
     } // WZ selection
+    if(channel == 35){ // qqWZ selection
+      charge = (int)(bgdEvent.lq1_ + bgdEvent.lq2_ + bgdEvent.lq3_);
+      if(
+         bgdEvent.lid3_ != 0 &&
+         abs(charge) == 1 &&
+         bgdEvent.lep1_.Pt() > 20. &&
+         bgdEvent.lep2_.Pt() > 10. &&
+         bgdEvent.lep3_.Pt() > 10. &&
+         usedMet > 40. &&
+         (bgdEvent.cuts_ & patternTopVeto) == patternTopVeto &&
+         bgdEvent.jet1_.Pt() > 30. &&
+         bgdEvent.jet2_.Pt() > 30. &&
+	 TMath::Abs(bgdEvent.jet1_.Eta()-bgdEvent.jet2_.Eta()) > 2.5 &&
+	 (bgdEvent.jet1_+bgdEvent.jet2_).M() > 500 &&
+	 massZMin < 15 &&
+	 massMin > 12 &&
+	 1 == 1
+	){
+	passCuts = true;
+	if(bgdEvent.dstype_ == SmurfTree::wz) isSignalDecay = true;
+      }
+    } // qqWZ selection
     if(channel == 28){ // 3lnq selection
       charge = (int)(bgdEvent.lq1_ + bgdEvent.lq2_ + bgdEvent.lq3_);
       if(
@@ -1036,9 +1123,9 @@ void optimalCuts3l_53x
       else if(thePlot ==31) myVar = mtQQLN;
       else if(thePlot ==32) myVar = massminSFOS;
       else if(thePlot ==33) myVar = massminSFSS;
-      else if(thePlot ==34) myVar = (bgdEvent.jet1_+bgdEvent.jet2_).M();
+      else if(thePlot ==34) myVar = TMath::Min((bgdEvent.jet1_+bgdEvent.jet2_).M(),999.999);
       else if(thePlot ==35) myVar = TMath::Abs(bgdEvent.jet1_.Eta()-bgdEvent.jet2_.Eta());
-      else if(thePlot ==36) myVar = (bgdEvent.lep1_+bgdEvent.lep2_+bgdEvent.lep3_+bgdEvent.jet1_).M();
+      else if(thePlot ==36) myVar = TMath::Min(MT3lTot,999.999);
       else if(thePlot ==37) myVar = massZMin;
       else if(thePlot ==38) myVar = massMin;
       else if(thePlot ==39) myVar = TMath::Min(dRMin,3.999);
@@ -1639,6 +1726,9 @@ void optimalCuts3l_53x
         (type3l==1||type3l==8||
         (type3l==2&&sigEvent.lq1_*sigEvent.lq2_<0)||(type3l==3&&sigEvent.lq1_*sigEvent.lq3_<0)||(type3l==4&&sigEvent.lq2_*sigEvent.lq3_<0)||
         (type3l==5&&sigEvent.lq2_*sigEvent.lq3_<0)||(type3l==6&&sigEvent.lq1_*sigEvent.lq2_<0)||(type3l==7&&sigEvent.lq1_*sigEvent.lq3_<0))) cleanMode = false;
+      double MT3lTotx = sigEvent.met_*cos(sigEvent.metPhi_)-sigEvent.lep1_.Px()-sigEvent.lep2_.Px()-sigEvent.lep3_.Px();
+      double MT3lToty = sigEvent.met_*sin(sigEvent.metPhi_)-sigEvent.lep1_.Py()-sigEvent.lep2_.Py()-sigEvent.lep3_.Py();
+      double MT3lTot = sqrt(MT3lTotx*MT3lTotx+MT3lToty*MT3lToty);
       bool passMode = cleanMode; if(nsel==2) passMode = !passMode;
       bool passCuts = false;
       bool isSignalDecay = false;
@@ -1660,6 +1750,27 @@ void optimalCuts3l_53x
 	  passCuts = true;
 	}
       } // WZ selection
+      if(channel == 35){ // qqWZ selection
+	charge = (int)(sigEvent.lq1_ + sigEvent.lq2_ + sigEvent.lq3_);
+	if(
+           sigEvent.lid3_ != 0 &&
+           abs(charge) == 1 &&
+           sigEvent.lep1_.Pt() > 20. &&
+           sigEvent.lep2_.Pt() > 10. &&
+           sigEvent.lep3_.Pt() > 10. &&
+           usedMet > 40. &&
+           (sigEvent.cuts_ & patternTopVeto) == patternTopVeto &&
+           sigEvent.jet1_.Pt() > 30. &&
+           sigEvent.jet2_.Pt() > 30. &&
+	   TMath::Abs(sigEvent.jet1_.Eta()-sigEvent.jet2_.Eta()) > 2.5 &&
+	   (sigEvent.jet1_+sigEvent.jet2_).M() > 500 &&
+	   massZMin < 15 &&
+	   massMin > 12 &&
+	   1 == 1
+	  ){
+	  passCuts = true;
+	}
+      } // qqWZ selection
       if(channel == 28){ // 3lnq selection
 	charge = (int)(sigEvent.lq1_ + sigEvent.lq2_ + sigEvent.lq3_);
 	if(
@@ -1872,9 +1983,9 @@ void optimalCuts3l_53x
 	else if(thePlot ==31) myVar = mtQQLN;
 	else if(thePlot ==32) myVar = massminSFOS;
 	else if(thePlot ==33) myVar = massminSFSS;
-	else if(thePlot ==34) myVar = (sigEvent.jet1_+sigEvent.jet2_).M();
-	else if(thePlot ==35) myVar = TMath::Abs(sigEvent.jet1_.Eta()-sigEvent.jet2_.Eta());
-	else if(thePlot ==36) myVar = (sigEvent.lep1_+sigEvent.lep2_+sigEvent.lep3_+sigEvent.jet1_).M();
+        else if(thePlot ==34) myVar = TMath::Min((sigEvent.jet1_+sigEvent.jet2_).M(),999.999);
+        else if(thePlot ==35) myVar = TMath::Abs(sigEvent.jet1_.Eta()-sigEvent.jet2_.Eta());
+        else if(thePlot ==36) myVar = TMath::Min(MT3lTot,999.999);
 	else if(thePlot ==37) myVar = massZMin;
 	else if(thePlot ==38) myVar = massMin;
 	else if(thePlot ==39) myVar = TMath::Min(dRMin,3.999);
@@ -2238,9 +2349,9 @@ void optimalCuts3l_53x
       else if(thePlot ==31) myVar = mtQQLN;
       else if(thePlot ==32) myVar = massminSFOS;
       else if(thePlot ==33) myVar = massminSFSS;
-      else if(thePlot ==34) myVar = (ttEvent.jet1_+ttEvent.jet2_).M();
+      else if(thePlot ==34) myVar = TMath::Min((ttEvent.jet1_+ttEvent.jet2_).M(),999.999);
       else if(thePlot ==35) myVar = TMath::Abs(ttEvent.jet1_.Eta()-ttEvent.jet2_.Eta());
-      else if(thePlot ==36) myVar = (ttEvent.lep1_+ttEvent.lep2_+ttEvent.lep3_+ttEvent.jet1_).M();
+      else if(thePlot ==36) myVar = TMath::Min(0.0,999.999);
       else if(thePlot ==37) myVar = massZMin;
       else if(thePlot ==38) myVar = massMin;
       else if(thePlot ==39) myVar = TMath::Min(dRMin,3.999);
@@ -2446,6 +2557,9 @@ void optimalCuts3l_53x
       (type3l==1||type3l==8||
       (type3l==2&&dataEvent.lq1_*dataEvent.lq2_<0)||(type3l==3&&dataEvent.lq1_*dataEvent.lq3_<0)||(type3l==4&&dataEvent.lq2_*dataEvent.lq3_<0)||
       (type3l==5&&dataEvent.lq2_*dataEvent.lq3_<0)||(type3l==6&&dataEvent.lq1_*dataEvent.lq2_<0)||(type3l==7&&dataEvent.lq1_*dataEvent.lq3_<0))) cleanMode = false;
+    double MT3lTotx = dataEvent.met_*cos(dataEvent.metPhi_)-dataEvent.lep1_.Px()-dataEvent.lep2_.Px()-dataEvent.lep3_.Px();
+    double MT3lToty = dataEvent.met_*sin(dataEvent.metPhi_)-dataEvent.lep1_.Py()-dataEvent.lep2_.Py()-dataEvent.lep3_.Py();
+    double MT3lTot = sqrt(MT3lTotx*MT3lTotx+MT3lToty*MT3lToty);
     bool passMode = cleanMode; if(nsel==2) passMode = !passMode;
     bool passCuts = false;
     if(channel == 27){ // WZ selection
@@ -2466,6 +2580,27 @@ void optimalCuts3l_53x
 	passCuts = true;
       }
     } // WZ selection
+    if(channel == 35){ // qqWZ selection
+      charge = (int)(dataEvent.lq1_ + dataEvent.lq2_ + dataEvent.lq3_);
+      if(
+         dataEvent.lid3_ != 0 &&
+         abs(charge) == 1 &&
+         dataEvent.lep1_.Pt() > 20. &&
+         dataEvent.lep2_.Pt() > 10. &&
+         dataEvent.lep3_.Pt() > 10. &&
+         usedMet > 40. &&
+         (dataEvent.cuts_ & patternTopVeto) == patternTopVeto &&
+         dataEvent.jet1_.Pt() > 30. &&
+         dataEvent.jet2_.Pt() > 30. &&
+	 TMath::Abs(dataEvent.jet1_.Eta()-dataEvent.jet2_.Eta()) > 2.5 &&
+	 (dataEvent.jet1_+dataEvent.jet2_).M() > 500 &&
+	 massZMin < 15 &&
+	 massMin > 12 &&
+	 1 == 1
+	){
+	passCuts = true;
+      }
+    } // qqWZ selection
     if(channel == 28){ // 3lnq selection
       charge = (int)(dataEvent.lq1_ + dataEvent.lq2_ + dataEvent.lq3_);
       if(
@@ -2683,9 +2818,9 @@ void optimalCuts3l_53x
       else if(thePlot ==31) myVar = mtQQLN;
       else if(thePlot ==32) myVar = massminSFOS;
       else if(thePlot ==33) myVar = massminSFSS;
-      else if(thePlot ==34) myVar = (dataEvent.jet1_+dataEvent.jet2_).M();
+      else if(thePlot ==34) myVar = TMath::Min((dataEvent.jet1_+dataEvent.jet2_).M(),999.999);
       else if(thePlot ==35) myVar = TMath::Abs(dataEvent.jet1_.Eta()-dataEvent.jet2_.Eta());
-      else if(thePlot ==36) myVar = (dataEvent.lep1_+dataEvent.lep2_+dataEvent.lep3_+dataEvent.jet1_).M();
+      else if(thePlot ==36) myVar = TMath::Min(MT3lTot,999.999);
       else if(thePlot ==37) myVar = massZMin;
       else if(thePlot ==38) myVar = massMin;
       else if(thePlot ==39) myVar = TMath::Min(dRMin,3.999);
@@ -2943,6 +3078,25 @@ void optimalCuts3l_53x
     	histo_WH_htt_SM_CMS_MVAWH_htt_SMStatBounding_8TeVDown      ->SetBinContent(i,TMath::Max(histo_WH_htt_SM   ->GetBinContent(i)+factorDown*histo_WH_htt_SM  ->GetBinError(i),0.000001));
     	histo_WH_hww_SM_CMS_MVAWH_hww_SMStatBounding_8TeVUp	   ->SetBinContent(i,TMath::Max(histo_WH_hww_SM   ->GetBinContent(i)+factorUp  *histo_WH_hww_SM  ->GetBinError(i),0.000001));
     	histo_WH_hww_SM_CMS_MVAWH_hww_SMStatBounding_8TeVDown      ->SetBinContent(i,TMath::Max(histo_WH_hww_SM   ->GetBinContent(i)+factorDown*histo_WH_hww_SM  ->GetBinError(i),0.000001));
+
+	histo_WH_htt_CMS_MVAWH_httStatBounding_8TeVUp_Bins	  [i-1]->Add(histo_WH_htt   );histo_WH_htt_CMS_MVAWH_httStatBounding_8TeVUp_Bins	[i-1]->SetBinContent(i,TMath::Max(histo_WH_htt   ->GetBinContent(i)+factorUp  *histo_WH_htt   ->GetBinError(i),0.000001));
+	histo_WH_htt_CMS_MVAWH_httStatBounding_8TeVDown_Bins	  [i-1]->Add(histo_WH_htt   );histo_WH_htt_CMS_MVAWH_httStatBounding_8TeVDown_Bins	[i-1]->SetBinContent(i,TMath::Max(histo_WH_htt   ->GetBinContent(i)+factorDown*histo_WH_htt   ->GetBinError(i),0.000001));
+	histo_WH_hww_CMS_MVAWH_hwwStatBounding_8TeVUp_Bins	  [i-1]->Add(histo_WH_hww   );histo_WH_hww_CMS_MVAWH_hwwStatBounding_8TeVUp_Bins	[i-1]->SetBinContent(i,TMath::Max(histo_WH_hww   ->GetBinContent(i)+factorUp  *histo_WH_hww   ->GetBinError(i),0.000001));
+	histo_WH_hww_CMS_MVAWH_hwwStatBounding_8TeVDown_Bins	  [i-1]->Add(histo_WH_hww   );histo_WH_hww_CMS_MVAWH_hwwStatBounding_8TeVDown_Bins	[i-1]->SetBinContent(i,TMath::Max(histo_WH_hww   ->GetBinContent(i)+factorDown*histo_WH_hww   ->GetBinError(i),0.000001));
+	histo_WZ_CMS_MVAWZStatBounding_8TeVUp_Bins		  [i-1]->Add(histo_WZ       );histo_WZ_CMS_MVAWZStatBounding_8TeVUp_Bins		[i-1]->SetBinContent(i,TMath::Max(histo_WZ	 ->GetBinContent(i)+factorUp  *histo_WZ       ->GetBinError(i),0.000001));
+	histo_WZ_CMS_MVAWZStatBounding_8TeVDown_Bins		  [i-1]->Add(histo_WZ       );histo_WZ_CMS_MVAWZStatBounding_8TeVDown_Bins		[i-1]->SetBinContent(i,TMath::Max(histo_WZ	 ->GetBinContent(i)+factorDown*histo_WZ       ->GetBinError(i),0.000001));
+	histo_ZZ_CMS_MVAZZStatBounding_8TeVUp_Bins		  [i-1]->Add(histo_ZZ       );histo_ZZ_CMS_MVAZZStatBounding_8TeVUp_Bins		[i-1]->SetBinContent(i,TMath::Max(histo_ZZ	 ->GetBinContent(i)+factorUp  *histo_ZZ       ->GetBinError(i),0.000001));
+	histo_ZZ_CMS_MVAZZStatBounding_8TeVDown_Bins		  [i-1]->Add(histo_ZZ       );histo_ZZ_CMS_MVAZZStatBounding_8TeVDown_Bins		[i-1]->SetBinContent(i,TMath::Max(histo_ZZ	 ->GetBinContent(i)+factorDown*histo_ZZ       ->GetBinError(i),0.000001));
+	histo_Wjets_CMS_MVAWjetsStatBounding_8TeVUp_Bins	  [i-1]->Add(histo_Wjets    );histo_Wjets_CMS_MVAWjetsStatBounding_8TeVUp_Bins  	[i-1]->SetBinContent(i,TMath::Max(histo_Wjets	 ->GetBinContent(i)+factorUp  *histo_Wjets    ->GetBinError(i),0.000001));
+	histo_Wjets_CMS_MVAWjetsStatBounding_8TeVDown_Bins	  [i-1]->Add(histo_Wjets    );histo_Wjets_CMS_MVAWjetsStatBounding_8TeVDown_Bins	[i-1]->SetBinContent(i,TMath::Max(histo_Wjets	 ->GetBinContent(i)+factorDown*histo_Wjets    ->GetBinError(i),0.000001));
+	histo_Wgamma_CMS_MVAWgammaStatBounding_8TeVUp_Bins	  [i-1]->Add(histo_Wgamma   );histo_Wgamma_CMS_MVAWgammaStatBounding_8TeVUp_Bins	[i-1]->SetBinContent(i,TMath::Max(histo_Wgamma   ->GetBinContent(i)+factorUp  *histo_Wgamma   ->GetBinError(i),0.000001));
+	histo_Wgamma_CMS_MVAWgammaStatBounding_8TeVDown_Bins	  [i-1]->Add(histo_Wgamma   );histo_Wgamma_CMS_MVAWgammaStatBounding_8TeVDown_Bins	[i-1]->SetBinContent(i,TMath::Max(histo_Wgamma   ->GetBinContent(i)+factorDown*histo_Wgamma   ->GetBinError(i),0.000001));
+	histo_VVV_CMS_MVAVVVStatBounding_8TeVUp_Bins		  [i-1]->Add(histo_VVV      );histo_VVV_CMS_MVAVVVStatBounding_8TeVUp_Bins		[i-1]->SetBinContent(i,TMath::Max(histo_VVV	 ->GetBinContent(i)+factorUp  *histo_VVV      ->GetBinError(i),0.000001));
+	histo_VVV_CMS_MVAVVVStatBounding_8TeVDown_Bins  	  [i-1]->Add(histo_VVV      );histo_VVV_CMS_MVAVVVStatBounding_8TeVDown_Bins		[i-1]->SetBinContent(i,TMath::Max(histo_VVV	 ->GetBinContent(i)+factorDown*histo_VVV      ->GetBinError(i),0.000001));
+	histo_WH_htt_SM_CMS_MVAWH_htt_SMStatBounding_8TeVUp_Bins  [i-1]->Add(histo_WH_htt_SM);histo_WH_htt_SM_CMS_MVAWH_htt_SMStatBounding_8TeVUp_Bins  [i-1]->SetBinContent(i,TMath::Max(histo_WH_htt_SM->GetBinContent(i)+factorUp  *histo_WH_htt_SM->GetBinError(i),0.000001));
+	histo_WH_htt_SM_CMS_MVAWH_htt_SMStatBounding_8TeVDown_Bins[i-1]->Add(histo_WH_htt_SM);histo_WH_htt_SM_CMS_MVAWH_htt_SMStatBounding_8TeVDown_Bins[i-1]->SetBinContent(i,TMath::Max(histo_WH_htt_SM->GetBinContent(i)+factorDown*histo_WH_htt_SM->GetBinError(i),0.000001));
+	histo_WH_hww_SM_CMS_MVAWH_hww_SMStatBounding_8TeVUp_Bins  [i-1]->Add(histo_WH_hww_SM);histo_WH_hww_SM_CMS_MVAWH_hww_SMStatBounding_8TeVUp_Bins  [i-1]->SetBinContent(i,TMath::Max(histo_WH_hww_SM->GetBinContent(i)+factorUp  *histo_WH_hww_SM->GetBinError(i),0.000001));
+	histo_WH_hww_SM_CMS_MVAWH_hww_SMStatBounding_8TeVDown_Bins[i-1]->Add(histo_WH_hww_SM);histo_WH_hww_SM_CMS_MVAWH_hww_SMStatBounding_8TeVDown_Bins[i-1]->SetBinContent(i,TMath::Max(histo_WH_hww_SM->GetBinContent(i)+factorDown*histo_WH_hww_SM->GetBinError(i),0.000001));
       }
       for(int i=1; i<=histo_WH_htt->GetNbinsX(); i++){	 
         double mean = histo_WH_htt			->GetBinContent(i);
@@ -3087,6 +3241,27 @@ void optimalCuts3l_53x
       histo_WH_hww_SM_CMS_MVAWH_hww_SMStatBounding_8TeVUp  ->Write();
       histo_WH_hww_SM_CMS_MVAWH_hww_SMStatBounding_8TeVDown->Write();
 
+      for(int nb=0; nb<nBinPlot; nb++){
+        histo_WH_htt_CMS_MVAWH_httStatBounding_8TeVUp_Bins	  [nb] ->Write();
+        histo_WH_htt_CMS_MVAWH_httStatBounding_8TeVDown_Bins	  [nb] ->Write();
+        histo_WH_hww_CMS_MVAWH_hwwStatBounding_8TeVUp_Bins	  [nb] ->Write();
+        histo_WH_hww_CMS_MVAWH_hwwStatBounding_8TeVDown_Bins	  [nb] ->Write();
+        histo_WZ_CMS_MVAWZStatBounding_8TeVUp_Bins		  [nb] ->Write();
+        histo_WZ_CMS_MVAWZStatBounding_8TeVDown_Bins		  [nb] ->Write();
+        histo_ZZ_CMS_MVAZZStatBounding_8TeVUp_Bins		  [nb] ->Write();
+        histo_ZZ_CMS_MVAZZStatBounding_8TeVDown_Bins		  [nb] ->Write();
+        histo_Wjets_CMS_MVAWjetsStatBounding_8TeVUp_Bins	  [nb] ->Write();
+        histo_Wjets_CMS_MVAWjetsStatBounding_8TeVDown_Bins	  [nb] ->Write();
+        histo_Wgamma_CMS_MVAWgammaStatBounding_8TeVUp_Bins	  [nb] ->Write();
+        histo_Wgamma_CMS_MVAWgammaStatBounding_8TeVDown_Bins	  [nb] ->Write();
+        histo_VVV_CMS_MVAVVVStatBounding_8TeVUp_Bins		  [nb] ->Write();
+        histo_VVV_CMS_MVAVVVStatBounding_8TeVDown_Bins  	  [nb] ->Write();
+        histo_WH_htt_SM_CMS_MVAWH_htt_SMStatBounding_8TeVUp_Bins  [nb] ->Write();
+        histo_WH_htt_SM_CMS_MVAWH_htt_SMStatBounding_8TeVDown_Bins[nb] ->Write();
+        histo_WH_hww_SM_CMS_MVAWH_hww_SMStatBounding_8TeVUp_Bins  [nb] ->Write();
+        histo_WH_hww_SM_CMS_MVAWH_hww_SMStatBounding_8TeVDown_Bins[nb] ->Write();
+      }
+
       histo_WH_htt_CMS_MVALepEffBoundingUp	 ->Write();
       histo_WH_htt_CMS_MVALepEffBoundingDown	 ->Write();
       histo_WH_hww_CMS_MVALepEffBoundingUp	 ->Write();
@@ -3209,6 +3384,7 @@ void optimalCuts3l_53x
       newcardShape << Form("BRhiggs_htt 	                   lnN  1.0569    -     -	  -	-    -       -  1.0569     -\n");
       newcardShape << Form("BRhiggs_hvv 	                   lnN     -   1.0423   -	  -	-    -       -     -	 1.0423\n");
       newcardShape << Form("CMS_vh3l_WZ_8TeV			   lnN     -	 -   1.090   -     -	 -	 -     -     - \n");
+      if(useStat3BTemplates==false){
       if(histo_WH_htt->GetSumOfWeights() > 0)	 
       newcardShape << Form("CMS_MVAWH_httStatBounding_8TeV_vh3l%d     shape   1.000   -     -     -     -	 -	 -     -     - \n",nsel);
       newcardShape << Form("CMS_MVAWH_hwwStatBounding_8TeV_vh3l%d     shape     -   1.000   -     -     -	 -	 -     -     - \n",nsel);
@@ -3222,6 +3398,20 @@ void optimalCuts3l_53x
       newcardShape << Form("CMS_MVAWH_htt_SMStatBounding_8TeV_vh3l%d  shape  -      -     -     -     -	 -	 -   1.000   - \n",nsel);
       if(histo_WH_hww_SM->GetSumOfWeights() > 0)	 
       newcardShape << Form("CMS_MVAWH_hww_SMStatBounding_8TeV_vh3l%d  shape  -      -     -     -     -	 -	 -     -    1.000\n",nsel);
+      }
+      else {
+        for(int nb=0; nb<histo_WH_htt->GetNbinsX(); nb++){
+	  if(histo_WH_htt   ->GetBinContent(nb+1) > 0 && histo_WH_htt   ->GetBinError(nb+1) / histo_WH_htt   ->GetBinContent(nb+1) > max3BTolerance) newcardShape << Form("CMS_MVAhisto_WH_httStatBounding_8TeV_vh3l%d_bin%d	  shape  1.000   -     -     -     -	   -	   -	 -     -   \n",nsel,nb);
+	  if(histo_WH_hww   ->GetBinContent(nb+1) > 0 && histo_WH_hww   ->GetBinError(nb+1) / histo_WH_hww   ->GetBinContent(nb+1) > max3BTolerance) newcardShape << Form("CMS_MVAhisto_WH_hwwStatBounding_8TeV_vh3l%d_bin%d	  shape    -   1.000   -     -     -	   -	   -	 -     -   \n",nsel,nb);
+	  if(histo_WZ       ->GetBinContent(nb+1) > 0 && histo_WZ       ->GetBinError(nb+1) / histo_WZ       ->GetBinContent(nb+1) > max3BTolerance) newcardShape << Form("CMS_MVAhisto_WZStatBounding_8TeV_vh3l%d_bin%d	  shape    -	 -   1.000   -     -	   -	   -	 -     -   \n",nsel,nb);
+	  if(histo_ZZ       ->GetBinContent(nb+1) > 0 && histo_ZZ       ->GetBinError(nb+1) / histo_ZZ       ->GetBinContent(nb+1) > max3BTolerance) newcardShape << Form("CMS_MVAhisto_ZZStatBounding_8TeV_vh3l%d_bin%d	  shape    -	 -     -   1.000   -	   -	   -	 -     -   \n",nsel,nb);
+	  if(histo_Wjets    ->GetBinContent(nb+1) > 0 && histo_Wjets    ->GetBinError(nb+1) / histo_Wjets    ->GetBinContent(nb+1) > max3BTolerance) newcardShape << Form("CMS_MVAhisto_WjetsStatBounding_8TeV_vh3l%d_bin%d	  shape    -	 -     -     -   1.000     -	   -	 -     -   \n",nsel,nb);
+	  if(histo_Wgamma   ->GetBinContent(nb+1) > 0 && histo_Wgamma   ->GetBinError(nb+1) / histo_Wgamma   ->GetBinContent(nb+1) > max3BTolerance) newcardShape << Form("CMS_MVAhisto_WgammaStatBounding_8TeV_vh3l%d_bin%d	  shape    -	 -     -     -     -	 1.000     -	 -     -   \n",nsel,nb);
+	  if(histo_VVV      ->GetBinContent(nb+1) > 0 && histo_VVV      ->GetBinError(nb+1) / histo_VVV      ->GetBinContent(nb+1) > max3BTolerance) newcardShape << Form("CMS_MVAhisto_VVVStatBounding_8TeV_vh3l%d_bin%d	  shape    -	 -     -     -     -	   -	 1.000   -     -   \n",nsel,nb);
+	  if(histo_WH_htt_SM->GetBinContent(nb+1) > 0 && histo_WH_htt_SM->GetBinError(nb+1) / histo_WH_htt_SM->GetBinContent(nb+1) > max3BTolerance) newcardShape << Form("CMS_MVAhisto_WH_htt_SMStatBounding_8TeV_vh3l%d_bin%d   shape    -	 -     -     -     -	   -	   -   1.000   -   \n",nsel,nb);
+	  if(histo_WH_hww_SM->GetBinContent(nb+1) > 0 && histo_WH_hww_SM->GetBinError(nb+1) / histo_WH_hww_SM->GetBinContent(nb+1) > max3BTolerance) newcardShape << Form("CMS_MVAhisto_WH_hww_SMStatBounding_8TeV_vh3l%d_bin%d   shape    -	 -     -     -     -	   -	   -	 -   1.000 \n",nsel,nb);
+        }
+      }
     }
   }
 }
