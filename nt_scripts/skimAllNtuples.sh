@@ -214,4 +214,12 @@ hadd -f aux1.root backgroundEWK_skim14.root ww_dps.root wwss_qed_4_qcd_99_sm.roo
 root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"aux1.root\",\"backgroundEWK_skim14_sm.root\",14\)
 rm aux1.root
 
+hadd -f aux1.root backgroundEWK_skim14_sm.root qqHpmToWZToLep_TuneZ2_8TeV-500GeV-madgrahph.root
+root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"aux1.root\",\"backgroundEWK_skim14_sm_wz500.root\",14\)
+rm aux1.root
+
+hadd -f aux1.root backgroundEWK_skim14_sm.root qqHpmToWZToLep_TuneZ2_8TeV-900GeV-madgrahph.root
+root -l -q -b ~/releases/CMSSW_5_3_14/src/Analysis/nt_scripts/skimFastNtuple.C+\(\"aux1.root\",\"backgroundEWK_skim14_sm_wz900.root\",14\)
+rm aux1.root
+
 fi

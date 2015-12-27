@@ -24,7 +24,7 @@ void makeSystematicEffects3l(int lid1_, int lid2_, int lid3_, LorentzVector lep1
   			   gRandom->Gaus(0.00,0.010),gRandom->Gaus(0.00,0.010),gRandom->Gaus(0.00,0.020),gRandom->Gaus(0.00,0.006),
   			   gRandom->Gaus(0.00,0.010),gRandom->Gaus(0.00,0.010),gRandom->Gaus(0.00,0.020),gRandom->Gaus(0.00,0.006)};
 
-  double lep1pt,lep2pt,dilmass,dilpt,met,metPhi,trackMet,trackMetPhi,mt,dPhiDiLepMET,dPhiMETTrkMET,pTFrac,mtH,m2l2j,m2j,lep3pt;
+  double lep1pt,lep2pt,dilmass,dilpt,met,metPhi,trackMet,trackMetPhi,mt,dPhiDiLepMET,dPhiMETTrkMET,trilepmass,mtH,m2l2j,m2j,lep3pt;
   double llPhi = 0.0;
   if(nsel == 0){ // momentum scale +
     double corr[3] = {1.0, 1.0, 1.0};
@@ -121,10 +121,16 @@ void makeSystematicEffects3l(int lid1_, int lid2_, int lid3_, LorentzVector lep1
     mt  = mt_*sqrt(dilpt/dilep_.pt());
     dPhiDiLepMET = DeltaPhi(llPhi,metPhi_);
     dPhiMETTrkMET = DeltaPhi(trackMetPhi_ ,metPhi_);
-    pTFrac = fabs(met_-dilpt)/dilpt;
+    double pllx_3l  = lep1_.px()*corr[0]+lep2_.px()*corr[1]+lep3_.px()*corr[2];
+    double plly_3l  = lep1_.py()*corr[0]+lep2_.py()*corr[1]+lep3_.py()*corr[2];
+    double pllz_3l  = lep1_.pz()*corr[0]+lep2_.pz()*corr[1]+lep3_.pz()*corr[2];
+    double ell_3l   = lep1_.E() *corr[0]+lep2_.E() *corr[1]+lep3_.E() *corr[3];
+    trilepmass = ell_3l*ell_3l -pllx_3l*pllx_3l -plly_3l*plly_3l -pllz_3l*pllz_3l;
+    if(trilepmass >=0) trilepmass = sqrt(trilepmass); else trilepmass = 0.0;
     double MT3lTotx = met_*cos(metPhi)-lep1_.px()*corr[0]-lep2_.px()*corr[1]-lep3_.px()*corr[2];
     double MT3lToty = met_*sin(metPhi)-lep1_.py()*corr[0]-lep2_.py()*corr[1]-lep3_.py()*corr[2];
-    mtH = sqrt(MT3lTotx*MT3lTotx+MT3lToty*MT3lToty);
+    double MT3lTote = met_            +lep1_.E() *corr[0]+lep2_.E() *corr[1]+lep3_.E() *corr[2];
+    mtH = sqrt(TMath::Max(MT3lTote*MT3lTote-MT3lTotx*MT3lTotx-MT3lToty*MT3lToty,0.));
     double p2l2jx  = lep1_.px()*corr[0]+lep2_.px()*corr[1]+jet1_.px()+jet2_.px();
     double p2l2jy  = lep1_.py()*corr[0]+lep2_.py()*corr[1]+jet1_.py()+jet2_.py();
     double p2l2jz  = lep1_.pz()*corr[0]+lep2_.pz()*corr[1]+jet1_.pz()+jet2_.pz();
@@ -165,6 +171,18 @@ void makeSystematicEffects3l(int lid1_, int lid2_, int lid3_, LorentzVector lep1
       else if(TMath::Abs(lid2_) == 11 && TMath::Abs(lep2_.eta()) >= 1.479){
 	corr[1] = 0.99952 - rndMon2012[7];
       }
+      if   (TMath::Abs(lid3_) == 13 && TMath::Abs(lep3_.eta()) <  1.479){
+	corr[1] = 0.99920 - rndMon2012[8];
+      }
+      else if(TMath::Abs(lid3_) == 13 && TMath::Abs(lep3_.eta()) >= 1.479){
+	corr[1] = 0.99934 - rndMon2012[9];
+      }
+      else if(TMath::Abs(lid3_) == 11 && TMath::Abs(lep3_.eta()) <  1.479){
+	corr[1] = 0.99807 - rndMon2012[10];
+      }
+      else if(TMath::Abs(lid3_) == 11 && TMath::Abs(lep3_.eta()) >= 1.479){
+	corr[1] = 0.99952 - rndMon2012[11];
+      }
     } else {
       if     (TMath::Abs(lid1_) == 13 && TMath::Abs(lep1_.eta()) <  1.479){
 	corr[0] = 1/1.01 - rndMon2011[0];
@@ -190,6 +208,18 @@ void makeSystematicEffects3l(int lid1_, int lid2_, int lid3_, LorentzVector lep1
       else if(TMath::Abs(lid2_) == 11 && TMath::Abs(lep2_.eta()) >= 1.479){
 	corr[1] = 1/1.06 - rndMon2011[7];
       }
+      if     (TMath::Abs(lid3_) == 13 && TMath::Abs(lep3_.eta()) <  1.479){
+	corr[1] = 1/1.01 - rndMon2011[8];
+      }
+      else if(TMath::Abs(lid3_) == 13 && TMath::Abs(lep3_.eta()) >= 1.479){
+	corr[1] = 1/1.01 - rndMon2011[9];
+      }
+      else if(TMath::Abs(lid3_) == 11 && TMath::Abs(lep3_.eta()) <  1.479){
+	corr[1] = 1/1.01 - rndMon2011[10];
+      }
+      else if(TMath::Abs(lid3_) == 11 && TMath::Abs(lep3_.eta()) >= 1.479){
+	corr[1] = 1/1.06 - rndMon2011[11];
+      }
     }
     lep1pt = lep1_.pt()*corr[0];
     lep2pt = lep2_.pt()*corr[1];
@@ -209,10 +239,16 @@ void makeSystematicEffects3l(int lid1_, int lid2_, int lid3_, LorentzVector lep1
     mt  = mt_*sqrt(dilpt/dilep_.pt());
     dPhiDiLepMET = DeltaPhi(llPhi,metPhi_);
     dPhiMETTrkMET = DeltaPhi(trackMetPhi_ ,metPhi_);
-    pTFrac = fabs(met_-dilpt)/dilpt;
+    double pllx_3l  = lep1_.px()*corr[0]+lep2_.px()*corr[1]+lep3_.px()*corr[2];
+    double plly_3l  = lep1_.py()*corr[0]+lep2_.py()*corr[1]+lep3_.py()*corr[2];
+    double pllz_3l  = lep1_.pz()*corr[0]+lep2_.pz()*corr[1]+lep3_.pz()*corr[2];
+    double ell_3l   = lep1_.E() *corr[0]+lep2_.E() *corr[1]+lep3_.E() *corr[3];
+    trilepmass = ell_3l*ell_3l -pllx_3l*pllx_3l -plly_3l*plly_3l -pllz_3l*pllz_3l;
+    if(trilepmass >=0) trilepmass = sqrt(trilepmass); else trilepmass = 0.0;
     double MT3lTotx = met_*cos(metPhi)-lep1_.px()*corr[0]-lep2_.px()*corr[1]-lep3_.px()*corr[2];
     double MT3lToty = met_*sin(metPhi)-lep1_.py()*corr[0]-lep2_.py()*corr[1]-lep3_.py()*corr[2];
-    mtH = sqrt(MT3lTotx*MT3lTotx+MT3lToty*MT3lToty);
+    double MT3lTote = met_            +lep1_.E() *corr[0]+lep2_.E() *corr[1]+lep3_.E() *corr[2];
+    mtH = sqrt(TMath::Max(MT3lTote*MT3lTote-MT3lTotx*MT3lTotx-MT3lToty*MT3lToty,0.));
     double p2l2jx  = lep1_.px()*corr[0]+lep2_.px()*corr[1]+jet1_.px()+jet2_.px();
     double p2l2jy  = lep1_.py()*corr[0]+lep2_.py()*corr[1]+jet1_.py()+jet2_.py();
     double p2l2jz  = lep1_.pz()*corr[0]+lep2_.pz()*corr[1]+jet1_.pz()+jet2_.pz();
@@ -295,10 +331,16 @@ void makeSystematicEffects3l(int lid1_, int lid2_, int lid3_, LorentzVector lep1
     mt  = mt_*sqrt(newMet/met_); // 8
     dPhiDiLepMET = DeltaPhi(dilep_.phi(),TMath::ATan2(mety,metx));
     dPhiMETTrkMET = DeltaPhi(TMath::ATan2(trkmety,trkmetx) ,TMath::ATan2(mety,metx));
-    pTFrac = fabs(newMet-dilpt)/dilpt;
+    double pllx_3l  = lep1_.px()+lep2_.px()+lep3_.px();
+    double plly_3l  = lep1_.py()+lep2_.py()+lep3_.py();
+    double pllz_3l  = lep1_.pz()+lep2_.pz()+lep3_.pz();
+    double ell_3l   = lep1_.E() +lep2_.E() +lep3_.E() ;
+    trilepmass = ell_3l*ell_3l -pllx_3l*pllx_3l -plly_3l*plly_3l -pllz_3l*pllz_3l;
+    if(trilepmass >=0) trilepmass = sqrt(trilepmass); else trilepmass = 0.0;
     double MT3lTotx = met_*cos(metPhi)-lep1_.px()-lep2_.px()-lep3_.px();
     double MT3lToty = met_*sin(metPhi)-lep1_.py()-lep2_.py()-lep3_.py();
-    mtH = sqrt(MT3lTotx*MT3lTotx+MT3lToty*MT3lToty);
+    double MT3lTote = met_            +lep1_.E() +lep2_.E() +lep3_.E() ;
+    mtH = sqrt(TMath::Max(MT3lTote*MT3lTote-MT3lTotx*MT3lTotx-MT3lToty*MT3lToty,0.));
     double p2l2jx  = lep1_.px()+lep2_.px()+jet1_.px()+jet2_.px();
     double p2l2jy  = lep1_.py()+lep2_.py()+jet1_.py()+jet2_.py();
     double p2l2jz  = lep1_.pz()+lep2_.pz()+jet1_.pz()+jet2_.pz();
@@ -331,10 +373,16 @@ void makeSystematicEffects3l(int lid1_, int lid2_, int lid3_, LorentzVector lep1
     mt  = mt_*sqrt(dilpt/dilep_.pt());
     dPhiDiLepMET = DeltaPhi(llPhi,metPhi_);
     dPhiMETTrkMET = DeltaPhi(trackMetPhi_ ,metPhi_);
-    pTFrac = fabs(met_-dilpt)/dilpt;
+    double pllx_3l  = lep1_.px()+lep2_.px()+lep3_.px();
+    double plly_3l  = lep1_.py()+lep2_.py()+lep3_.py();
+    double pllz_3l  = lep1_.pz()+lep2_.pz()+lep3_.pz();
+    double ell_3l   = lep1_.E() +lep2_.E() +lep3_.E() ;
+    trilepmass = ell_3l*ell_3l -pllx_3l*pllx_3l -plly_3l*plly_3l -pllz_3l*pllz_3l;
+    if(trilepmass >=0) trilepmass = sqrt(trilepmass); else trilepmass = 0.0;
     double MT3lTotx = met_*cos(metPhi)-lep1_.px()-lep2_.px()-lep3_.px();
     double MT3lToty = met_*sin(metPhi)-lep1_.py()-lep2_.py()-lep3_.py();
-    mtH = sqrt(MT3lTotx*MT3lTotx+MT3lToty*MT3lToty);
+    double MT3lTote = met_            +lep1_.E() +lep2_.E() +lep3_.E() ;
+    mtH = sqrt(TMath::Max(MT3lTote*MT3lTote-MT3lTotx*MT3lTotx-MT3lToty*MT3lToty,0.));
     double p2l2jx  = lep1_.px()+lep2_.px()+jet1_.px()+jet2_.px();
     double p2l2jy  = lep1_.py()+lep2_.py()+jet1_.py()+jet2_.py();
     double p2l2jz  = lep1_.pz()+lep2_.pz()+jet1_.pz()+jet2_.pz();
@@ -367,10 +415,16 @@ void makeSystematicEffects3l(int lid1_, int lid2_, int lid3_, LorentzVector lep1
     mt  = mt_*sqrt(dilpt/dilep_.pt());
     dPhiDiLepMET = DeltaPhi(llPhi,metPhi_);
     dPhiMETTrkMET = DeltaPhi(trackMetPhi_ ,metPhi_);
-    pTFrac = fabs(met_-dilpt)/dilpt;
+    double pllx_3l  = lep1_.px()+lep2_.px()+lep3_.px();
+    double plly_3l  = lep1_.py()+lep2_.py()+lep3_.py();
+    double pllz_3l  = lep1_.pz()+lep2_.pz()+lep3_.pz();
+    double ell_3l   = lep1_.E() +lep2_.E() +lep3_.E() ;
+    trilepmass = ell_3l*ell_3l -pllx_3l*pllx_3l -plly_3l*plly_3l -pllz_3l*pllz_3l;
+    if(trilepmass >=0) trilepmass = sqrt(trilepmass); else trilepmass = 0.0;
     double MT3lTotx = met_*cos(metPhi)-lep1_.px()-lep2_.px()-lep3_.px();
     double MT3lToty = met_*sin(metPhi)-lep1_.py()-lep2_.py()-lep3_.py();
-    mtH = sqrt(MT3lTotx*MT3lTotx+MT3lToty*MT3lToty);
+    double MT3lTote = met_            +lep1_.E() +lep2_.E() +lep3_.E() ;
+    mtH = sqrt(TMath::Max(MT3lTote*MT3lTote-MT3lTotx*MT3lTotx-MT3lToty*MT3lToty,0.));
     double p2l2jx  = lep1_.px()+lep2_.px()+jet1_.px()*1.04+jet2_.px()*1.04;
     double p2l2jy  = lep1_.py()+lep2_.py()+jet1_.py()*1.04+jet2_.py()*1.04;
     double p2l2jz  = lep1_.pz()+lep2_.pz()+jet1_.pz()*1.04+jet2_.pz()*1.04;
@@ -403,10 +457,16 @@ void makeSystematicEffects3l(int lid1_, int lid2_, int lid3_, LorentzVector lep1
     mt  = mt_*sqrt(dilpt/dilep_.pt());
     dPhiDiLepMET = DeltaPhi(llPhi,metPhi_);
     dPhiMETTrkMET = DeltaPhi(trackMetPhi_ ,metPhi_);
-    pTFrac = fabs(met_-dilpt)/dilpt;
+    double pllx_3l  = lep1_.px()+lep2_.px()+lep3_.px();
+    double plly_3l  = lep1_.py()+lep2_.py()+lep3_.py();
+    double pllz_3l  = lep1_.pz()+lep2_.pz()+lep3_.pz();
+    double ell_3l   = lep1_.E() +lep2_.E() +lep3_.E() ;
+    trilepmass = ell_3l*ell_3l -pllx_3l*pllx_3l -plly_3l*plly_3l -pllz_3l*pllz_3l;
+    if(trilepmass >=0) trilepmass = sqrt(trilepmass); else trilepmass = 0.0;
     double MT3lTotx = met_*cos(metPhi)-lep1_.px()-lep2_.px()-lep3_.px();
     double MT3lToty = met_*sin(metPhi)-lep1_.py()-lep2_.py()-lep3_.py();
-    mtH = sqrt(MT3lTotx*MT3lTotx+MT3lToty*MT3lToty);
+    double MT3lTote = met_            +lep1_.E() +lep2_.E() +lep3_.E() ;
+    mtH = sqrt(TMath::Max(MT3lTote*MT3lTote-MT3lTotx*MT3lTotx-MT3lToty*MT3lToty,0.));
     double p2l2jx  = lep1_.px()+lep2_.px()+jet1_.px()*0.96+jet2_.px()*0.96;
     double p2l2jy  = lep1_.py()+lep2_.py()+jet1_.py()*0.96+jet2_.py()*0.96;
     double p2l2jz  = lep1_.pz()+lep2_.pz()+jet1_.pz()*0.96+jet2_.pz()*0.96;
@@ -433,7 +493,7 @@ void makeSystematicEffects3l(int lid1_, int lid2_, int lid3_, LorentzVector lep1
   outputVar[ 8] = mt;
   outputVar[ 9] = dPhiDiLepMET;
   outputVar[10] = dPhiMETTrkMET;
-  outputVar[11] = pTFrac;
+  outputVar[11] = trilepmass;
   outputVar[12] = mtH;
   outputVar[13] = m2l2j;
   outputVar[14] = m2j;
